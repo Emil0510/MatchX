@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "250914060128",
+    "project_id": "matchx-a51bd",
+    "storage_bucket": "matchx-a51bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:250914060128:android:a5daeff324415923a25005",
+        "android_client_info": {
+          "package_name": "com.emilabdurahmanli.flutter_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALbW1ZNl6XOb3OfBlfWVyVTrLJkQXw7AI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
