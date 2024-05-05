@@ -34,8 +34,8 @@ class _TeamListItemState extends State<TeamListItem> {
         child: Card(
           color: Colors.black,
           child: GestureDetector(
-            onTap: () {
-              Navigator.push(
+            onTap: () async{
+              var data = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => BlocProvider(
@@ -45,6 +45,12 @@ class _TeamListItemState extends State<TeamListItem> {
                   ),
                 ),
               );
+
+              print("Komandam  ${data}");
+              if (data != null) {
+                context.read<TeamCubit>().start();
+              }
+
             },
             child: ListTile(
               leading: Image.network(

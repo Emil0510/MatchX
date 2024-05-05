@@ -1,11 +1,7 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
-import 'package:skeletonizer/skeletonizer.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../network/model/Blog.dart';
 
@@ -46,23 +42,25 @@ class BlogSingleItem extends StatelessWidget {
                                   0, 0, bounds.width, bounds.height));
                             },
                             blendMode: BlendMode.dstIn,
-                            child: Skeleton.replace(
-                              width: width,
-                              height: height / 3,
-                              child: Image.network(
+                            child: Image.network(
                                 blog.imageUrl!,
                                 width: width,
                                 height: height / 3,
                                 fit: BoxFit.contain,
                                 loadingBuilder: (context, child, progress) {
                                   if (progress == null) return child;
-                                  return  Skeletonizer(
-                                    enabled: true,
-                                      ignorePointers: true,
-                                      child: Icon(Icons.rectangle, size: width*9/10,));
+                                  return Shimmer.fromColors(
+                                      baseColor: Colors.grey.shade300,
+                                      highlightColor: Colors.grey.shade100,
+                                      enabled: true,
+                                      child: Container(
+                                        width: width*4/5,
+                                        height: width*4/5,
+                                        color: Colors.black54,
+                                      ),
+                                    );
                                 },
                               ),
-                            ),
                           ),
                         )
                       : const SizedBox(),

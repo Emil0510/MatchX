@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
@@ -23,6 +22,7 @@ class AllMatchesPage extends StatefulWidget {
 class _AllMatchesPageState extends State<AllMatchesPage> {
   String selectedRegion = 'Hamısı';
   int selectedRegionId = -1;
+  late List<TeamGame> games;
   List<String> regions = [
     'Hamısı',
     "Abşeron",
@@ -100,6 +100,7 @@ class _AllMatchesPageState extends State<AllMatchesPage> {
     super.initState();
     selectedRegionId = widget.selectedId;
     selectedRegion = regions[selectedRegionId];
+    games = widget.games??[];
   }
 
   @override
@@ -107,180 +108,194 @@ class _AllMatchesPageState extends State<AllMatchesPage> {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          checkLeader()
-              ? Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      context.read<MatchesCubit>().toFinishedGames(context);
-                    },
-                    child: Container(
-                      height: 40,
-                      width: double.maxFinite,
-                      decoration: BoxDecoration(
-                          color: const Color(blackColor2),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: const Center(
-                        child: GoldColorText(text: "Oyunlarım"),
-                      ),
-                    ),
-                  ),
-                )
-              : const SizedBox(),
-          checkLeader()
-              ? Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      context.read<MatchesCubit>().toCreateMatch(context);
-                    },
-                    child: Container(
-                      height: 40,
-                      width: double.maxFinite,
-                      decoration: BoxDecoration(
-                          color: const Color(blackColor2),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: const Center(
-                        child: GoldColorText(text: "Oyun yarat"),
-                      ),
-                    ),
-                  ),
-                )
-              : const SizedBox(),
-          checkLeader()
-              ? Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              context
-                                  .read<MatchesCubit>()
-                                  .toCreateWithLinkPage(context);
-                            },
-                            child: Container(
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color: const Color(blackColor2),
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: const Center(
-                                child: GoldColorText(text: "Link ilə oyun yarat"),
-                              ),
-                            ),
+    return RefreshIndicator(
+      onRefresh: () async{
+        var data = await context.read<MatchesCubit>().refresh();
+        setState(() {
+          games = data;
+        });
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
+          height: height,
+          child: Column(
+            children: [
+              checkLeader()
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          context.read<MatchesCubit>().toFinishedGames(context);
+                        },
+                        child: Container(
+                          height: 40,
+                          width: double.maxFinite,
+                          decoration: BoxDecoration(
+                              color: const Color(blackColor2),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Center(
+                            child: GoldColorText(text: "Oyunlarım"),
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              context
-                                  .read<MatchesCubit>()
-                                  .toJoinWithLinkPage(context);
-                            },
-                            child: Container(
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color: const Color(blackColor2),
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: const Center(
-                                child:
-                                    GoldColorText(text: "Link ilə oyuna qoşul"),
-                              ),
-                            ),
+                    )
+                  : const SizedBox(),
+              checkLeader()
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          context.read<MatchesCubit>().toCreateMatch(context);
+                        },
+                        child: Container(
+                          height: 40,
+                          width: double.maxFinite,
+                          decoration: BoxDecoration(
+                              color: const Color(blackColor2),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Center(
+                            child: GoldColorText(text: "Oyun yarat"),
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                )
-              : const SizedBox(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                context.read<MatchesCubit>().toCreateMatch(context);
-              },
-              child: Container(
-                height: 40,
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                    color: const Color(blackColor2),
-                    borderRadius: BorderRadius.circular(10)),
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  value: selectedRegion,
-
-                  hint: const Text('Region'),
-                  menuMaxHeight: height / 2,
-                  alignment: Alignment.bottomCenter,
-                  underline: const SizedBox(),
-                  onChanged: (String? newValue) {
-                    selectedRegion = newValue!;
-                    selectedRegionId = regions.indexOf(newValue) - 1;
-                    print(selectedRegionId);
-                    context
-                        .read<MatchesCubit>()
-                        .getSelectedRegionGames(selectedRegionId);
+                    )
+                  : const SizedBox(),
+              checkLeader()
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  context
+                                      .read<MatchesCubit>()
+                                      .toCreateWithLinkPage(context);
+                                },
+                                child: Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      color: const Color(blackColor2),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Center(
+                                    child: GoldColorText(text: "Link ilə oyun yarat"),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  context
+                                      .read<MatchesCubit>()
+                                      .toJoinWithLinkPage(context);
+                                },
+                                child: Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      color: const Color(blackColor2),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Center(
+                                    child:
+                                        GoldColorText(text: "Link ilə oyuna qoşul"),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    context.read<MatchesCubit>().toCreateMatch(context);
                   },
-                  dropdownColor: Colors.black,
-                  items: regions.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Container(
-                        width: width,
+                  child: Container(
+                    height: 40,
+                    width: double.maxFinite,
+                    decoration: BoxDecoration(
                         color: const Color(blackColor2),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            value,
-                            style: const TextStyle(color: Color(goldColor)),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      value: selectedRegion,
+
+                      hint: const Text('Region'),
+                      menuMaxHeight: height / 2,
+                      alignment: Alignment.bottomCenter,
+                      underline: const SizedBox(),
+                      onChanged: (String? newValue) {
+                        if(selectedRegion!=newValue) {
+                          selectedRegion = newValue!;
+                          selectedRegionId = regions.indexOf(newValue) - 1;
+                          print(selectedRegionId);
+                          context
+                              .read<MatchesCubit>()
+                              .getSelectedRegionGames(selectedRegionId);
+                        }
+                      },
+                      dropdownColor: Colors.black,
+                      items: regions.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Container(
+                            width: width,
+                            color: const Color(blackColor2),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                value,
+                                style: const TextStyle(color: Color(goldColor)),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Oyunlar:",
-                  style: TextStyle(color: Color((goldColor)), fontSize: 18),
-                )),
-          ),
-          SizedBox(
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.games?.length ?? 0,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    context
-                        .read<MatchesCubit>()
-                        .toGameDetail(widget.games![index], context, false, "");
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Oyunlar:",
+                      style: TextStyle(color: Color((goldColor)), fontSize: 18),
+                    )),
+              ),
+              SizedBox(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: games?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        context
+                            .read<MatchesCubit>()
+                            .toGameDetail(games![index], context, false, "");
+                      },
+                      child: MatchesListItem(
+                        teamGame: games![index],
+                      ),
+                    );
                   },
-                  child: MatchesListItem(
-                    teamGame: widget.games![index],
-                  ),
-                );
-              },
-            ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/pages/splash.dart';
 
@@ -11,6 +12,7 @@ import 'firebase_options.dart';
 import 'Constants.dart';
 
 void main() async{
+  // debugPaintSizeEnabled = true;
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
 

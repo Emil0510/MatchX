@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Utils.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../Constants.dart';
 import '../../../../network/model/Blog.dart';
@@ -56,6 +57,19 @@ class BlogDetailPage extends StatelessWidget {
                               blog.imageUrl!,
                               width: width,
                               height: height / 4,
+                              loadingBuilder: (context, child, progress) {
+                                if (progress == null) return child;
+                                return Shimmer.fromColors(
+                                    baseColor: Colors.grey.shade300,
+                                    highlightColor: Colors.grey.shade100,
+                                    enabled: true,
+                                    child: Container(
+                                      width: width,
+                                      height: height/4,
+                                      color: Colors.black54,
+                                    ),
+                                  );
+                              },
                             ),
                           ),
                         )

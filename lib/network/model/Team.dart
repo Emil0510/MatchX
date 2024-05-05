@@ -1,3 +1,4 @@
+import 'Division.dart';
 import 'Game.dart';
 import 'User.dart';
 
@@ -100,47 +101,47 @@ class Team {
   }
 }
 
-class Division {
-  final int? id;
-  final String? createdAt;
-  final String? createdBy;
-  final String? updatedAt;
-  final String? updatedBy;
-  final String? divisionName;
-  final int? passTeamCount;
-  final int? failTeamCount;
-  final String? divisionImage;
-  final List<Team>? teams;
-
-  Division(
-      {required this.id,
-      required this.createdAt,
-      required this.createdBy,
-      required this.updatedAt,
-      required this.updatedBy,
-      required this.divisionName,
-      required this.passTeamCount,
-      required this.failTeamCount,
-      required this.divisionImage,
-      required this.teams});
-
-  factory Division.fromJson(Map<String, dynamic> json) {
-    List<DivisionMedal>? divisionMedals = (json['divisionMedals'] as List?)
-        ?.map((e) => DivisionMedal.fromJson(e))
-        .toList();
-    return Division(
-        id: json['id'],
-        createdAt: json['createdAt'],
-        createdBy: json['createdBy'],
-        updatedAt: json['updatedAt'],
-        updatedBy: json['updatedBy'],
-        divisionName: json['divisionName'],
-        passTeamCount: json['passTeamCount'],
-        failTeamCount: json['failTeamCount'],
-        divisionImage: json['divisionImage'],
-        teams: json['teams']);
-  }
-}
+// class Division {
+//   final int? id;
+//   final String? createdAt;
+//   final String? createdBy;
+//   final String? updatedAt;
+//   final String? updatedBy;
+//   final String? divisionName;
+//   final int? passTeamCount;
+//   final int? failTeamCount;
+//   final String? divisionImage;
+//   final List<Team>? teams;
+//
+//   Division(
+//       {required this.id,
+//       required this.createdAt,
+//       required this.createdBy,
+//       required this.updatedAt,
+//       required this.updatedBy,
+//       required this.divisionName,
+//       required this.passTeamCount,
+//       required this.failTeamCount,
+//       required this.divisionImage,
+//       required this.teams});
+//
+//   factory Division.fromJson(Map<String, dynamic> json) {
+//     List<DivisionMedal>? divisionMedals = (json['divisionMedals'] as List?)
+//         ?.map((e) => DivisionMedal.fromJson(e))
+//         .toList();
+//     return Division(
+//         id: json['id'],
+//         createdAt: json['createdAt'],
+//         createdBy: json['createdBy'],
+//         updatedAt: json['updatedAt'],
+//         updatedBy: json['updatedBy'],
+//         divisionName: json['divisionName'],
+//         passTeamCount: json['passTeamCount'],
+//         failTeamCount: json['failTeamCount'],
+//         divisionImage: json['divisionImage'],
+//         teams: json['teams']);
+//   }
+// }
 
 class DivisionMedal {
   final int id;

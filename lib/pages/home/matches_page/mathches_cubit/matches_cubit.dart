@@ -1,8 +1,7 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
+import 'package:flutter_app/data.dart';
 import 'package:flutter_app/network/model/Game.dart';
 import 'package:flutter_app/pages/home/matches_page/create_match_page/create_match_page.dart';
 import 'package:flutter_app/pages/home/matches_page/finished_games_page/cubit/finished_game_cubit.dart';
@@ -20,11 +19,59 @@ import '../create_match_page/ui/JoinToMatchWithLink.dart';
 class MatchesCubit extends Cubit<MatchesStates> {
   MatchesCubit() : super(MatchesInitialState());
 
-  int selectedId = 7;
+  int selectedId = 0;
+  List<TeamGame> games = [];
+  bool isLoaded = false;
+
+
+  set(int selectedId,List<TeamGame> games,bool isLoaded){
+    this.selectedId = selectedId;
+    this.games = games;
+    this.isLoaded = isLoaded;
+  }
 
   start() {
+    if(isLoaded){
+      emit(MatchesPageState(games: games, selectedId: selectedId));
+      return;
+    }
     emit(MatchesLoadingState());
     getAll();
+  }
+
+
+  Future<List<TeamGame>> refresh() async{
+    var sharedPreferences = locator.get<SharedPreferences>();
+    var dio = locator.get<Dio>();
+    var token = sharedPreferences.getString(tokenKey);
+
+    try {
+      var response = await dio.get(
+        baseUrl + getAllGameApi,
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        List<TeamGame>? games = (response.data['data'] as List?)
+            ?.map((e) => TeamGame.fromJson(e))
+            .toList();
+        this.games = games??[];
+        this.isLoaded = true;
+        matchesPageCubit = this;
+
+        print(games);
+        return this.games;
+      }else{
+        return games;
+      }
+    } on DioException catch (e) {
+      print(e.response?.data);
+      return games;
+    }
   }
 
   void getAll() async {
@@ -46,9 +93,12 @@ class MatchesCubit extends Cubit<MatchesStates> {
         List<TeamGame>? games = (response.data['data'] as List?)
             ?.map((e) => TeamGame.fromJson(e))
             .toList();
+        this.games = games??[];
+        this.isLoaded = true;
+        matchesPageCubit = this;
 
         print(games);
-        emit(MatchesPageState(games: games, selectedId: 0));
+        emit(MatchesPageState(games: games, selectedId: selectedId));
       }
     } on DioException catch (e) {
       print(e.response?.data);
@@ -57,7 +107,7 @@ class MatchesCubit extends Cubit<MatchesStates> {
 
   void getSelectedRegionGames(int selectedRegion) async {
     emit(MatchesLoadingState());
-    selectedId = selectedRegion;
+    selectedId = selectedRegion + 1;
     var sharedPreferences = locator.get<SharedPreferences>();
     var dio = locator.get<Dio>();
     var token = sharedPreferences.getString(tokenKey);
@@ -70,17 +120,19 @@ class MatchesCubit extends Cubit<MatchesStates> {
             "Authorization": "Bearer $token",
           },
         ),
-        queryParameters: {"area": selectedId == -1 ? null : selectedId},
+        queryParameters: {"area": selectedId == 0 ? null : selectedId},
       );
 
       if (response.statusCode == 200) {
         List<TeamGame>? games = (response.data['data'] as List?)
             ?.map((e) => TeamGame.fromJson(e))
             .toList();
-
+        this.games = games??[];
+        this.isLoaded = true;
+        matchesPageCubit = this;
         print(games);
 
-        emit(MatchesPageState(games: games, selectedId: selectedId + 1));
+        emit(MatchesPageState(games: games, selectedId: selectedId));
       }
     } on DioException catch (e) {
       print(e.response?.data);

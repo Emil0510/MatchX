@@ -3,9 +3,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/notification_page/notification_cubit/notification_cubit.dart';
 import 'package:flutter_app/pages/sign_in_sign_up/login_signup.dart';
+import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../Constants.dart';
 import '../network/network.dart';
 import '../onboarding/OnboardingPage.dart';
@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) => OnboardPage(),
+          builder: (context) => const OnboardPage(),
         ),
         (e) => false,
       );
@@ -47,7 +47,19 @@ class _SplashScreenState extends State<SplashScreen> {
   void check(BuildContext context) async {
     var sharedPreferences = locator.get<SharedPreferences>();
     var isLogged = sharedPreferences.getBool(isLoggedInKey) ?? false;
-    print(isLogged.toString());
+
+    var expireTime = sharedPreferences.getString(tokenExpireDayKey) ?? "";
+
+    if (expireTime != "" && isLogged) {
+      var expireDateTime = DateTime.parse(expireTime ?? "");
+
+      if (expireDateTime.isBefore(DateTime.now())) {
+        await sharedPreferences.setBool(isLoggedInKey, false);
+        isLogged = false;
+        showCustomSnackbar(context, "Daxil olma vaxtı doldu.");
+      }
+    }
+
     if (isLogged) {
       var sharedPreferences = locator.get<SharedPreferences>();
       var token = sharedPreferences.getString(tokenKey);
@@ -74,21 +86,18 @@ class _SplashScreenState extends State<SplashScreen> {
         List<String>? roless =
             (response.data['roles'] as List).map((e) => e.toString()).toList();
 
-
         await sharedPreferences.setInt(countCursingKey, countCoursing ?? 0);
         await sharedPreferences.setString(
             lockoutLimitForMessagingKey, locoutTime ?? "");
 
         await sharedPreferences.setStringList(rolesKey, roless);
-        await sharedPreferences.setString(phoneNumberKey, phoneNumber??"");
+        await sharedPreferences.setString(phoneNumberKey, phoneNumber ?? "");
 
-
-        var response2 = await dio.get(baseUrl+profileApi, options: Options(
-          headers: {
-            "Authorization" : "Bearer $token"
-          }
-        ),);
-        if(response2.statusCode == 200) {
+        var response2 = await dio.get(
+          baseUrl + profileApi,
+          options: Options(headers: {"Authorization": "Bearer $token"}),
+        );
+        if (response2.statusCode == 200) {
           var myTeamId = response2.data['myTeamId'];
           await sharedPreferences.setString(myTeamIdKey, myTeamId ?? "");
         }

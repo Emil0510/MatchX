@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/network/model/Team.dart';
 import 'package:flutter_app/pages/home/home_page/widgets/last_3_games_widget.dart';
@@ -141,6 +139,7 @@ class Top10TeamSingleItem extends StatelessWidget {
                             team.teamLogoUrl ?? "",
                             height: width / 10,
                             width: width / 10,
+                            fit: BoxFit.cover,
                           ),
                         ),
                         Expanded(
@@ -162,7 +161,7 @@ class Top10TeamSingleItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
 
-                      (team.lastGames!.split('').length >= 1)
+                      (team.lastGames!.split('').isNotEmpty)
                           ? Last3GamesWidget(game: team.lastGames!.split('')[0])
                           : SizedBox(
                               width: width / 20,

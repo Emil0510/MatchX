@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/data.dart';
 import 'package:flutter_app/pages/home/matches_page/mathches_cubit/matches_cubit.dart';
 import 'package:flutter_app/pages/home/matches_page/mathches_cubit/matches_logics.dart';
 import 'package:flutter_app/pages/home/matches_page/ui/widgets/mathes_list.dart';
@@ -10,7 +11,10 @@ class MatchesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MatchesCubit()..start(),
+      create: (context) => MatchesCubit()
+        ..set(matchesPageCubit.selectedId, matchesPageCubit.games,
+            matchesPageCubit.isLoaded)
+        ..start(),
       child: Container(
         height: double.maxFinite,
         width: double.maxFinite,

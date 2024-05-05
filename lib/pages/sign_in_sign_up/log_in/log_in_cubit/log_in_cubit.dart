@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -138,6 +139,8 @@ class LogInCubit extends Cubit<LogInCubitStates> {
       await sharedPreferences.setString(lockoutLimitForMessagingKey, user.lockoutLimitForMessaging ?? "");
       await sharedPreferences.setString(myTeamIdKey, myTeamIdd ?? "" );
       await sharedPreferences.setStringList(rolesKey, roless);
+      var expireDay = DateTime.now().add(const Duration(days: 10));
+      await sharedPreferences.setString(tokenExpireDayKey, expireDay.toString());
 
       emit(LogInLoggedInState());
 

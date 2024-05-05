@@ -21,31 +21,6 @@ class HomeCubits extends Cubit<BottomNavigationItem> {
   start() async {
     var sharedPreferences = locator.get<SharedPreferences>();
     String? token = sharedPreferences.getString("token");
-
-
-    hubConnection = HubConnectionBuilder()
-        .withUrl(
-          "${baseUrl}api/notifyHub",
-          options: HttpConnectionOptions(
-            accessTokenFactory: () async =>
-                token!, // Replace with your JWT token logic
-          ),
-        )
-        .build();
-
-    try {
-      await hubConnection.start();
-      hubConnection.on('ReceiveGameNotification', _handleReceiveMessage);
-      print('SignalR Connection Established');
-    } catch (error) {
-      print('Error establishing SignalR connection: $error');
-      ;
-    }
   }
 
-  void _handleReceiveMessage(List<dynamic>? data) {
-    print("DATA");
-    print(data?[0]);
-
-  }
 }

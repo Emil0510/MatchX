@@ -3,8 +3,8 @@ import 'Team.dart';
 class Division {
   final String divisionName;
   final List<Team> divisionTeams;
-  final int passTeamCount;
-  final bool isActive;
+  final int? passTeamCount;
+  final bool? isActive;
   final String divisionImage;
 
   Division(

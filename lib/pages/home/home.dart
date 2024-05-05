@@ -7,7 +7,6 @@ import 'package:flutter_app/pages/notification_page/notification_cubit/notificat
 import 'package:flutter_app/pages/notification_page/notification_page.dart';
 import 'package:flutter_app/pages/options/cubit/options_cubit.dart';
 import 'package:flutter_app/pages/options/cubit/options_logic.dart';
-import 'package:flutter_app/pages/options/ui/OptionsPage.dart';
 import 'package:flutter_app/widgets/app_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -74,7 +73,8 @@ class _HomeState extends State<Home> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => BlocProvider<OptionsCubit>(
-                        create: (BuildContext context) => OptionsCubit()..start(),
+                        create: (BuildContext context) =>
+                            OptionsCubit()..start(),
                         child: const OptionsLogics()),
                   ),
                 );
@@ -108,8 +108,8 @@ class _HomeState extends State<Home> {
             BlocBuilder<NotificationCubit, NotificationStates>(
               builder: (context, states) {
                 if (states is NotificationPageState) {
-                  for(int i = 0; i < states.notifications.length;i++){
-                    if(states.notifications[i].IsRead == false){
+                  for (int i = 0; i < states.notifications.length; i++) {
+                    if (states.notifications[i].IsRead == false) {
                       context.read<NotificationCubit>().enableNotifications();
                       break;
                     }
@@ -166,23 +166,23 @@ class _HomeState extends State<Home> {
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home),
-                  label: 'Home',
+                  label: 'Ev',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(FontAwesomeIcons.soccerBall),
-                  label: 'Matches',
+                  label: 'Oyunlar',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.shield_sharp),
-                  label: 'Divisions',
+                  label: 'Diviziyalar',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.people_alt_rounded),
-                  label: 'Teams',
+                  label: 'Komandalar',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.more_horiz),
-                  label: 'More',
+                  icon: Icon(Icons.person),
+                  label: 'Profil',
                 ),
               ],
               currentIndex: BottomNavigationItem.values.indexOf(state),

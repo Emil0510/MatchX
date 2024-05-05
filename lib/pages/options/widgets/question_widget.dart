@@ -54,7 +54,7 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                   },
                   body: Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Text(widget.question.solution),
+                    child: Text(widget.question.description),
                   ),
                 )
               ],

@@ -192,11 +192,13 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
       if (response.statusCode == 200) {
         fun(true, "Oyun ləğv edildi");
       } else {
+        print(response.data);
         fun(false, "Səhvlik");
         emit(FinishedGamesPageState(myGames: allGames));
       }
     } on DioException catch (e) {
-      fun(false, "Səhvlik");
+      print(e.response?.data);
+      fun(false, e.response?.data["message"]);
       emit(FinishedGamesPageState(myGames: allGames));
     }
   }

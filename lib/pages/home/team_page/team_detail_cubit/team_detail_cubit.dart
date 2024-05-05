@@ -41,6 +41,29 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
     }
   }
 
+  Future<Team?> refreshScreen () async {
+
+    var sharedPreferences = locator.get<SharedPreferences>();
+    var dio = locator.get<Dio>();
+    var token = sharedPreferences.getString("token");
+
+    var response = await dio.get(
+      baseUrl + teamDetailApi + teamId.toString(),
+      options: Options(headers: {
+        "Authorization": "Bearer $token",
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      var team = Team.fromJson(response.data['data']);
+      print(response.data);
+      this.team = team;
+      return this.team;
+    } else {
+      return null;
+    }
+  }
+
   startEditTeam(Team team) {
     this.team = team;
     emit(TeamDetailLoadingState());

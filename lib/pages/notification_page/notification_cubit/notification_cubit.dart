@@ -43,6 +43,7 @@ class NotificationCubit extends Cubit<NotificationStates> {
     try {
       await hubConnection.start();
       hubConnection.on('ReciveNotification', _handleNotification);
+      hubConnection.on("UpNotify", replaceNotification);
       print('SignalR Connection Establishedddddddd');
     } catch (error) {
       print('Error establishing SignalR connection: $error');
@@ -56,6 +57,10 @@ class NotificationCubit extends Cubit<NotificationStates> {
           notificationVisibility: isNotificationVisible,
           notifications: notifications),
     );
+  }
+
+  void replaceNotification(dynamic notification){
+
   }
 
   void disableNotificationVisibility() {
@@ -139,8 +144,10 @@ class NotificationCubit extends Cubit<NotificationStates> {
         ),
       );
 
+      print(response.data);
+
       if (response.statusCode == 200) {
-        fun(true, "Oyunçu isdəyi qəbul edildi");
+        fun(response.data['success'], response.data['message']);
       } else {
         fun(false, "Xəta baş verdi");
       }

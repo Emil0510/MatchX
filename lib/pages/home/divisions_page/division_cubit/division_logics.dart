@@ -17,8 +17,6 @@ class _DivisionLogicsState extends State<DivisionLogics> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: double.maxFinite,
-      width: double.maxFinite,
       decoration: const BoxDecoration(color: Colors.black),
       child: BlocBuilder<DivisionCubit, DivisionStates>(builder: (context, state) {
 

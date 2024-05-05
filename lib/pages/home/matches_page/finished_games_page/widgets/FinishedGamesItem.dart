@@ -36,6 +36,9 @@ class _FinishedGamesItemState extends State<FinishedGamesItem> {
           print(message);
           // Navigator.of(context).pop();
           // showCustomSnackbar(contextt, message);
+          setState(() {
+            isLoading = false;
+          });
           showCustomSnackbar(context, message);
           if (isSuccesfull) {
             context.read<FinishedGamesCubit>().start();

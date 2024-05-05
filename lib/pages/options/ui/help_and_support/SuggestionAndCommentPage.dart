@@ -1,12 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/options/cubit/options_cubit.dart';
-import 'package:flutter_app/pages/options/ui/OptionsPage.dart';
 import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../../../../Constants.dart';
 
 class SuggestionAndCommentPage extends StatefulWidget {
@@ -28,12 +25,11 @@ class _SuggestionAndCommentPageState extends State<SuggestionAndCommentPage> {
   Future<void> _getImage() async {
     final imagePicker = ImagePicker();
     final pickedImage = await imagePicker.pickImage(
-        source: ImageSource.gallery); // Use ImageSource.camera for the camera
+        source: ImageSource.gallery);
 
     setState(() {
       if (pickedImage != null) {
         _image = File(pickedImage.path);
-        // Create a File object using the picked image path
       }
     });
   }

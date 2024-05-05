@@ -36,6 +36,7 @@ class UserTeamWidget extends StatelessWidget {
                   team.teamLogoUrl ?? "",
                   width: width / 4,
                   height: width / 4,
+                  fit: BoxFit.cover,
                 ),
               ),
               Text(

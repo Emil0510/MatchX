@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'more_cubit/more_page_cubit.dart';
@@ -10,7 +11,9 @@ class MorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MorePageCubit()..start(),
+      create: (context) => MorePageCubit()
+        ..set(morePageCubit.mine)
+        ..start(),
       child: const MorePageLogics(),
     );
   }

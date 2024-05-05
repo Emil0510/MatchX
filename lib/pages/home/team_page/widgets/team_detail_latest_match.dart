@@ -318,6 +318,7 @@ class TeamFinishedGameWidget extends StatelessWidget {
                               style: const TextStyle(color: Color(goldColor)),
                             ),
                             RichText(
+                              textAlign: TextAlign.center,
                               text: TextSpan(
                                 text: game.homeTeamRating.toString(),
                                 style: const TextStyle(
@@ -367,6 +368,7 @@ class TeamFinishedGameWidget extends StatelessWidget {
                               style: const TextStyle(color: Color(goldColor)),
                             ),
                             RichText(
+                              textAlign: TextAlign.center,
                               text: TextSpan(
                                 text: game.awayTeamRating.toString(),
                                 style: const TextStyle(

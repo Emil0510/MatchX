@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_app/Constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,3 +46,27 @@ String getMyUsername(){
   var username = sharedPreferences.getString(usernameKey);
   return username ?? "";
 }
+
+// Step 3: Create BLoC Provider
+class CustomBlocProvider extends InheritedWidget {
+  final Bloc bloc;
+
+  const CustomBlocProvider({
+    Key? key,
+    required Widget child,
+    required this.bloc,
+  }) : super(key: key, child: child);
+
+  static Bloc of(BuildContext context) {
+    final CustomBlocProvider? provider = context.dependOnInheritedWidgetOfExactType<CustomBlocProvider>();
+    assert(provider != null, 'No BlocProvider found in context');
+    return provider!.bloc;
+  }
+
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) {
+    return false;
+  }
+}
+
+
