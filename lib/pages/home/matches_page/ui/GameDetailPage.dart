@@ -109,6 +109,7 @@ class _GameDetailPageState extends State<GameDetailPage> {
             ),
           ),
         ),
+        widget.teamGame.message==null?const SizedBox():
         SizedBox(
           width: width * 2 / 3,
           child: ElevatedButton(

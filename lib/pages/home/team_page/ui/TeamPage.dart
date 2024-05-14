@@ -13,7 +13,7 @@ class TeamPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => TeamCubit()
-        ..set(teamPageCubit.teams, teamPageCubit.isLoaded)
+        ..set(teamPageCubit.teams, teamPageCubit.isLoaded, teamPageCubit.body, teamPageCubit.page)
         ..start(),
       child: Container(
         height: MediaQuery.of(context).size.height,

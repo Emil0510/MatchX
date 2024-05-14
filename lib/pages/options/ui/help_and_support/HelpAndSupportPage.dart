@@ -42,7 +42,7 @@ class HelpAndSupportPage extends StatelessWidget {
             ),
             OptionsItem(
               leadingIcon: Icons.headphones,
-              title: "Kömək",
+              title: "Ən çox verilən suallar",
               onTap: () {
                 Navigator.push(
                   context,

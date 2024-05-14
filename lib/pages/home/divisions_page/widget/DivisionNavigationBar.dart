@@ -71,7 +71,7 @@ class _DivisionNavigationBarState extends State<DivisionNavigationBar> {
                             );
                           } else {
                             showCustomSnackbar(context,
-                                "${divisions[index].divisionName} aktiv deil");
+                                "${divisions[index].divisionName} aktiv deyil");
 
                           }
                         },

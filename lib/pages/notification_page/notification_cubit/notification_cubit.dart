@@ -1,8 +1,9 @@
 import 'dart:convert';
-
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_app/Utils.dart';
 import 'package:flutter_app/pages/notification_page/notification_cubit/notification_states.dart';
-import 'package:flutter_app/pages/notification_page/ui/NotificationPage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signalr_netcore/http_connection_options.dart';
@@ -16,12 +17,13 @@ class NotificationCubit extends Cubit<NotificationStates> {
   NotificationCubit() : super(NotificationInitialState());
 
   late final HubConnection hubConnection;
-
+  late BuildContext context;
   bool isNotificationVisible = false;
 
   List<Notificationn> notifications = [];
 
-  start() async {
+  start(BuildContext context) async {
+    this.context = context;
     emit(
       NotificationPageState(
           notificationVisibility: false, notifications: notifications),
@@ -43,11 +45,15 @@ class NotificationCubit extends Cubit<NotificationStates> {
     try {
       await hubConnection.start();
       hubConnection.on('ReciveNotification', _handleNotification);
-      hubConnection.on("UpNotify", replaceNotification);
+      hubConnection.on("AddNotify", addNotification);
       print('SignalR Connection Establishedddddddd');
     } catch (error) {
       print('Error establishing SignalR connection: $error');
     }
+  }
+
+  void refreshNotifications() {
+    hubConnection.invoke("RefreshNotifys");
   }
 
   void enableNotifications() {
@@ -59,7 +65,23 @@ class NotificationCubit extends Cubit<NotificationStates> {
     );
   }
 
-  void replaceNotification(dynamic notification){
+  void addNotification(dynamic data) {
+
+    if(data[0]['userName'] == getMyUsername()) {
+      if(data[0]['isAccept']){
+        setMyTeamId(data[0]['myTeamId']);
+      }
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 10,
+          channelKey: 'basic_channel',
+          actionType: ActionType.Default,
+          title: 'Yeni bildirişiniz var',
+          body: "${data[0]['msg']}",
+        ),
+      );
+    }
+    refreshNotifications();
 
   }
 
@@ -122,8 +144,6 @@ class NotificationCubit extends Cubit<NotificationStates> {
     notifications =
         (data[0] as List).map((e) => Notificationn.fromJson(e)).toList();
 
-    print(notifications);
-
     emit(
       NotificationPageState(
           notificationVisibility: isNotificationVisible,
@@ -149,11 +169,11 @@ class NotificationCubit extends Cubit<NotificationStates> {
       if (response.statusCode == 200) {
         fun(response.data['success'], response.data['message']);
       } else {
-        fun(false, "Xəta baş verdi");
+        fun(false, response.data['message']);
       }
     } on DioException catch (e) {
       print(e.response?.data);
-      fun(false, "Xəta baş verdi");
+      fun(false, e.response?.data['message']);
     }
   }
 
@@ -171,13 +191,13 @@ class NotificationCubit extends Cubit<NotificationStates> {
       );
 
       if (response.statusCode == 200) {
-        fun(true, "Oyunçu isdəyi qəbul edildi");
+        fun(response.data['success'], response.data['message']);
       } else {
-        fun(false, "Xəta baş verdi");
+        fun(false, response.data['message']);
       }
     } on DioException catch (e) {
       print(e.response?.data);
-      fun(false, "Xəta baş verdi");
+      fun(false, e.response?.data['message']);
     }
   }
 }

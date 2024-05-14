@@ -34,7 +34,7 @@ class _TeamListItemState extends State<TeamListItem> {
         child: Card(
           color: Colors.black,
           child: GestureDetector(
-            onTap: () async{
+            onTap: () async {
               var data = await Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -48,9 +48,9 @@ class _TeamListItemState extends State<TeamListItem> {
 
               print("Komandam  ${data}");
               if (data != null) {
+                context.read<TeamCubit>().isLoaded = false;
                 context.read<TeamCubit>().start();
               }
-
             },
             child: ListTile(
               leading: Image.network(
@@ -61,6 +61,7 @@ class _TeamListItemState extends State<TeamListItem> {
               ),
               title: Text(
                 widget.team.name ?? "",
+                textAlign: TextAlign.center,
                 style: const TextStyle(color: Color(goldColor)),
               ),
               trailing: Wrap(
@@ -104,19 +105,17 @@ class _TeamListItemState extends State<TeamListItem> {
                               context.read<TeamCubit>().joinTeam(
                                   widget.team.id!, widget.team.isPrivate!,
                                   (isSucessful, message) {
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                    print("Message $message");
-                                if (isSucessful) {
-                                  showCustomSnackbar(context, message);
-                                }
+                                setState(() {
+                                  isLoading = false;
+                                });
+                                print("Message $message");
+
+                                showCustomSnackbar(context, message);
                               });
                             }
                           },
                           child: Container(
-                            width: 0.23*width,
-                            height: 0.08*width,
+                            width: 0.25 * width,
                             decoration: BoxDecoration(
                               color: widget.team.isPrivate!
                                   ? const Color(goldColor)
@@ -125,15 +124,12 @@ class _TeamListItemState extends State<TeamListItem> {
                                   8.0), // Set the border radius here
                             ),
                             child: isLoading
-                                ?  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                      width: 0.05*width,
-                                      height: 0.05*width,
+                                ? Center(
+                                    child: Transform.scale(
+                                      scale: 0.8,
                                       child: const CircularProgressIndicator(
-                                        strokeCap: StrokeCap.round,
                                         color: Colors.black,
-                                      ),
+                                       ),
                                     ),
                                   )
                                 : widget.team.isPrivate!
@@ -142,6 +138,7 @@ class _TeamListItemState extends State<TeamListItem> {
                                         child: Center(
                                           child: Text(
                                             "Sorğu göndər",
+                                            textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black),

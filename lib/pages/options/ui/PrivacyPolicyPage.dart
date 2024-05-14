@@ -47,14 +47,17 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
         ),
       ),
       body: Container(
-          width: width,
-          height: height,
-          color: Colors.black,
-          child: isLoading
-              ? const CircularProgressIndicator(
+        width: width,
+        height: height,
+        color: Colors.black,
+        child: isLoading
+            ? const Center(
+              child: CircularProgressIndicator(
                   color: Colors.grey,
-                )
-              : PDFViewer(document: doc)),
+                ),
+            )
+            : PDFViewer(document: doc),
+      ),
     );
   }
 }

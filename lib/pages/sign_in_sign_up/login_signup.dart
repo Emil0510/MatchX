@@ -83,7 +83,7 @@ class _SignInSignUpState extends State<SignInSignUp>
                       child: ClipRRect(
                         child: Column(
                           children: [
-                            Container(
+                            SizedBox(
                               height: height,
                               child: isLogin
                                   ? BlocProvider(
@@ -102,7 +102,7 @@ class _SignInSignUpState extends State<SignInSignUp>
                 ),
               ),
               Positioned(
-                bottom: height / 30,
+                bottom: height / 15 ,
                 left: 10,
                 right: 10,
                 child: Container(

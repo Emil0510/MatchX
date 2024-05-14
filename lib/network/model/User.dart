@@ -110,7 +110,7 @@ class User {
         email: json['email'],
         userName: json['userName'],
         seasonPerformance: json['seasonPerformance'],
-        seasonGoalCount: json['seasonGoalCount'],
+        seasonGoalCount: json['goalCount'],
         rank: json['rank'],
         userGames: (json['userGames'] as List?)
             ?.map((e) => TeamGame.fromJson(e))

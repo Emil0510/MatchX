@@ -14,6 +14,7 @@ const String verifyEmailEndPoint = "nam/Auth/VerifyCode";
 const String usersApi = "nam/Auth/Users/";
 const String readNotifyApi = "nam/Auth/ReadNotify";
 const String logOutApi = "nam/Auth/LogOut";
+const String forgetPassApi = "nam/Auth/ForgetPass";
 
 //Teams
 const String teamsApi = "nam/Teams/Filter";

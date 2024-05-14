@@ -23,6 +23,7 @@ class NotificationErrorState extends NotificationStates{
 }
 
 class NotificationPageState extends NotificationStates{
+
   List<Notificationn> notifications;
   final bool notificationVisibility;
 

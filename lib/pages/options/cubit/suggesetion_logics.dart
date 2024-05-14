@@ -24,7 +24,7 @@ class _SuggestionsLogicsState extends State<SuggestionsLogics> {
       } else if (state is OptionsSuggestionSuccesfullPageState) {
         //Snackbar show
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          showCustomSnackbar(context, "Təsviriniz göndərildi");
+          showCustomSnackbar(context, "Mesajınız göndərildi");
           Navigator.of(context).pop();
         });
         return const CircularLoadingWidget();

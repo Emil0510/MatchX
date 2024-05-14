@@ -162,6 +162,7 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
 
                   (widget.team.teamGames!.isNotEmpty && widget.team.teamGames!.length > 1)
                       ? TeamDetailMatchesList(
+                    id: widget.team.id??"",
                           teamGame: widget.team.teamGames
                                   ?.sublist(1, widget.team.teamGames!.length) ??
                               [])

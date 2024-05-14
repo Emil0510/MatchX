@@ -22,7 +22,13 @@ bool checkExistingTeam() {
 String? getMyTeamId() {
   var sharedPreferences = locator.get<SharedPreferences>();
   var id = sharedPreferences.getString(myTeamIdKey);
+
   return id ?? "";
+}
+
+void setMyTeamId(String teamId) async {
+  var sharedPreferences = locator.get<SharedPreferences>();
+  await sharedPreferences.setString(myTeamIdKey, teamId);
 }
 
 String getGameDate(String date) {

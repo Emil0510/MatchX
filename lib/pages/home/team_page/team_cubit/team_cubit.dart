@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_app/data.dart';
 import 'package:flutter_app/pages/home/team_page/team_cubit/team_states.dart';
@@ -13,10 +15,15 @@ class TeamCubit extends Cubit<TeamCubitStates> {
 
   List<Team> teams = [];
   bool isLoaded = false;
+  Map<String, dynamic> body = {};
+  int page = 1;
 
-  set(List<Team> teams, bool isLoaded) {
+
+  set(List<Team> teams, bool isLoaded, Map<String, dynamic> body, int page) {
     this.teams = teams;
     this.isLoaded = isLoaded;
+    this.body = body;
+    this.page = page;
   }
 
   start() {
@@ -33,14 +40,17 @@ class TeamCubit extends Cubit<TeamCubitStates> {
     var sharedPreferences = locator.get<SharedPreferences>();
     var token = sharedPreferences.getString("token");
 
+    body = {};
     var response = await dio.get(baseUrl + teamsApi,
         options: Options(headers: {
           "Authorization": "Bearer $token",
         }));
+
     if (response.statusCode == 200) {
       List<Team>? teams = (response.data['data']['teams'] as List)
           .map((e) => Team.fromJson(e))
           .toList();
+      page = 1;
       this.teams = teams;
       isLoaded = true;
       teamPageCubit = this;
@@ -54,11 +64,14 @@ class TeamCubit extends Cubit<TeamCubitStates> {
     var dio = locator.get<Dio>();
     var sharedPreferences = locator.get<SharedPreferences>();
     var token = sharedPreferences.getString("token");
+    
+    page = 1;
 
     var response = await dio.get(baseUrl + teamsApi,
         options: Options(headers: {
           "Authorization": "Bearer $token",
         }));
+
     if (response.statusCode == 200) {
       List<Team>? teams = (response.data['data']['teams'] as List)
           .map((e) => Team.fromJson(e))
@@ -100,11 +113,13 @@ class TeamCubit extends Cubit<TeamCubitStates> {
       "page": page
     };
 
+    body = query;
+    page = 1;
     var response = await dio.get(baseUrl + teamsApi,
         options: Options(headers: {
           "Authorization": "Bearer $token",
         }),
-        queryParameters: query);
+        queryParameters: body);
 
     print(response.data);
 
@@ -128,16 +143,20 @@ class TeamCubit extends Cubit<TeamCubitStates> {
     var sharedPreferences = locator.get<SharedPreferences>();
     var token = sharedPreferences.getString("token");
 
+
+    body = {"search": search};
+    page = 1;
     var response = await dio.get(baseUrl + teamsApi,
         options: Options(headers: {
           "Authorization": "Bearer $token",
         }),
-        queryParameters: {"search": search});
+        queryParameters: body);
 
     if (response.statusCode == 200) {
       List<Team>? teams = (response.data['teams'] as List?)
           ?.map((e) => Team.fromJson(e))
           .toList();
+
       this.teams = teams ?? [];
       isLoaded = true;
       teamPageCubit = this;
@@ -162,6 +181,7 @@ class TeamCubit extends Cubit<TeamCubitStates> {
         ),
       );
 
+      print(response.data);
       if (response.statusCode == 200) {
         if (response.data["success"]) {
           if (isPrivate) {
@@ -169,6 +189,7 @@ class TeamCubit extends Cubit<TeamCubitStates> {
           } else {
             sharedPreferences.setString(myTeamIdKey, teamId);
             function(true, "Komandaya qoşuldun");
+            isLoaded = false;
             start();
           }
         } else {
@@ -177,7 +198,49 @@ class TeamCubit extends Cubit<TeamCubitStates> {
       }
     } on DioException catch (e) {
       print(e.response?.data);
-      function(false, e.response?.data ?? "");
+      function(false, e.response?.data['message'] ?? "");
     }
   }
+
+  void loadMore(Function (List<Team>) callback) async{
+    var dio = locator.get<Dio>();
+    var sharedPreferences = locator.get<SharedPreferences>();
+    var token = sharedPreferences.getString("token");
+
+    try{
+
+      page ++;
+
+      if(!body.containsKey("page")){
+        body["page"] = page;
+      }else{
+        body.update("page", (value) => page);
+      }
+
+
+      var response = await dio.get(baseUrl + teamsApi,
+          options: Options(headers: {
+            "Authorization": "Bearer $token",
+          }),
+          queryParameters: body);
+
+      if(response.statusCode == 200){
+        List<Team>? teams = (response.data['teams'] as List?)
+            ?.map((e) => Team.fromJson(e))
+            .toList();
+        this.teams.addAll(teams ?? []);
+        isLoaded = true;
+        teamPageCubit = this;
+
+        callback(teams??[]);
+
+      }else{
+        callback([]);
+      }
+
+    }on DioException catch (e){
+      callback([]);
+    }
+  }
+
 }

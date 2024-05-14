@@ -1,9 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
 import 'package:flutter_app/network/model/Game.dart';
+import 'package:flutter_app/widgets/infinity_scroll_loading.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../network/network.dart';
 
 class TeamDetailLatestMatchWidget extends StatelessWidget {
   final TeamGame teamGame;
@@ -257,21 +262,82 @@ class TeamResultGoalsWidget extends StatelessWidget {
   }
 }
 
-class TeamDetailMatchesList extends StatelessWidget {
+class TeamDetailMatchesList extends StatefulWidget {
   final List<TeamGame> teamGame;
+  final String id;
 
-  const TeamDetailMatchesList({super.key, required this.teamGame});
+  const TeamDetailMatchesList(
+      {super.key, required this.teamGame, required this.id});
+
+  @override
+  State<TeamDetailMatchesList> createState() => _TeamDetailMatchesListState();
+}
+
+class _TeamDetailMatchesListState extends State<TeamDetailMatchesList> {
+  late List<TeamGame> games;
+  var page = 1;
+  var controller = ScrollController();
+  var isEnd = false;
+
+  @override
+  void initState() {
+    super.initState();
+    games = widget.teamGame;
+    controller.addListener(() async {
+      if (controller.position.maxScrollExtent == controller.offset && !isEnd) {
+        //Fetch Data
+        page++;
+        getAllGames();
+      }
+    });
+  }
+
+  void getAllGames() async {
+    var sharedPreferences = locator.get<SharedPreferences>();
+    var dio = locator.get<Dio>();
+    var token = sharedPreferences.getString(tokenKey);
+
+    try {
+      var response = await dio.get(baseUrl + seeMoreApi,
+          options: Options(headers: {"Authorization": "Bearer $token"}),
+          queryParameters: {"id": widget.id, "page": page});
+
+      if (response.statusCode == 200) {
+        var list = (response.data['data']['games'] as List)
+            .map((e) => TeamGame.fromJson(e))
+            .toList();
+        if (list.isEmpty) {
+          setState(() {
+            isEnd = true;
+          });
+          return;
+        }
+        setState(() {
+          games.addAll(list);
+        });
+      }
+    } on DioException catch (e) {}
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        padding: EdgeInsets.zero,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: teamGame.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return TeamFinishedGameWidget(game: teamGame[index]);
-        });
+      controller: controller,
+      padding: EdgeInsets.zero,
+      itemCount: games.length % 10 == 0 && games.isNotEmpty ? games.length + 1 : games.length,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        if (index < games.length) {
+          return TeamFinishedGameWidget(game: games[index]);
+        } else {
+          if (isEnd) {
+            return const SizedBox();
+          } else {
+            return const InfinityScrollLoading();
+          }
+        }
+      },
+    );
   }
 }
 

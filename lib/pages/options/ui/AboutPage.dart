@@ -9,6 +9,7 @@ class AboutUsPage extends StatefulWidget {
 }
 
 class _AboutUsPageState extends State<AboutUsPage> {
+
   double _position = 1.0;
 
   bool check = false;
@@ -25,7 +26,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
       setState(() {
         _position = 0.0; // Move the text to the top
       });
-      await Future.delayed(Duration(seconds: 10));
+      await Future.delayed(const Duration(seconds: 10));
       setState(() {
         seconds = 30;
         _position = -3.0; // Move the text to the top
@@ -64,7 +65,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
               child: SizedBox(
                 width: width,
                 child: const Text(
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et leo vitae risus sollicitudin aliquam et nec tortor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras blandit neque et orci ultrices, ut viverra turpis eleifend. Sed convallis, arcu in maximus consequat, ligula diam vestibulum ex, vel aliquet libero neque non sem. Quisque sit amet sapien nisl. Nunc et sem tincidunt, volutpat eros et, tincidunt turpis. Pellentesque vestibulum augue tellus, sit amet tincidunt enim mattis id. Nulla facilisi. Praesent a rutrum risus, et mattis erat.Donec malesuada convallis augue ac gravida. Donec congue nisl et vehicula ultricies. Quisque non dolor pretium, molestie diam id, rhoncus lacus. Maecenas a venenatis mauris. Nunc convallis risus nunc, at consectetur est consequat ultrices. Nulla facilisi. Praesent porta tortor nulla, a tincidunt ante porttitor vitae. Fusce pharetra est at ipsum commodo facilisis. Vivamus feugiat erat a volutpat convallis. Etiam ac ultricies lorem. Sed rhoncus enim a enim semper, ut volutpat felis bibendum. Phasellus malesuada orci lobortis, molestie odio sed, bibendum sem. Vivamus feugiat diam est, a pharetra lacus maximus id.",
+                  "MatchX, idman həvəskarlarını bir araya gətirən yenilikçi bir platformadır. Öz komandanızı yaradın, rəqiblər tapın və oyuna başlayın. MatchX, idman təcrübəsini tamamilə dəyişir və hər oyunçuya öz meydanında ulduz olmaq imkanı verir. Siz də MatchX-in dinamik dünyasına qoşularaq əsl rəqabət hissini təcrübə edin!",
                   style: TextStyle(fontSize: 24.0),
                 ),
               ),

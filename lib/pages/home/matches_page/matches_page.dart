@@ -13,7 +13,7 @@ class MatchesPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => MatchesCubit()
         ..set(matchesPageCubit.selectedId, matchesPageCubit.games,
-            matchesPageCubit.isLoaded)
+            matchesPageCubit.isLoaded, matchesPageCubit.page)
         ..start(),
       child: Container(
         height: double.maxFinite,

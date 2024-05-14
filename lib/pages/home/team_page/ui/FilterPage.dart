@@ -29,6 +29,7 @@ class _FilterPageState extends State<FilterPage> {
   ];
 
   String selectedDivision = 'Hamısı';
+
   int selectedDivisionInt = 0; // Default selected value
   List<String> divisionOptions = [
     'Hamısı',

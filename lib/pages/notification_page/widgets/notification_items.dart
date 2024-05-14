@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
-
+import 'package:flutter_app/widgets/snackbar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../network/model/Notification.dart';
+import '../notification_cubit/notification_cubit.dart';
 
-class NotificationItem extends StatelessWidget {
-  final Function acceptJoin;
-  final Function rejectJoin;
+class NotificationItem extends StatefulWidget {
   final Notificationn notification;
 
-  const NotificationItem(
-      {super.key,
-      required this.notification,
-      required this.acceptJoin,
-      required this.rejectJoin});
+  const NotificationItem({super.key, required this.notification});
+
+  @override
+  State<NotificationItem> createState() => _NotificationItemState();
+}
+
+class _NotificationItemState extends State<NotificationItem> {
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +44,7 @@ class NotificationItem extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        getNotificationDate(notification.CreatedAt),
+                        getNotificationDate(widget.notification.CreatedAt),
                         style: const TextStyle(color: Colors.grey),
                       ),
                     )
@@ -52,7 +55,7 @@ class NotificationItem extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       textAlign: TextAlign.end,
-                      "Kimdən: ${notification.From}",
+                      "Kimdən: ${widget.notification.From}",
                       style: const TextStyle(color: Colors.grey),
                     ),
                   ),
@@ -64,7 +67,7 @@ class NotificationItem extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  notification.Title,
+                  widget.notification.Title,
                   textAlign: TextAlign.start,
                   style: const TextStyle(
                       color: Colors.white,
@@ -78,38 +81,77 @@ class NotificationItem extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  notification.Description,
+                  widget.notification.Description,
                   textAlign: TextAlign.start,
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
             ),
-            notification.IsInformation
+            widget.notification.IsInformation
                 ? const SizedBox()
                 : Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        ElevatedButton(
-                            onPressed: () {
-                              rejectJoin();
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(redColor)),
-                            child: const Text("Rədd et",
-                                style: TextStyle(color: Colors.white))),
-                        ElevatedButton(
-                          onPressed: () {
-                            acceptJoin();
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(greenColor)),
-                          child: const Text(
-                            "Qəbul et",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        )
+                        isLoading
+                            ? const CircularProgressIndicator()
+                            : ElevatedButton(
+                                onPressed: () {
+                                  if (!isLoading) {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    context
+                                        .read<NotificationCubit>()
+                                        .rejectJoin(
+                                          widget.notification.IdForDirect ?? "",
+                                          (isSuccesfull, message) {
+                                            setState(() {
+                                              isLoading = false;
+                                            });
+                                            showCustomSnackbar(context, message);
+                                            context.read<NotificationCubit>().refreshNotifications();
+                                          },
+                                        );
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(redColor)),
+                                child: const Text(
+                                  "Rədd et",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                        isLoading
+                            ? const CircularProgressIndicator()
+                            : ElevatedButton(
+                                onPressed: () {
+                                  if (!isLoading) {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    context
+                                        .read<NotificationCubit>()
+                                        .acceptJoin(
+                                          widget.notification.IdForDirect ?? "",
+                                          (isSuccesfull, message) {
+                                            setState(() {
+                                              isLoading = false;
+                                            });
+                                            showCustomSnackbar(context, message);
+                                            context.read<NotificationCubit>().refreshNotifications();
+                                          },
+                                        );
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(greenColor)),
+                                child: const Text(
+                                  "Qəbul et",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              )
                       ],
                     ),
                   )

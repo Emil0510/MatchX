@@ -80,6 +80,43 @@ class _SuggestionAndCommentPageState extends State<SuggestionAndCommentPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
+                child:
+                GestureDetector(
+                  onTap: _getImage,
+                  child: _image == null
+                      ? Icon(
+                    Icons.image,
+                    size: width / 3,
+                    color: Colors.grey,
+                  )
+                      : ClipRRect(
+                    child: Image.file(
+                      _image!,
+                      height: width / 3,
+                      width: width / 3,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: ElevatedButton(
+                //     onPressed: _getImage,
+                //     style: ElevatedButton.styleFrom(
+                //         backgroundColor: const Color(goldColor)),
+                //     child: const Text(
+                //       'Şəkil əlavə et',
+                //       style: TextStyle(color: Colors.black),
+                //     ),
+                //   ),
+                // ),
+              ),
+              Text("Mesajınızla bağlı təsvir daxil edə bilərsiniz"),
+              SizedBox(
+                height: height / 30,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Container(
                   decoration: BoxDecoration(
                       color: const Color(blackColor3),
@@ -155,42 +192,7 @@ class _SuggestionAndCommentPageState extends State<SuggestionAndCommentPage> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: height / 30,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child:
-                    GestureDetector(
-                      onTap: _getImage,
-                      child: _image == null
-                          ? Icon(
-                              Icons.image,
-                              size: width / 3,
-                              color: Colors.grey,
-                            )
-                          : ClipRRect(
-                              child: Image.file(
-                                _image!,
-                                height: width / 3,
-                                width: width / 3,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                    ),
-                    // Padding(
-                    //   padding: const EdgeInsets.all(8.0),
-                    //   child: ElevatedButton(
-                    //     onPressed: _getImage,
-                    //     style: ElevatedButton.styleFrom(
-                    //         backgroundColor: const Color(goldColor)),
-                    //     child: const Text(
-                    //       'Şəkil əlavə et',
-                    //       style: TextStyle(color: Colors.black),
-                    //     ),
-                    //   ),
-                    // ),
-              ),
+
               SizedBox(
                 height: height / 15,
               ),

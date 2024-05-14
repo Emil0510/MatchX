@@ -42,7 +42,7 @@ class UserCaruselItem extends StatelessWidget {
                   user.profilePhotoUrl ?? "",
                   width: width / 5,
                   height: width / 5,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                 ),
               ),
               Padding(

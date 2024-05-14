@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
-import 'package:flutter_app/widgets/input_text_widgets.dart';
 
 class ConfirmRow extends StatelessWidget {
   final String text;
@@ -9,7 +8,11 @@ class ConfirmRow extends StatelessWidget {
   final bool isReadOnly;
 
   const ConfirmRow(
-      {super.key, required this.text, required this.controller, this.image, required this.isReadOnly});
+      {super.key,
+      required this.text,
+      required this.controller,
+      this.image,
+      required this.isReadOnly});
 
   @override
   Widget build(BuildContext context) {
@@ -40,20 +43,26 @@ class ConfirmRow extends StatelessWidget {
             child: SizedBox(
               width: width / 6,
               height: height / 10,
-
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   readOnly: isReadOnly,
                   controller: controller,
-                  style: TextStyle(color: Color(goldColor)),
+                  maxLength: 2,
+
+                  style: const TextStyle(
+                    color: Color(goldColor),
+                    fontSize: 18,
+                  ),
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.number,
                   // Set keyboard type to accept numbers only
                   decoration: InputDecoration(
                     filled: true,
                     isDense: true,
+                    counter: const Offstage(),
                     border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),

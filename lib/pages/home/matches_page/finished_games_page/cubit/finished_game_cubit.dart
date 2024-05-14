@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../network/model/Game.dart';
 import '../../../../../network/model/GameResult.dart';
 
-
 class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
   FinishedGamesCubit() : super(FinishedGamesInitialState());
 
@@ -44,9 +43,7 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
     }
   }
 
-
-  Future<List<TeamGame>> refreshUnverifyGames () async{
-
+  Future<List<TeamGame>> refreshUnverifyGames() async {
     var sharedPreferences = locator.get<SharedPreferences>();
     var dio = locator.get<Dio>();
     var token = sharedPreferences.getString(tokenKey);
@@ -92,9 +89,8 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
     var dio = locator.get<Dio>();
     var token = sharedPreferences.getString(tokenKey);
 
-    if(awayGoal == null){
-      fun(false,
-          "Əvvəlcə oyun nəticəsi əlavə olunmalıdır!");
+    if (awayGoal == null) {
+      fun(false, "Əvvəlcə oyun nəticəsi əlavə olunmalıdır!");
       return;
     }
 
@@ -113,11 +109,16 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
 
     print(json);
 
-    var formData = FormData.fromMap({"id": gameId, "gameResult": json});
+    var body = {
+      "id": gameId,
+      "gameResult": gameResult
+    };
+
+
     try {
       var response = await dio.post(baseUrl + verifyGameApi,
           options: Options(headers: {"Authorization": "Bearer $token"}),
-          data: formData);
+          data: jsonEncode(body));
 
       if (response.statusCode == 200) {
         fun(true, "Oyun təsdiqləndi!");
@@ -153,16 +154,19 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
 
     print(json);
 
-    var formData = FormData.fromMap({
+    var body = {
       "id": gameId,
       "homeTeamGoal": homeGoal,
       "awayTeamGoal": awayGoal,
-      "gameResults": json
-    });
+      "gameResults": gameResult
+    };
+
+    print(body);
+
     try {
       var response = await dio.post(baseUrl + resultGameApi,
           options: Options(headers: {"Authorization": "Bearer $token"}),
-          data: formData);
+          data: jsonEncode(body));
 
       if (response.statusCode == 200) {
         fun(true, "Oyun nəticəsi əlavə edildi");
@@ -174,6 +178,7 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
       print(e.response?.data);
       fun(false, e.response?.data['message']);
     }
+
   }
 
   cancelGame(Function(bool, String) fun, String id) async {
@@ -219,7 +224,6 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
       } else {
         fun(false, "Səhvlik");
       }
-
     } on DioException catch (e) {
       fun(false, "Səhvlik");
     }

@@ -1,7 +1,13 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/data.dart';
 import 'package:flutter_app/network/model/Question.dart';
+import 'package:flutter_app/pages/home/divisions_page/division_cubit/division_cubit.dart';
+import 'package:flutter_app/pages/home/home_page/cubit/home_page_cubit.dart';
+import 'package:flutter_app/pages/home/matches_page/mathches_cubit/matches_cubit.dart';
+import 'package:flutter_app/pages/home/more_page/more_cubit/more_page_cubit.dart';
+import 'package:flutter_app/pages/home/team_page/team_cubit/team_cubit.dart';
 import 'package:flutter_app/pages/options/cubit/options_states.dart';
 import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -167,14 +173,16 @@ class OptionsCubit extends Cubit<OptionsStates> {
         formData = FormData.fromMap({
           "Image": await MultipartFile.fromFile(Image.path,
               filename: Image.path.split('/').last),
+          "IsTekif": IsTekif,
+          "Description": description,
+        });
+      }else{
+        formData = FormData.fromMap({
+          "IsTekif": IsTekif,
+          "Description": description,
         });
       }
       var response = await dio.post(baseUrl + suggestionApi,
-          queryParameters: {
-            "IsTekif": IsTekif,
-            "Description": description,
-            "ImageUrl": "image"
-          },
           data: formData);
 
       if (response.statusCode == 200) {
@@ -202,6 +210,11 @@ class OptionsCubit extends Cubit<OptionsStates> {
         await sharedPreferences.clear();
         await sharedPreferences.setBool(shouldShowOnboardKey, false);
         emit(OptionsHomePageState(isLogOut: true));
+        homePageCubit = HomePageCubit();
+        matchesPageCubit = MatchesCubit();
+        teamPageCubit = TeamCubit();
+        morePageCubit = MorePageCubit();
+        divisionPageCubit = DivisionCubit();
       }else{
         emit(OptionsHomePageState(isLogOut: false));
       }

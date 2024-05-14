@@ -3,7 +3,6 @@ import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
 import 'package:flutter_app/network/model/Game.dart';
 import 'package:flutter_app/pages/home/matches_page/ui/widgets/text.dart';
-import 'package:flutter_app/widgets/buttons_widgets.dart';
 
 class MatchesListItem extends StatelessWidget {
   final TeamGame teamGame;
@@ -60,8 +59,9 @@ class TeamLogoName extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Image.network(teamLogoUrl, height: width/10, width: width/10,),
+        Image.network(teamLogoUrl, height: width/10, width: width/10,fit: BoxFit.cover,),
         Padding(
+
           padding: const EdgeInsets.only(left: 8.0),
           child: FittedBox(
             fit: BoxFit.contain,

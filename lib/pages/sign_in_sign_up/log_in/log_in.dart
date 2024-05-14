@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_app/pages/home/home.dart';
+import 'package:flutter_app/pages/sign_in_sign_up/ForgotPasswordPage.dart';
 import 'package:flutter_app/pages/sign_in_sign_up/log_in/log_in_cubit/log_in_cubit.dart';
 import 'package:flutter_app/pages/sign_in_sign_up/log_in/log_in_cubit/log_in_cubit_states.dart';
 import 'package:flutter_app/pages/sign_in_sign_up/log_in/widget/log_in_button.dart';
@@ -35,8 +36,6 @@ class _LogInState extends State<LogIn> {
       isLoading = true;
     });
   }
-
-  void forgetPasswordClicked() {}
 
   @override
   void initState() {
@@ -125,7 +124,13 @@ class _LogInState extends State<LogIn> {
                   Align(
                     alignment: Alignment.center,
                     child: GestureDetector(
-                      onTap: forgetPasswordClicked,
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const ForgetPasswordPage()));
+                      },
                       child: const Text(
                         "Şifrənizi unutduz?",
                         style: TextStyle(color: Colors.white),
@@ -160,12 +165,12 @@ class _LogInState extends State<LogIn> {
                             BlocProvider(
                               lazy: false,
                               create: (BuildContext context) =>
-                                  ChatPageCubit()..start(),
+                                  ChatPageCubit()..start(context),
                             ),
                             BlocProvider(
                               lazy: false,
                               create: (BuildContext context) =>
-                                  NotificationCubit()..start(),
+                                  NotificationCubit()..start(context),
                             ),
                           ], child: const Home())),
                   (Route<dynamic> route) => false,

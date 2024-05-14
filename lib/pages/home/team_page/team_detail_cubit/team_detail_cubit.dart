@@ -291,7 +291,7 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
         emit(TeamDetailPageState(
             team: team!,
             isSuccessful: true,
-            message: "Komandadan ayıldın",
+            message: "Komandadan ayrıldın",
             isThrow: false));
         await sharedPreferences.setString(myTeamIdKey, "");
       }

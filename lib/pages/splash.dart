@@ -113,12 +113,12 @@ class _SplashScreenState extends State<SplashScreen> {
                     BlocProvider(
                       lazy: false,
                       create: (BuildContext context) =>
-                          ChatPageCubit()..start(),
+                          ChatPageCubit()..start(context),
                     ),
                     BlocProvider(
                       lazy: false,
                       create: (BuildContext context) =>
-                          NotificationCubit()..start(),
+                          NotificationCubit()..start(context),
                     ),
                   ], child: const Home())),
           (Route<dynamic> route) => false,
@@ -149,7 +149,7 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
-                "assets/logo.JPG",
+                "assets/logo.png",
                 width: height / 5,
               ),
               Text(

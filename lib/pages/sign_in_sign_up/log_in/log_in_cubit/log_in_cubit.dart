@@ -38,12 +38,12 @@ class LogInCubit extends Cubit<LogInCubitStates> {
                 ),
                 BlocProvider(
                   lazy: false,
-                  create: (BuildContext context) => ChatPageCubit()..start(),
+                  create: (BuildContext context) => ChatPageCubit()..start(context),
                 ),
                 BlocProvider(
                   lazy: false,
                   create: (BuildContext context) =>
-                  NotificationCubit()..start(),
+                  NotificationCubit()..start(context),
                 ),
               ],
 

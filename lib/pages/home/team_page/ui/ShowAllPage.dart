@@ -69,19 +69,16 @@ class _ShowAllPageState extends State<ShowAllPage> {
         width: width,
         height: height,
         color: Colors.black,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Container(
+        child: Container(
             width: width,
             height: height,
             color: Colors.black,
             child: isLoading
                 ? const Center(
-              child: CircularLoadingWidget(),
-            )
-                : TeamDetailMatchesList(teamGame: list),
+                    child: CircularLoadingWidget(),
+                  )
+                : TeamDetailMatchesList(teamGame: list, id: widget.id,),
           ),
-        ),
       ),
     );
   }

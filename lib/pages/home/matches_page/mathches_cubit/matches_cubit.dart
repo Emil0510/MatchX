@@ -22,12 +22,14 @@ class MatchesCubit extends Cubit<MatchesStates> {
   int selectedId = 0;
   List<TeamGame> games = [];
   bool isLoaded = false;
+  int page = 1;
 
 
-  set(int selectedId,List<TeamGame> games,bool isLoaded){
+  set(int selectedId,List<TeamGame> games,bool isLoaded, int page){
     this.selectedId = selectedId;
     this.games = games;
     this.isLoaded = isLoaded;
+    this.page = page;
   }
 
   start() {
@@ -45,6 +47,7 @@ class MatchesCubit extends Cubit<MatchesStates> {
     var dio = locator.get<Dio>();
     var token = sharedPreferences.getString(tokenKey);
 
+    page = 1;
     try {
       var response = await dio.get(
         baseUrl + getAllGameApi,
@@ -79,6 +82,8 @@ class MatchesCubit extends Cubit<MatchesStates> {
     var dio = locator.get<Dio>();
     var token = sharedPreferences.getString(tokenKey);
 
+    page = 1;
+
     try {
       var response = await dio.get(
         baseUrl + getAllGameApi,
@@ -112,6 +117,8 @@ class MatchesCubit extends Cubit<MatchesStates> {
     var dio = locator.get<Dio>();
     var token = sharedPreferences.getString(tokenKey);
 
+    page = 1;
+
     try {
       var response = await dio.get(
         baseUrl + getAllGameApi,
@@ -137,6 +144,44 @@ class MatchesCubit extends Cubit<MatchesStates> {
     } on DioException catch (e) {
       print(e.response?.data);
     }
+  }
+
+  void loadMoreGames(Function (List<TeamGame>) callback) async {
+    var sharedPreferences = locator.get<SharedPreferences>();
+    var dio = locator.get<Dio>();
+    var token = sharedPreferences.getString(tokenKey);
+
+
+    try {
+      page ++;
+
+      var response = await dio.get(
+        baseUrl + getAllGameApi,
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+          },
+        ),
+        queryParameters: {"area": selectedId == 0 ? null : selectedId, "page" : page},
+      );
+
+      if (response.statusCode == 200) {
+        List<TeamGame>? games = (response.data['data'] as List?)
+            ?.map((e) => TeamGame.fromJson(e))
+            .toList();
+        this.games.addAll(games??[]);
+        isLoaded = true;
+        matchesPageCubit = this;
+        print(games);
+
+        callback(games??[]);
+
+      }
+    } on DioException catch (e) {
+      print(e.response?.data);
+      callback([]);
+    }
+
   }
 
   void toCreateMatch(BuildContext context) {
@@ -268,7 +313,7 @@ class MatchesCubit extends Cubit<MatchesStates> {
     // }
   }
 
-  void viewTeam(BuildContext context, int teamId) {}
+
 
   void toCreateWithLinkPage(BuildContext context) {
     showModalBottomSheet(

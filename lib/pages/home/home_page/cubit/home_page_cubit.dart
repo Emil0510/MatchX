@@ -21,9 +21,9 @@ class HomePageCubit extends Cubit<HomePageStates> {
   Weather? weather;
   bool isLoaded = false;
 
-
   set(List<Blog> blogs, List<User> top10Users, List<Team> top10Teams,
       Weather? weather, bool isLoaded) {
+    this.blogs = blogs;
     this.top10Users = top10Users;
     this.top10Teams = top10Teams;
     this.weather = weather;
@@ -135,28 +135,32 @@ class HomePageCubit extends Cubit<HomePageStates> {
                 this.isLoaded = true;
                 homePageCubit = this;
 
-                return HomeData(blogs, this.top10Users, this.top10Teams, this.weather);
-              }else{
-                return HomeData(blogs, this.top10Users, this.top10Teams, this.weather);
+                return HomeData(
+                    blogs, this.top10Users, this.top10Teams, this.weather);
+              } else {
+                return HomeData(
+                    blogs, this.top10Users, this.top10Teams, this.weather);
               }
             } on DioException catch (e) {
               print(e.response?.data);
-              return HomeData(blogs, this.top10Users, this.top10Teams, this.weather);
+              return HomeData(
+                  blogs, this.top10Users, this.top10Teams, this.weather);
             }
-          }else{
-            return HomeData(blogs, this.top10Users, this.top10Teams, this.weather);
+          } else {
+            return HomeData(
+                blogs, this.top10Users, this.top10Teams, this.weather);
           }
-        }else{
-          return HomeData(blogs, this.top10Users, this.top10Teams, this.weather);
+        } else {
+          return HomeData(
+              blogs, this.top10Users, this.top10Teams, this.weather);
         }
-      }else{
+      } else {
         return HomeData(blogs, this.top10Users, this.top10Teams, this.weather);
       }
     } on DioException catch (e) {
       print(e.response?.data);
       return HomeData(blogs, this.top10Users, this.top10Teams, this.weather);
     }
-
   }
 
   Future<Position?> _determinePosition() async {
@@ -195,8 +199,8 @@ class HomePageCubit extends Cubit<HomePageStates> {
     return await Geolocator.getCurrentPosition();
   }
 
-  void _getWeather(List<Team> top10Teams, List<User> top10Users,
-      List<Blog> blogs) async {
+  void _getWeather(
+      List<Team> top10Teams, List<User> top10Users, List<Blog> blogs) async {
     var dio = locator.get<Dio>();
 
     const String BASE_URL = "http://api.weatherapi.com/v1";
@@ -247,10 +251,6 @@ class HomePageCubit extends Cubit<HomePageStates> {
       var response = await dio.get(baseUrl + getBlogsApi,
           options: Options(headers: {"Authorization": "Bearer $token"}));
 
-      List<Blog> list = (response.data['data']['blogs'] as List)
-          .map((e) => Blog.fromJson(e))
-          .toList();
-
       if (response.statusCode == 200) {
         List<Blog> list = (response.data['data']['blogs'] as List)
             .map((e) => Blog.fromJson(e))
@@ -266,6 +266,61 @@ class HomePageCubit extends Cubit<HomePageStates> {
       print(e.response?.data);
     }
   }
+
+  Future<List<Blog>> refreshBlogs() async{
+    var dio = locator.get<Dio>();
+    var sharedPreferences = locator.get<SharedPreferences>();
+    var token = sharedPreferences.getString(tokenKey);
+
+    try {
+      var response = await dio.get(baseUrl + getBlogsApi,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+
+      if (response.statusCode == 200) {
+        List<Blog> list = (response.data['data']['blogs'] as List)
+            .map((e) => Blog.fromJson(e))
+            .toList();
+        return list;
+      }else{
+        return [];
+      }
+    } on DioException catch (e) {
+      print(e.response?.data);
+      return [];
+    }
+  }
+
+  void loadMoreBlogs(int page, Function (List<Blog>) callback) async {
+    var dio = locator.get<Dio>();
+    var sharedPreferences = locator.get<SharedPreferences>();
+    var token = sharedPreferences.getString(tokenKey);
+
+    try {
+      var response = await dio.get(
+        baseUrl + getBlogsApi,
+        options: Options(
+          headers: {"Authorization": "Bearer $token"},
+        ),
+        queryParameters: {"page": page},
+      );
+
+      if (response.statusCode == 200) {
+        List<Blog> list = (response.data['data']['blogs'] as List)
+            .map((e) => Blog.fromJson(e))
+            .toList();
+
+        blogs.addAll(list);
+
+        callback(list);
+
+      }else{
+        callback([]);
+      }
+    } on DioException catch (e) {
+      print(e.response?.data);
+      callback([]);
+    }
+  }
 }
 
 class HomeData {
@@ -276,6 +331,5 @@ class HomeData {
 
   final Weather? weather;
 
-  HomeData(this.blogs, this.top10Users, this.top10Teams,
-      this.weather);
+  HomeData(this.blogs, this.top10Users, this.top10Teams, this.weather);
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
@@ -75,6 +76,7 @@ class _FinishedGamesItemState extends State<FinishedGamesItem> {
                           widget.myGame.homeTeamImageUrl ?? "",
                           width: width / 12,
                           height: width / 12,
+                          fit: BoxFit.cover,
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -92,6 +94,7 @@ class _FinishedGamesItemState extends State<FinishedGamesItem> {
                                 widget.myGame.awayTeamImageUrl ?? "",
                                 width: width / 12,
                                 height: width / 12,
+                                fit: BoxFit.cover,
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -100,11 +103,11 @@ class _FinishedGamesItemState extends State<FinishedGamesItem> {
                             ],
                           ),
                         )
-                      : SizedBox(),
+                      : const SizedBox(),
                 ],
               ),
             ),
-            Text(getGameDate(widget.myGame.gameDate ?? "")),
+            Expanded(child: Text(getGameDate(widget.myGame.gameDate ?? ""))),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ((widget.myGame.awayTeamImageUrl ?? "").isNotEmpty)
@@ -158,6 +161,7 @@ class CustomGoldButton extends StatelessWidget {
           style: TextStyle(
               color: Colors.black,
               fontSize: width / 35,
+              overflow: TextOverflow.visible,
               fontWeight: FontWeight.bold),
         ),
       ),
