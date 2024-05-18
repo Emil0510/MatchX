@@ -51,139 +51,143 @@ class _MorePageHomeState extends State<MorePageHome> {
           }
         },
         child: SingleChildScrollView(
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ClipOval(
-                        child: Image.network(
-                          widget.user.profilePhotoUrl,
-                          height: width / 4,
-                          width: width / 4,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, progress) {
-                            if (progress == null) return child;
-                            return Shimmer.fromColors(
-                              baseColor: Colors.grey.shade300,
-                              highlightColor: Colors.grey.shade100,
-                              enabled: true,
-                              child: Container(
-                                height: width / 4,
-                                width: width / 4,
-                                decoration: const BoxDecoration(
-                                  color: Colors.black54,
-                                  shape: BoxShape.circle
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Container(
+            constraints: BoxConstraints(minHeight: height),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ClipOval(
+                          child: Image.network(
+                            widget.user.profilePhotoUrl,
+                            height: width / 4,
+                            width: width / 4,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, progress) {
+                              if (progress == null) return child;
+                              return Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                enabled: true,
+                                child: Container(
+                                  height: width / 4,
+                                  width: width / 4,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.black54,
+                                    shape: BoxShape.circle
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    TextWhiteColorWidget(text: "${widget.user.name} ${widget.user.surName}"),
-                    TextGrayColorWidget(text: "@${widget.user.userName}"),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              TextWhiteColorWidget(
-                                  text: widget.user.seasonGoalCount.toString()),
-                              const TextWhiteColorWidget(text: "Qol sayı"),
-                            ],
+                      TextWhiteColorWidget(text: "${widget.user.name} ${widget.user.surName}"),
+                      TextGrayColorWidget(text: "@${widget.user.userName}"),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                TextWhiteColorWidget(
+                                    text: widget.user.seasonGoalCount.toString()),
+                                const TextWhiteColorWidget(text: "Qol sayı"),
+                              ],
+                            ),
                           ),
-                        ),
-                        Container(
-                          width: 1,
-                          height: 30,
-                          color: Colors.white,
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              TextWhiteColorWidget(text: widget.user.average.toString()),
-                              const TextWhiteColorWidget(text: "Ortalama"),
-                            ],
+                          Container(
+                            width: 1,
+                            height: 30,
+                            color: Colors.white,
                           ),
-                        ),
-                        Container(
-                          width: 1,
-                          height: 30,
-                          color: Colors.white,
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              TextWhiteColorWidget(text: "${widget.age}"),
-                              const TextWhiteColorWidget(text: "Yaş"),
-                            ],
+                          Expanded(
+                            child: Column(
+                              children: [
+                                TextWhiteColorWidget(text: widget.user.average.toString()),
+                                const TextWhiteColorWidget(text: "Ortalama"),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        widget.user.phoneNumber != null
-                            ? Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: ProfileGridItemWidget(
-                                      onPressed: () async {
-                                        String url = "tel://${widget.user.phoneNumber}";
-                                        if(!await launcher.launchUrl(Uri.parse(url))){
-                                            debugPrint("Couldnot opened");
-                                        }
-                                      },
-                                      icon: const Icon(Icons.phone),
-                                      label: "${widget.user.phoneNumber}"),
-                                ),
-                              )
-                            : const SizedBox(),
-                        (widget.user.roles!.length > 1)
-                            ? Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: ProfileGridItemWidget(
-                                       onPressed: () {},
-                                      icon: const Icon(Icons.people),
-                                      label: "${widget.user.roles?[0]}"),
-                                ),
-                              )
-                            : SizedBox()
-                      ],
-                    ),
+                          Container(
+                            width: 1,
+                            height: 30,
+                            color: Colors.white,
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                TextWhiteColorWidget(text: "${widget.age}"),
+                                const TextWhiteColorWidget(text: "Yaş"),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          widget.user.phoneNumber != null
+                              ? Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ProfileGridItemWidget(
+                                        onPressed: () async {
+                                          String url = "tel://${widget.user.phoneNumber}";
+                                          if(!await launcher.launchUrl(Uri.parse(url))){
+                                              debugPrint("Couldnot opened");
+                                          }
+                                        },
+                                        icon: const Icon(Icons.phone),
+                                        label: "${widget.user.phoneNumber}"),
+                                  ),
+                                )
+                              : const SizedBox(),
+                          (widget.user.roles!.length > 1)
+                              ? Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ProfileGridItemWidget(
+                                         onPressed: () {},
+                                        icon: const Icon(Icons.people),
+                                        label: "${widget.user.roles?[0]}"),
+                                  ),
+                                )
+                              : SizedBox()
+                        ],
+                      ),
 
-                    widget.user.upComingGame != null
-                        ? UpcomingGameWidget(game: widget.user.upComingGame!)
-                        : SizedBox(),
-                    widget.user.userGames!.isNotEmpty
-                        ? UserGamesWidget(games: widget.user.userGames!)
-                        : SizedBox(),
-                    widget.user.userTeam != null
-                        ? UserTeamWidget(team: widget.user.userTeam!)
-                        : SizedBox()
+                      widget.user.upComingGame != null
+                          ? UpcomingGameWidget(game: widget.user.upComingGame!)
+                          : SizedBox(),
+                      widget.user.userGames!.isNotEmpty
+                          ? UserGamesWidget(games: widget.user.userGames!)
+                          : SizedBox(),
+                      widget.user.userTeam != null
+                          ? UserTeamWidget(team: widget.user.userTeam!)
+                          : SizedBox()
 
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -28,6 +28,9 @@ class LogInLoggedInState extends LogInCubitStates {
 }
 
 class LogInUsernamePasswordWrongState extends LogInCubitStates {
+  final String message;
+
+  LogInUsernamePasswordWrongState({required this.message});
   @override
   List<Object?> get props => [];
 }

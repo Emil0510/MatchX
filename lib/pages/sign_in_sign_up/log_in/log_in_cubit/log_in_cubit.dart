@@ -95,11 +95,11 @@ class LogInCubit extends Cubit<LogInCubitStates> {
       await sharedPreferences.setBool(isLoggedInKey, true);
       await sharedPreferences.setInt(tokenExpireDayKey, expireDate.day);
 
-      print("Logged In");
+
       profileRequest(responseJvt.token);
     } else {
-      print("Not Logged In");
-      emit(LogInUsernamePasswordWrongState());
+
+      emit(LogInUsernamePasswordWrongState(message: jsonDecode(response.body)['message']));
     }
   }
 

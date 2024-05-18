@@ -44,16 +44,20 @@ class _CreateAccountState extends State<CreateAccount> {
 
   late List<bool> iconSelectors;
 
-  DateTime selectedDate = DateTime.now(); // Default value for the selected date
+
+  DateTime now = DateTime.now();
+
+  late DateTime selectedDate ; // Default value for the selected date
 
   void toLogIn() {}
 
   Future<void> _selectDate(BuildContext context) async {
+    var now = DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(1900), // Adjust the start date as needed
-      lastDate: DateTime.now(), // Adjust the end date as needed
+      lastDate: DateTime(now.year-7, now.month, now.day, now.hour, now.minute, now.second), // Adjust the end date as needed
     );
 
     if (picked != null && picked != selectedDate) {
@@ -180,7 +184,7 @@ class _CreateAccountState extends State<CreateAccount> {
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text(
-                      "Parol minimum 8 hərfdən ibartə olmalıdı, 1 böyük və 1 balaca hərf"),
+                      "Parol minimum 8 hərfdən ibarət olmalıdır, 1 böyük və 1 balaca hərf"),
                 ));
               }
             }
@@ -209,6 +213,7 @@ class _CreateAccountState extends State<CreateAccount> {
               "",
               "${selectedDate.toLocal()}".split(' ')[0])
           .then((value) {
+
         setState(() {
           isLoading = false;
         });
@@ -218,13 +223,6 @@ class _CreateAccountState extends State<CreateAccount> {
             content: Text("Mailinizə qeydiyyat təsdiqi göndərildi!"),
           ));
           widget.toLogIn();
-          // setState(() {
-          //   nextButtonText = "Təsdiqlə";
-          //   iconSelectors[step] = true;
-          //   isBackBtnVisible = true;
-          //   step++;
-          //   currentStep++;
-          // });
         } else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Xəta baş verdi"),
@@ -286,7 +284,7 @@ class _CreateAccountState extends State<CreateAccount> {
     pinController = TextEditingController();
     _passwordVisible = false;
     iconSelectors = [false, false, false, false];
-
+    selectedDate = DateTime(now.year-7, now.month, now.day, now.hour, now.minute, now.second);
     sign_up_stages = Set();
   }
 

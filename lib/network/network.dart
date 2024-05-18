@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'model/User.dart';
@@ -60,85 +61,18 @@ const String questionsApi = "nam/Anonymous/Questions";
 //Suggestion
 const String suggestionApi = "nam/Anonymous/Teklif";
 
-// Future<UserResponseMessage> loginPost(String email, String password) async {
-//   const String url = baseUrl + loginApi;
-//   Map<String, dynamic> data = {
-//     'email': email,
-//     'password': password,
-//   };
-//   String jsonData = jsonEncode(data);
-//   final response = await http.post(
-//     Uri.parse(url),
-//     headers: {
-//       'Content-Type': 'application/json', // Set the content type to JSON.
-//     },
-//     body: jsonData,
-//   );
-//   if (response.statusCode == 200) {
-//     Map<String, dynamic> jsonData = json.decode(response.body);
-//     ResponseJvt responseJvt = ResponseJvt.fromJson(jsonData);
-//     UserResponseMessage responseMessage = UserResponseMessage(
-//         responseJvt: responseJvt, message: "Logged in", loggedIn: true);
-//     var sharedPreferences = locator.get<SharedPreferences>();
-//     await sharedPreferences.setString("token", responseJvt.token);
-//     await sharedPreferences.setString("username", responseJvt.userName);
-//     return responseMessage;
-//   } else {
-//     print('POST request failed. Status code: ${response.statusCode}');
-//     print('Response data: ${response.body}');
-//     UserResponseMessage responseMessage = UserResponseMessage(
-//         responseJvt: ResponseJvt(token: "", userName: ""),
-//         message: "İstifadəçi adı və ya parol səhvdir",
-//         loggedIn: false);
-//     return responseMessage;
-//   }
-// }
-
-// Future<ResponseProfile> profileRequest() async {
-//   const String url = baseUrl + profileApi;
-//   var sharedPreferences = locator.get<SharedPreferences>();
-//   String? token = sharedPreferences.getString("token");
-//
-//   if(token == null){
-//     ResponseProfile responseProfile = ResponseProfile(
-//         profile: null, message: "Daxil olunmadi", isTokenExpired: true);
-//     return responseProfile;
-//   }else {
-//     final response = await http.get(
-//       Uri.parse(url),
-//       headers: {
-//         'Authorization': 'Bearer $token', // Set the content type to JSON.
-//       },
-//     );
-//     print(response.body);
-//     if (response.statusCode == 200) {
-//       Map<String, dynamic> jsonData = json.decode(response.body);
-//       ProfileUser profileUser = ProfileUser.fromJson(jsonData);
-//       ResponseProfile responseProfile = ResponseProfile(
-//           profile: profileUser, message: "Daxil olundu", isTokenExpired: false);
-//       return responseProfile;
-//     } else {
-//       ResponseProfile responseProfile = ResponseProfile(
-//           profile: null, message: "Daxil olunmadi", isTokenExpired: true);
-//       return responseProfile;
-//     }
-//   }
-// }
-
 Future<CheckUserExisting> checkExistenceOfUser(
     String email, String userName) async {
   var url = Uri.parse(baseUrl + checkLoginApi);
   var formData = {
     'Email': email,
     'UserName': userName,
-    // Add more key-value pairs as needed
   };
   var response = await http.post(
     url,
     body: formData,
   );
 
-  // Check if the request was successful (status code 200)
   if (response.statusCode == 200) {
     return CheckUserExisting(message: response.toString(), canSignUp: true);
   } else {
@@ -155,8 +89,6 @@ Future<CheckUserExisting> registerUserApi(
     File? profilePhoto,
     String phoneNumber,
     String dateTime) async {
-  print("Function called");
-
   var url = Uri.parse(baseUrl + registerEndPoint);
   var formData = {
     'Name': name,
@@ -187,26 +119,8 @@ Future<CheckUserExisting> registerUserApi(
   if (response.statusCode == 200) {
     return CheckUserExisting(message: response.toString(), canSignUp: true);
   } else {
-    return CheckUserExisting(message: "Xəta baş verdi", canSignUp: false);
-  }
-}
 
-Future<CheckUserExisting> verifyEmailApi(String email, String code) async {
-  var url = Uri.parse(baseUrl + verifyEmailEndPoint);
-  var formData = {
-    'Email': email,
-    'Code': code,
-    // Add more key-value pairs as needed
-  };
-  var response = await http.post(
-    url,
-    body: formData,
-  );
-
-  // Check if the request was successful (status code 200)
-  if (response.statusCode == 200) {
-    return CheckUserExisting(message: response.toString(), canSignUp: true);
-  } else {
-    return CheckUserExisting(message: "Yalnış kod", canSignUp: false);
+    return CheckUserExisting(message: jsonDecode(response.body)['message'], canSignUp: false);
+    
   }
 }

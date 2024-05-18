@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Constants.dart';
 
 import '../../../../widgets/text.dart';
 
@@ -12,9 +13,12 @@ class TeamButtonContainer extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Container(
-      width: width / 2 - 12,
+      width: width / 2 - 18,
       height: height / 18,
-      color: Colors.black,
+      decoration: BoxDecoration(
+        color: const Color(blackColor2),
+        borderRadius: BorderRadius.circular(10)
+      ),
       child: Center(
         child: GoldColorText(text: text),
       ),

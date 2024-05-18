@@ -43,10 +43,6 @@ class _LogInState extends State<LogIn> {
     usernameController = TextEditingController();
     passwordController = TextEditingController();
     _passwordVisible = false;
-    var sharedPreferences = locator.get<SharedPreferences>();
-    var isLogged = sharedPreferences.getBool(isLoggedInKey) ?? false;
-    print(isLogged.toString());
-    // context.read<LogInCubit>().check(context);
   }
 
   @override
@@ -126,10 +122,11 @@ class _LogInState extends State<LogIn> {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const ForgetPasswordPage()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ForgetPasswordPage(),
+                          ),
+                        );
                       },
                       child: const Text(
                         "Şifrənizi unutduz?",
@@ -147,8 +144,8 @@ class _LogInState extends State<LogIn> {
                 setState(() {
                   isLoading = false;
                 });
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("Istifadəçi adı və ya parol səhvdir"),
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(state.message),
                 ));
               } else if (state is LogInLoggedInState) {
                 setState(() {

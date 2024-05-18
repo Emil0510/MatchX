@@ -32,7 +32,7 @@ class _TeamListItemState extends State<TeamListItem> {
       padding: const EdgeInsets.only(left: 8, right: 8),
       child: Center(
         child: Card(
-          color: Colors.black,
+          color: const Color(blackColor2),
           child: GestureDetector(
             onTap: () async {
               var data = await Navigator.push(
@@ -98,20 +98,24 @@ class _TeamListItemState extends State<TeamListItem> {
                           onTap: () {
                             print("tap");
                             if (isLoading == false) {
-                              print("work");
-                              setState(() {
-                                isLoading = true;
-                              });
-                              context.read<TeamCubit>().joinTeam(
-                                  widget.team.id!, widget.team.isPrivate!,
-                                  (isSucessful, message) {
+                              if (widget.team.memberCount! >= 11) {
+                                showCustomSnackbar(context, "Komanda doludur");
+                              } else {
+                                print("work");
                                 setState(() {
-                                  isLoading = false;
+                                  isLoading = true;
                                 });
-                                print("Message $message");
+                                context.read<TeamCubit>().joinTeam(
+                                    widget.team.id!, widget.team.isPrivate!,
+                                    (isSucessful, message) {
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                  print("Message $message");
 
-                                showCustomSnackbar(context, message);
-                              });
+                                  showCustomSnackbar(context, message);
+                                });
+                              }
                             }
                           },
                           child: Container(
@@ -129,7 +133,7 @@ class _TeamListItemState extends State<TeamListItem> {
                                       scale: 0.8,
                                       child: const CircularProgressIndicator(
                                         color: Colors.black,
-                                       ),
+                                      ),
                                     ),
                                   )
                                 : widget.team.isPrivate!

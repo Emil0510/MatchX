@@ -110,7 +110,7 @@ class _AllMatchesPageState extends State<AllMatchesPage> {
     scrollController.addListener(() {
       if (scrollController.position.maxScrollExtent ==
               scrollController.offset &&
-          !isEnd) {
+          !isEnd && games.length % 10 == 0 && games.isNotEmpty) {
         //Fetch Data
         context.read<MatchesCubit>().loadMoreGames(
           (list) {
@@ -143,191 +143,192 @@ class _AllMatchesPageState extends State<AllMatchesPage> {
         });
       },
       child: SingleChildScrollView(
+        controller: scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            checkLeader()
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        context.read<MatchesCubit>().toFinishedGames(context);
-                      },
-                      child: Container(
-                        height: 40,
-                        width: double.maxFinite,
-                        decoration: BoxDecoration(
-                          color: const Color(blackColor2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Center(
-                          child: GoldColorText(text: "Oyunlarım"),
-                        ),
-                      ),
-                    ),
-                  )
-                : const SizedBox(),
-            checkLeader()
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        context.read<MatchesCubit>().toCreateMatch(context);
-                      },
-                      child: Container(
-                        height: 40,
-                        width: double.maxFinite,
-                        decoration: BoxDecoration(
+        child: Container(
+          constraints: BoxConstraints(minHeight: height),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              checkLeader()
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          context.read<MatchesCubit>().toFinishedGames(context);
+                        },
+                        child: Container(
+                          height: 40,
+                          width: double.maxFinite,
+                          decoration: BoxDecoration(
                             color: const Color(blackColor2),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: const Center(
-                          child: GoldColorText(text: "Oyun yarat"),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Center(
+                            child: GoldColorText(text: "Oyunlarım"),
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                : const SizedBox(),
-            checkLeader()
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                context
-                                    .read<MatchesCubit>()
-                                    .toCreateWithLinkPage(context);
-                              },
-                              child: Container(
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    color: const Color(blackColor2),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: const Center(
-                                  child: GoldColorText(
-                                      text: "Link ilə oyun yarat"),
+                    )
+                  : const SizedBox(),
+              checkLeader()
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          context.read<MatchesCubit>().toCreateMatch(context);
+                        },
+                        child: Container(
+                          height: 40,
+                          width: double.maxFinite,
+                          decoration: BoxDecoration(
+                              color: const Color(blackColor2),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Center(
+                            child: GoldColorText(text: "Oyun yarat"),
+                          ),
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+              checkLeader()
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  context
+                                      .read<MatchesCubit>()
+                                      .toCreateWithLinkPage(context);
+                                },
+                                child: Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      color: const Color(blackColor2),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Center(
+                                    child: GoldColorText(
+                                        text: "Link ilə oyun yarat"),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                context
-                                    .read<MatchesCubit>()
-                                    .toJoinWithLinkPage(context);
-                              },
-                              child: Container(
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    color: const Color(blackColor2),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: const Center(
-                                  child: GoldColorText(
-                                      text: "Link ilə oyuna qoşul"),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  context
+                                      .read<MatchesCubit>()
+                                      .toJoinWithLinkPage(context);
+                                },
+                                child: Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      color: const Color(blackColor2),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Center(
+                                    child: GoldColorText(
+                                        text: "Link ilə oyuna qoşul"),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )
-                : const SizedBox(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 40,
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                    color: const Color(blackColor2),
-                    borderRadius: BorderRadius.circular(10)),
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  value: selectedRegion,
-                  hint: const Text('Region'),
-                  menuMaxHeight: height / 2,
-                  alignment: Alignment.bottomCenter,
-                  underline: const SizedBox(),
-                  onChanged: (String? newValue) {
-                    if (selectedRegion != newValue) {
-                      selectedRegion = newValue!;
-                      selectedRegionId = regions.indexOf(newValue) - 1;
-                      print(selectedRegionId);
-                      context
-                          .read<MatchesCubit>()
-                          .getSelectedRegionGames(selectedRegionId);
-                    }
-                  },
-                  dropdownColor: Colors.black,
-                  items: regions.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Container(
-                        width: width,
-                        color: const Color(blackColor2),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            value,
-                            style: const TextStyle(color: Color(goldColor)),
-                          ),
-                        ),
+                        ],
                       ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Oyunlar:",
-                  style: TextStyle(color: Color((goldColor)), fontSize: 18),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: height / 2,
-              child: ListView.builder(
-                controller: scrollController,
-                itemCount: games.length % 10 == 0 && games.isNotEmpty
-                    ? games.length + 1
-                    : games.length ?? 0,
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  if (index < games.length) {
-                    return GestureDetector(
-                      onTap: () {
+                    )
+                  : const SizedBox(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  height: 40,
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                      color: const Color(blackColor2),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    value: selectedRegion,
+                    hint: const Text('Region'),
+                    menuMaxHeight: height / 2,
+                    alignment: Alignment.bottomCenter,
+                    underline: const SizedBox(),
+                    onChanged: (String? newValue) {
+                      if (selectedRegion != newValue) {
+                        selectedRegion = newValue!;
+                        selectedRegionId = regions.indexOf(newValue) - 1;
+                        print(selectedRegionId);
                         context
                             .read<MatchesCubit>()
-                            .toGameDetail(games[index], context, false, "");
-                      },
-                      child: MatchesListItem(
-                        teamGame: games[index],
-                      ),
-                    );
-                  } else {
-                    if (isEnd) {
-                      return const SizedBox();
-                    } else {
-                      return const InfinityScrollLoading();
-                    }
-                  }
-                },
+                            .getSelectedRegionGames(selectedRegionId);
+                      }
+                    },
+                    dropdownColor: Colors.black,
+                    items: regions.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Container(
+                          width: width,
+                          color: const Color(blackColor2),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              value,
+                              style: const TextStyle(color: Color(goldColor)),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
-            ),
-          ],
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Oyunlar:",
+                    style: TextStyle(color: Color((goldColor)), fontSize: 18),
+                  ),
+                ),
+              ),
+              ListView.builder(
+                  itemCount: games.length % 10 == 0 && games.isNotEmpty
+                      ? games.length + 1
+                      : games.length ?? 0,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    if (index < games.length) {
+                      return GestureDetector(
+                        onTap: () {
+                          context
+                              .read<MatchesCubit>()
+                              .toGameDetail(games[index], context, false, "");
+                        },
+                        child: MatchesListItem(
+                          teamGame: games[index],
+                        ),
+                      );
+                    } else {
+                      if (isEnd) {
+                        return const SizedBox();
+                      } else {
+                        return const InfinityScrollLoading();
+                      }
+                    }
+                  },
+              ),
+            ],
+          ),
         ),
       ),
     );

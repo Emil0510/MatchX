@@ -4,6 +4,7 @@ import 'package:flutter_app/network/model/Team.dart';
 import 'package:flutter_app/pages/home/team_page/team_detail_cubit/edit_team_logics.dart';
 import 'package:flutter_app/pages/home/team_page/team_detail_cubit/team_detail_cubit.dart';
 import 'package:flutter_app/pages/home/team_page/ui/ShowAllPage.dart';
+import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../Constants.dart';
@@ -43,6 +44,7 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
         physics: const AlwaysScrollableScrollPhysics(),
         child: Container(
           width: double.maxFinite,
+          constraints: BoxConstraints(minHeight: height),
           color: const Color(blackColor2),
           child: Stack(
             children: [
@@ -95,9 +97,14 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                               child: TeamDetailButton(
                                 onPressed: () {
                                   //join
-                                  context
-                                      .read<TeamDetailCubit>()
-                                      .joinTeam(widget.team.id!, widget.team.isPrivate!);
+                                  if(team.members!.length >= 11){
+                                    showCustomSnackbar(context, "Komanda doludur");
+                                  }else {
+                                    context
+                                        .read<TeamDetailCubit>()
+                                        .joinTeam(widget.team.id!,
+                                        widget.team.isPrivate!);
+                                  }
                                 },
                                 text: (widget.team.isPrivate!)
                                     ? "Sorğu göndər"
