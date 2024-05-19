@@ -50,10 +50,8 @@ class _CreateTeamState extends State<CreateTeam> {
     setState(() {
       var number = phoneNumberUser ?? "";
       var newNumber = number.replaceAll("+${test.dialCode}", "").trim();
-      print(newNumber);
       phoneNumberController.text = newNumber;
     });
-    print("Testtt ${test}");
   }
 
   void changeState(bool isPrivate) {
@@ -63,9 +61,6 @@ class _CreateTeamState extends State<CreateTeam> {
   }
 
   void onTap() {
-    print(phoneNumberController.text);
-    print(teamNameController.text);
-    print(teamDescriptionController.text);
   }
 
   @override
@@ -250,11 +245,9 @@ class _CreateTeamState extends State<CreateTeam> {
                     initialValue: PhoneNumber(isoCode: "AZ"),
                     onInputChanged: (PhoneNumber phoneNumber) {
                       // Handle phone number input changes
-                      print(phoneNumber.phoneNumber);
                       this.phoneNumber = phoneNumber.phoneNumber ?? "";
                     },
                     onInputValidated: (bool value) {
-                      print(value);
                       phoneNumberValidated = value;
                     },
                     selectorTextStyle: const TextStyle(

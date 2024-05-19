@@ -3,12 +3,9 @@ import 'package:flutter_app/pages/home/matches_page/create_match_page/create_mat
 import 'package:flutter_app/pages/home/matches_page/create_match_page/create_match_cubit/create_match_states.dart';
 import 'package:flutter_app/pages/home/matches_page/create_match_page/ui/CreateMatchWithLinkPage.dart';
 import 'package:flutter_app/pages/home/matches_page/create_match_page/ui/CreateMatchesHomePage.dart';
-import 'package:flutter_app/pages/home/matches_page/create_match_page/ui/JoinToMatchWithLink.dart';
 import 'package:flutter_app/widgets/loading_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../../widgets/snackbar.dart';
-import '../../../../sign_in_sign_up/login_signup.dart';
 
 class CreateMatchesLogics extends StatefulWidget {
   const CreateMatchesLogics({super.key});

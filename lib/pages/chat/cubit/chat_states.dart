@@ -2,23 +2,23 @@ import 'package:equatable/equatable.dart';
 
 import '../../../network/model/Message.dart';
 
-abstract class ChatPageStates {}
+abstract class ChatPageStates extends Equatable {}
 
 class ChatPageInitialState extends ChatPageStates{
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 
 }
 class ChatPageLoadingState extends ChatPageStates{
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 
 }
 
 
 class ChatPageErrorState extends ChatPageStates{
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 
 }
 

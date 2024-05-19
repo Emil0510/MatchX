@@ -29,7 +29,7 @@ class _SuggestionsLogicsState extends State<SuggestionsLogics> {
         });
         return const CircularLoadingWidget();
       } else if (state is OptionsErrorState) {
-        return Text("Error");
+        return const Text("Error");
       } else {
         return const CircularLoadingWidget();
       }

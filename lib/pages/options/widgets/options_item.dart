@@ -25,7 +25,7 @@ class OptionsItem extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: Color(blackColor2),
+            color: const Color(blackColor2),
             borderRadius: BorderRadius.circular(15),
           ),
           child: Padding(

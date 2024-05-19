@@ -171,7 +171,7 @@ class _EditProfilePageState extends State<ChangePasswordPage> {
                                   },
                                   isLoading: isLoading,
                                   text: "Dəyiş",
-                                  color: Color(goldColor),
+                                  color: const Color(goldColor),
                                   textColor: Colors.black),
                             )
                           ],

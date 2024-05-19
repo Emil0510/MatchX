@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -25,7 +24,6 @@ class LogInCubit extends Cubit<LogInCubitStates> {
   void check(BuildContext context) {
     var sharedPreferences = locator.get<SharedPreferences>();
     var isLogged = sharedPreferences.getBool(isLoggedInKey) ?? false;
-    print(isLogged.toString());
     if (isLogged) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
         Navigator.pushAndRemoveUntil(
@@ -55,10 +53,9 @@ class LogInCubit extends Cubit<LogInCubitStates> {
   }
 
   void logIn(String email, String password) async {
-    var dio = locator.get<Dio>();
     var sharedPreferences = locator.get<SharedPreferences>();
     FirebaseMessaging messaging = FirebaseMessaging.instance;
-    await messaging.getAPNSToken();
+
     String? deviceToken;
 
     if (Platform.isIOS) {
@@ -67,7 +64,6 @@ class LogInCubit extends Cubit<LogInCubitStates> {
       deviceToken = await messaging.getToken();
     }
     const String url = baseUrl + loginApi;
-    print("Device Token $deviceToken");
     Map<String, dynamic> data = {
       'email': email,
       'password': password,
@@ -82,7 +78,6 @@ class LogInCubit extends Cubit<LogInCubitStates> {
       body: jsonData,
     );
 
-    print("RESPONSE ${response.statusCode}");
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = json.decode(response.body);
       ResponseJvt responseJvt = ResponseJvt.fromJson(jsonData);
@@ -115,7 +110,6 @@ class LogInCubit extends Cubit<LogInCubitStates> {
       },
     );
 
-    print("TOKEN $token");
 
     dio.options = options;
 
@@ -127,8 +121,6 @@ class LogInCubit extends Cubit<LogInCubitStates> {
       String? myTeamIdd = response.data['myTeamId'];
       List<String>? roless =
           (response.data['roles'] as List).map((e) => e.toString()).toList();
-
-      print(roless);
 
       var username = sharedPreferences.getString("username") ?? "";
       var responseUser = await dio.get(baseUrl + usersApi + username);

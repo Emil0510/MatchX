@@ -38,9 +38,7 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
       } else {
         emit(FinishedGamesErrorState());
       }
-    } on DioException catch (e) {
-      print(e.response?.data);
-    }
+    } on DioException catch (e) {}
   }
 
   Future<List<TeamGame>> refreshUnverifyGames() async {
@@ -66,7 +64,6 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
         return Future.value([]);
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       return Future.value([]);
     }
   }
@@ -107,7 +104,6 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
 
     var json = jsonEncode(gameResult.map((e) => e.toJson()).toList());
 
-    print(json);
 
     var body = {
       "id": gameId,
@@ -123,11 +119,9 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
       if (response.statusCode == 200) {
         fun(true, "Oyun təsdiqləndi!");
       } else {
-        print(response.data);
         fun(false, "Səhvlik");
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       fun(false, "Səhvlik");
     }
   }
@@ -152,16 +146,12 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
 
     var json = jsonEncode(gameResult.map((e) => e.toJson()).toList());
 
-    print(json);
-
     var body = {
       "id": gameId,
       "homeTeamGoal": homeGoal,
       "awayTeamGoal": awayGoal,
       "gameResults": gameResult
     };
-
-    print(body);
 
     try {
       var response = await dio.post(baseUrl + resultGameApi,
@@ -171,11 +161,9 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
       if (response.statusCode == 200) {
         fun(true, "Oyun nəticəsi əlavə edildi");
       } else {
-        print(response.data);
         fun(false, "Səhvlik");
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       fun(false, e.response?.data['message']);
     }
 
@@ -197,12 +185,10 @@ class FinishedGamesCubit extends Cubit<FinishedGamesStates> {
       if (response.statusCode == 200) {
         fun(true, "Oyun ləğv edildi");
       } else {
-        print(response.data);
         fun(false, "Səhvlik");
         emit(FinishedGamesPageState(myGames: allGames));
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       fun(false, e.response?.data["message"]);
       emit(FinishedGamesPageState(myGames: allGames));
     }

@@ -3,11 +3,8 @@ import "package:flutter_app/Utils.dart";
 import "package:flutter_app/pages/home/matches_page/mathches_cubit/matches_cubit.dart";
 import "package:flutter_app/pages/home/team_page/widgets/team_detail_latest_match.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-
 import "../../../../Constants.dart";
 import "../../../../network/model/Game.dart";
-import "../../team_page/team_detail_cubit/team_detail_cubit.dart";
-import "../../team_page/ui/TeamDetailPage.dart";
 
 class GameDetailPage extends StatefulWidget {
   final TeamGame teamGame;
@@ -147,19 +144,48 @@ class _GameDetailPageState extends State<GameDetailPage> {
             ? ElevatedButton(
                 onPressed: () {
                   if (!isLoading) {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    if (widget.isFromLink) {
-                      context
-                          .read<MatchesCubit>()
-                          .joinLinkGame(context, widget.guide);
-                    } else {
-                      print("Normal Join");
-                      context
-                          .read<MatchesCubit>()
-                          .joinGame(context, widget.teamGame.id!);
-                    }
+
+                    AlertDialog alert = AlertDialog(
+                      title: const Text("Oyuna qouşlma"),
+                      content: const Text("Oyuna qoşulmağa əminsiz?"),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              "Xeyr",
+                              style: TextStyle(color: Colors.white),
+                            )),
+                        TextButton(
+                          onPressed: () async {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            if (widget.isFromLink) {
+                              context
+                                  .read<MatchesCubit>()
+                                  .joinLinkGame(context, widget.guide);
+                            } else {
+                              context
+                                  .read<MatchesCubit>()
+                                  .joinGame(context, widget.teamGame.id!);
+                            }
+                          },
+                          child: const Text(
+                            "Bəli",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    );
+                    // show the dialog
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return alert;
+                      },
+                    );
                   }
                 },
                 style: ElevatedButton.styleFrom(

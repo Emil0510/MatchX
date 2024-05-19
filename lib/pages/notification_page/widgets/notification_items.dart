@@ -117,7 +117,7 @@ class _NotificationItemState extends State<NotificationItem> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(redColor)),
+                                    backgroundColor: const Color(redColor)),
                                 child: const Text(
                                   "Rədd et",
                                   style: TextStyle(color: Colors.white),

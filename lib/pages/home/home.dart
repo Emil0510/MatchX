@@ -49,12 +49,10 @@ class _HomeState extends State<Home> {
       }
     });
 
-    print("Salam");
   }
 
   @override
   Widget build(BuildContext context) {
-    print("Salam");
     return WillPopScope(
       child: Scaffold(
         resizeToAvoidBottomInset: true,

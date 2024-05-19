@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
@@ -7,7 +6,6 @@ import 'package:flutter_app/pages/home/matches_page/ui/widgets/mathes_list.dart'
 import 'package:flutter_app/widgets/infinity_scroll_loading.dart';
 import 'package:flutter_app/widgets/text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../network/model/Game.dart';
 
 class AllMatchesPage extends StatefulWidget {
@@ -264,7 +262,6 @@ class _AllMatchesPageState extends State<AllMatchesPage> {
                       if (selectedRegion != newValue) {
                         selectedRegion = newValue!;
                         selectedRegionId = regions.indexOf(newValue) - 1;
-                        print(selectedRegionId);
                         context
                             .read<MatchesCubit>()
                             .getSelectedRegionGames(selectedRegionId);
@@ -303,7 +300,7 @@ class _AllMatchesPageState extends State<AllMatchesPage> {
               ListView.builder(
                   itemCount: games.length % 10 == 0 && games.isNotEmpty
                       ? games.length + 1
-                      : games.length ?? 0,
+                      : games.length ,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemBuilder: (context, index) {

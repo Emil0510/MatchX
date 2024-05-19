@@ -1,12 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/pages/home/matches_page/create_match_page/create_match_cubit/create_match_cubit.dart';
-import 'package:flutter_app/pages/home/matches_page/create_match_page/create_match_cubit/create_match_states.dart';
-import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
-import 'package:intl/intl.dart';
 
 class CreateMatchesHomePage extends StatefulWidget {
   const CreateMatchesHomePage({super.key});
@@ -22,22 +18,6 @@ class _CreateMatchesHomePageState extends State<CreateMatchesHomePage> {
   String selectedRegion = 'Bakı';
   int selectedRegionId = 7;
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-
-      initialDate: selectedDate,
-      firstDate: DateTime.now(), // Adjust the start date as needed
-      lastDate: DateTime.now().add(const Duration(days: 30)),
-      // Adjust the end date as needed
-    );
-
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
-  }
 
   dateTimePickerWidget(BuildContext context) {
     return DatePicker.showDatePicker(
@@ -45,11 +25,10 @@ class _CreateMatchesHomePageState extends State<CreateMatchesHomePage> {
       dateFormat: 'dd MMMM yyyy HH',
       initialDateTime: DateTime.now(),
       minDateTime: DateTime.now(),
-      maxDateTime: DateTime.now().add(Duration(days: 30)),
+      maxDateTime: DateTime.now().add(const Duration(days: 30)),
       onMonthChangeStartWithFirstDate: true,
       onConfirm: (dateTime, List<int> index) {
         DateTime selectdate = dateTime;
-        final selIOS = DateFormat('dd-MMM-yyyy - HH:mm').format(selectdate);
         setState(() {
           selectedDate = selectdate;
         });
@@ -156,7 +135,7 @@ class _CreateMatchesHomePageState extends State<CreateMatchesHomePage> {
               ),
               Padding(
                 padding: EdgeInsets.only(top: 8.0, bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: Container(
+                child: SizedBox(
                   width: 2 * width / 3,
                   child: TextField(
                     controller: messageController,
@@ -193,7 +172,6 @@ class _CreateMatchesHomePageState extends State<CreateMatchesHomePage> {
                       setState(() {
                         selectedRegion = newValue!;
                         selectedRegionId = regionsConstants.indexOf(newValue);
-                        print(selectedRegionId);
                       });
                     },
                     dropdownColor: Colors.black,
@@ -218,8 +196,6 @@ class _CreateMatchesHomePageState extends State<CreateMatchesHomePage> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  print(selectedDate.toString());
-                  print(selectedDate.toLocal().toString());
                   context
                       .read<CreateMatchCubit>()
                       .createGame(isRated, selectedDate, messageController.text.trim(), selectedRegionId);

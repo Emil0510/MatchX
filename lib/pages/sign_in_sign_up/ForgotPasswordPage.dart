@@ -2,11 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/network/network.dart';
-import 'package:flutter_app/pages/home/matches_page/finished_games_page/widgets/FinishedGamesItem.dart';
-import 'package:flutter_app/widgets/container.dart';
 import 'package:flutter_app/widgets/input_text_widgets.dart';
 import 'package:flutter_app/widgets/snackbar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ForgetPasswordPage extends StatefulWidget {
   const ForgetPasswordPage({super.key});
@@ -32,7 +29,6 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
       });
       showCustomSnackbar(context, response.data['message']);
     } on DioException catch (e) {
-      print(e.response?.data);
       setState(() {
         isLoading = false;
       });

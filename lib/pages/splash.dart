@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
     var expireTime = sharedPreferences.getString(tokenExpireDayKey) ?? "";
 
     if (expireTime != "" && isLogged) {
-      var expireDateTime = DateTime.parse(expireTime ?? "");
+      var expireDateTime = DateTime.parse(expireTime);
 
       if (expireDateTime.isBefore(DateTime.now())) {
         await sharedPreferences.setBool(isLoggedInKey, false);
@@ -63,7 +63,6 @@ class _SplashScreenState extends State<SplashScreen> {
     if (isLogged) {
       var sharedPreferences = locator.get<SharedPreferences>();
       var token = sharedPreferences.getString(tokenKey);
-      print("Token $token");
 
       BaseOptions options = BaseOptions(
         headers: {

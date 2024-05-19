@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ConfirmRow extends StatelessWidget {
   final String text;
@@ -30,10 +32,21 @@ class ConfirmRow extends StatelessWidget {
               : Padding(
                   padding: EdgeInsets.only(left: width / 10, top: 8, bottom: 8),
                   child: ClipOval(
-                    child: Image.network(
-                      image!,
+                    child: CachedNetworkImage(
+                      imageUrl: image!,
                       width: width / 8,
                       height: width / 8,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        enabled: true,
+                        child: Container(
+                          width: width * 4 / 5,
+                          height: width * 4 / 5,
+                          color: Colors.black54,
+                        ),
+                      ),
                     ),
                   ),
                 ),

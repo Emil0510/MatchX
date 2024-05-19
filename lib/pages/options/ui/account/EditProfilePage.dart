@@ -73,7 +73,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     selectedDate = DateTime.parse(widget.user.dateOfBirth ?? "");
     phoneNumberController = TextEditingController();
     if ((widget.user.phoneNumber ?? "").isNotEmpty) {
-      print(widget.user.phoneNumber);
       phoneNumberValidated = true;
       getPhoneNumber();
     }
@@ -85,10 +84,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() {
       var number = widget.user.phoneNumber ?? "";
       var newNumber = number.replaceAll("+${test.dialCode}", "").trim();
-      print(newNumber);
       phoneNumberController.text = newNumber;
     });
-    print("Testtt ${test}");
   }
 
   @override
@@ -188,13 +185,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 initialValue: PhoneNumber(isoCode: "AZ"),
                                 onInputChanged: (PhoneNumber phoneNumber) {
                                   // Handle phone number input changes
-                                  print(phoneNumber.phoneNumber);
                                   this.phoneNumber =
                                       phoneNumber.phoneNumber ?? "";
                                 },
                                 onInputValidated: (bool value) {
                                   // Handle validation
-                                  print(value);
                                   phoneNumberValidated = value;
                                 },
                                 selectorTextStyle: const TextStyle(
@@ -234,7 +229,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     ),
                                   ],
                                 ),
-                                child: Container(
+                                child: SizedBox(
                                   width: width,
                                   child: ElevatedButton(
                                     onPressed: () => _selectDate(context),
@@ -268,7 +263,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                             .trim()
                                             .isNotEmpty) {
                                           if (phoneNumberValidated) {
-                                            print("Phne number ${phoneNumber}");
                                             setState(() {
                                               isLoading = true;
                                             });
@@ -337,7 +331,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   },
                                   isLoading: isLoading,
                                   text: "Saxla",
-                                  color: Color(goldColor),
+                                  color: const Color(goldColor),
                                   textColor: Colors.black),
                             )
                           ],

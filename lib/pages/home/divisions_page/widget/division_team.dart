@@ -1,9 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/network/model/Team.dart';
-import 'package:flutter_app/widgets/container.dart';
-
-import '../../../../network/model/Division.dart';
+import 'package:shimmer/shimmer.dart';
 
 class DivisionTeamWidget extends StatelessWidget {
   final Team team;
@@ -35,11 +34,21 @@ class DivisionTeamWidget extends StatelessWidget {
                   padding: const EdgeInsets.all(12.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(5),
-                    child: Image.network(
-                      team.teamLogoUrl ?? "",
+                    child: CachedNetworkImage(
+                     imageUrl:  team.teamLogoUrl ?? "",
                       width: width / 10,
                       height: width / 10,
                       fit: BoxFit.cover,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        enabled: true,
+                        child: Container(
+                          width: width * 4 / 5,
+                          height: width * 4 / 5,
+                          color: Colors.black54,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -56,7 +65,7 @@ class DivisionTeamWidget extends StatelessWidget {
                   padding: const EdgeInsets.all(4.0),
                   child: Text(
                     textAlign: TextAlign.center,
-                    "Xal: ${(team.divisionPoint ?? 0).toString()}\nRatinq: ${(team.rating ?? 0).toString()}",
+                    "Xal: ${(team.divisionPoint ?? 0).toString()}\nRatinq: ${(team.rating).toString()}",
                     style: const TextStyle(color: Colors.black),
                   ),
                 ),

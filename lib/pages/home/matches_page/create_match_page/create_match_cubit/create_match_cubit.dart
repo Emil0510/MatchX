@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/network/network.dart';
@@ -20,7 +18,6 @@ class CreateMatchCubit extends Cubit<CreateMatchStates> {
 
   createGame(bool isRated, DateTime dateTime1, String message, int region) async {
     emit(CreateMatchLoadingState());
-    print("object");
     var sharedPreferences = locator.get<SharedPreferences>();
     var dio = locator.get<Dio>();
     var token = sharedPreferences.getString(tokenKey);
@@ -28,7 +25,6 @@ class CreateMatchCubit extends Cubit<CreateMatchStates> {
     DateTime newDate = DateTime(
         dateTime1.year, dateTime1.month, dateTime1.day, dateTime1.hour, 0);
 
-    print(newDate.toString());
 
     Map<String, dynamic>? paramters = {"IsRated": isRated, "GameDate": newDate.toString(), "Region" : region, "Message" : message};
 
@@ -41,14 +37,12 @@ class CreateMatchCubit extends Cubit<CreateMatchStates> {
           }, contentType: 'application/json'),
           data: formData);
 
-      print(response.data);
       if (response.statusCode == 200) {
         emit(CreateMatchesPageState(isError: true, message: "Oyun yaradıldı"));
       } else {
         emit(CreateMatchesPageState(isError: true, message: ""));
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       emit(CreateMatchesPageState(isError: true, message: e.response?.data['message']));
     }
   }
@@ -65,9 +59,6 @@ class CreateMatchCubit extends Cubit<CreateMatchStates> {
     DateTime newDate = DateTime(date.year, date.month, date.day,date.hour, 0);
 
     var time = newDate.toString();
-
-    print(time);
-
 
     Map<String, dynamic> body = {"isRated": isRated, "gameDate": time, "region" : region, "message" : message};
 
@@ -87,13 +78,11 @@ class CreateMatchCubit extends Cubit<CreateMatchStates> {
 
 
       if (response.statusCode == 200) {
-        print(response.data);
         emit(CreateMatchesWithLinkPageState(guide: response.data['data'], isSuccesfull: true, message: 'Yaradildi'));
       } else {
         emit(CreateMatchesWithLinkPageState(guide: "", isSuccesfull: false, message: "Səhvlik"));
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       emit(CreateMatchesWithLinkPageState(guide: "", isSuccesfull: false, message: e.response?.data['message']));
     }
   }

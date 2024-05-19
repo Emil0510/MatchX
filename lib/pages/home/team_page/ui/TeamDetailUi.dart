@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Utils.dart';
 import 'package:flutter_app/network/model/Team.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_app/pages/home/team_page/team_detail_cubit/team_detail_c
 import 'package:flutter_app/pages/home/team_page/ui/ShowAllPage.dart';
 import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../Constants.dart';
 import '../widgets/team_detail_latest_match.dart';
@@ -22,19 +24,21 @@ class TeamDetailUI extends StatefulWidget {
 
 class _TeamDetailUIState extends State<TeamDetailUI> {
   late Team team;
+
   @override
   void initState() {
     super.initState();
     team = widget.team;
   }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return RefreshIndicator(
-      onRefresh: () async{
+      onRefresh: () async {
         var data = await context.read<TeamDetailCubit>().refreshScreen();
-        if(data!=null) {
+        if (data != null) {
           setState(() {
             team = data;
           });
@@ -55,17 +59,27 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                   ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(5),
-                    child: Image.network(
-                      widget.team.teamLogoUrl ?? "",
+                    child: CachedNetworkImage(
+                      imageUrl: team.teamLogoUrl ?? "",
                       height: 150,
                       width: 150,
                       fit: BoxFit.cover,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        enabled: true,
+                        child: Container(
+                          width: width*4/5,
+                          height: width*4/5,
+                          color: Colors.black54,
+                        ),
+                      ),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      widget.team.name ?? "",
+                      team.name ?? "",
                       style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -73,18 +87,79 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                     ),
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
-                    child:
-                        TeamMembersContainer(memberCount: widget.team.members!.length),
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, bottom: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: TeamMembersContainer(memberCount: team.members!.length),
+                        ),
+
+                        Container(
+                          width: width / 3,
+                          decoration: BoxDecoration(
+                              color: team.isPrivate == true
+                                  ? Colors.black
+                                  : const Color(goldColor),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(15))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Text(
+                                team.isPrivate == true ? "Qapalı" : "Açıq",
+                                style: TextStyle(
+                                    color: team.isPrivate == true
+                                        ? const Color(goldColor)
+                                        : Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  widget.team.id == getMyTeamId() && !checkLeader()
+                  team.id == getMyTeamId() && !checkLeader()
                       ? SizedBox(
                           width: width / 3,
                           child: TeamDetailButton(
                             onPressed: () {
                               //left
-                              context.read<TeamDetailCubit>().leftTeam();
+                              AlertDialog alert = AlertDialog(
+                                title: const Text("Ayrılma"),
+                                content: const Text("Komandadan ayrılmağa əminsiz?"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text(
+                                        "Xeyr",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                  TextButton(
+                                    onPressed: () async {
+                                      context.read<TeamDetailCubit>().leftTeam();
+                                    },
+                                    child: const Text(
+                                      "Bəli",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              );
+
+                              // show the dialog
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return alert;
+                                },
+                              );
                             },
                             text: "Ayrıl",
                             backgroundColor: const Color(redColor),
@@ -97,86 +172,56 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                               child: TeamDetailButton(
                                 onPressed: () {
                                   //join
-                                  if(team.members!.length >= 11){
-                                    showCustomSnackbar(context, "Komanda doludur");
-                                  }else {
+                                  if (team.members!.length >= 11) {
+                                    showCustomSnackbar(
+                                        context, "Komanda doludur");
+                                  } else {
                                     context
                                         .read<TeamDetailCubit>()
-                                        .joinTeam(widget.team.id!,
-                                        widget.team.isPrivate!);
+                                        .joinTeam(team.id!, team.isPrivate!);
                                   }
                                 },
-                                text: (widget.team.isPrivate!)
+                                text: (team.isPrivate!)
                                     ? "Sorğu göndər"
                                     : "Daxil Ol",
-                                backgroundColor: (widget.team.isPrivate!)
+                                backgroundColor: (team.isPrivate!)
                                     ? const Color(goldColor)
                                     : const Color(greenColor),
-                                textColor: (widget.team.isPrivate!)
+                                textColor: (team.isPrivate!)
                                     ? Colors.black
                                     : Colors.white,
                               ),
                             ),
-                  // Padding(
-                  //   padding: const EdgeInsets.all(8.0),
-                  //   child: Text(
-                  //     team.name,
-                  //     style: const TextStyle(
-                  //         color: Color(goldColor),
-                  //         fontSize: 20,
-                  //         fontWeight: FontWeight.bold),
-                  //   ),
-                  // ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      widget.team.description ?? "",
+                      team.description ?? "",
                       style: const TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
-                  // Container(
-                  //   width: width / 3,
-                  //   decoration: const BoxDecoration(
-                  //       color: Colors.black,
-                  //       borderRadius: BorderRadius.all(Radius.circular(30))),
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.all(10.0),
-                  //     child: Center(
-                  //       child: Text(
-                  //         state.team.isPrivate ? "Private" : "Public",
-                  //         style: const TextStyle(
-                  //             color: true ? Color(goldColor) : Colors.black,
-                  //             fontSize: 18),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   TeamInformationWidget(
-                      rank: widget.team.rank,
-                      division: widget.team.division?.divisionName,
-                      points: widget.team.rating.toInt(),
-                      divisionPhoto: widget.team.division?.divisionImage),
-                  widget.team.divisionMedals!.isEmpty
+                      rank: team.rank,
+                      division: team.division?.divisionName,
+                      points: team.rating.toInt(),
+                      divisionPhoto: team.division?.divisionImage),
+                  team.divisionMedals!.isEmpty
                       ? const SizedBox()
                       : TeamDivisionMedalsWidget(
-                          divisionMedals: widget.team.divisionMedals),
-
-                  (widget.team.teamGames!.isNotEmpty)
+                          divisionMedals: team.divisionMedals),
+                  (team.teamGames!.isNotEmpty)
                       ? TeamDetailLatestMatchWidget(
-                          teamGame: widget.team.teamGames![0],
+                          teamGame: team.teamGames![0],
                         )
                       : const SizedBox(),
-
-                  (widget.team.teamGames!.isNotEmpty && widget.team.teamGames!.length > 1)
+                  (team.teamGames!.isNotEmpty && team.teamGames!.length > 1)
                       ? TeamDetailMatchesList(
-                    id: widget.team.id??"",
-                          teamGame: widget.team.teamGames
-                                  ?.sublist(1, widget.team.teamGames!.length) ??
+                          id: team.id ?? "",
+                          teamGame: team.teamGames
+                                  ?.sublist(1, team.teamGames!.length) ??
                               [])
                       : const SizedBox(),
-
-                  (widget.team.teamGames!.isNotEmpty)
-                      ? (widget.team.teamGames!.length >= 3)
+                  (team.teamGames!.isNotEmpty)
+                      ? (team.teamGames!.length >= 3)
                           ? Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: TeamDetailButton(
@@ -186,7 +231,7 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                                         MaterialPageRoute(
                                             builder: (BuildContext context) =>
                                                 ShowAllPage(
-                                                  id: widget.team.id ?? "",
+                                                  id: team.id ?? "",
                                                 )));
                                   },
                                   text: "Hamısını Göstər",
@@ -203,16 +248,45 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                     ),
                   ),
                   TeamMembersListWidget(
-                    members: widget.team.members ?? [],
-                    teamCapitanUsername: widget.team.teamCapitanUserName ?? "",
+                    members: team.members ?? [],
+                    teamCapitanUsername: team.teamCapitanUserName ?? "",
                   ),
-                  (getMyTeamId() == widget.team.id && checkLeader())
+                  (getMyTeamId() == team.id && checkLeader())
                       ? SizedBox(
                           width: 2 * width / 3,
                           child: TeamDetailButton(
                             onPressed: () {
-                              //left
-                              context.read<TeamDetailCubit>().deleteTeam();
+                              AlertDialog alert = AlertDialog(
+                                title: const Text("Komanda silmə"),
+                                content: const Text("Komandanızı silməyə əminsiz?"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text(
+                                        "Xeyr",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                  TextButton(
+                                    onPressed: () async {
+                                      context.read<TeamDetailCubit>().deleteTeam();
+                                    },
+                                    child: const Text(
+                                      "Bəli",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              );
+
+                              // show the dialog
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return alert;
+                                },
+                              );
                             },
                             text: "Komandanı Sil",
                             backgroundColor: const Color(redColor),
@@ -222,7 +296,9 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                       : const SizedBox()
                 ],
               ),
-              (checkExistingTeam() && checkLeader() && widget.team.teamCapitanUserName == getMyUsername())
+              (checkExistingTeam() &&
+                      checkLeader() &&
+                      team.teamCapitanUserName == getMyUsername())
                   ? Positioned(
                       top: 10,
                       right: 10,
@@ -232,9 +308,10 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                           var data = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => BlocProvider<TeamDetailCubit>(
+                              builder: (context) =>
+                                  BlocProvider<TeamDetailCubit>(
                                 create: (BuildContext context) =>
-                                    TeamDetailCubit()..startEditTeam(widget.team),
+                                    TeamDetailCubit()..startEditTeam(team),
                                 child: const EditTeamLogics(),
                               ),
                             ),

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../widgets/loading_widget.dart';
 import '../ui/more_home_page.dart';
-import '../ui/profile_edit_page.dart';
 import 'more_page_cubit.dart';
 import 'more_page_states.dart';
 

@@ -1,7 +1,4 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-
 
 class Styles {
 
@@ -10,23 +7,23 @@ class Styles {
       primarySwatch: Colors.green,
       primaryColor: isDarkTheme ? Colors.black : Colors.white,
 
-      backgroundColor: isDarkTheme ? Colors.black : Color(0xffdcd9cd),
+      backgroundColor: isDarkTheme ? Colors.black : const Color(0xffdcd9cd),
 
-      indicatorColor: isDarkTheme ? Color(0xff0E1D36) : Color(0xffCBDCF8),
+      indicatorColor: isDarkTheme ? const Color(0xff0E1D36) : const Color(0xffCBDCF8),
 
-      hintColor: isDarkTheme ? Colors.white : Color(0xff888888),
+      hintColor: isDarkTheme ? Colors.white : const Color(0xff888888),
 
-      highlightColor: isDarkTheme ? Color(0xff372901) : Color(0xffFCE192),
-      hoverColor: isDarkTheme ? Color(0xff3A3A3B) : Color(0xff4285F4),
+      highlightColor: isDarkTheme ? const Color(0xff372901) : const Color(0xffFCE192),
+      hoverColor: isDarkTheme ? const Color(0xff3A3A3B) : const Color(0xff4285F4),
 
-      focusColor: isDarkTheme ? Color(0xff0B2512) : Color(0xffA8DAB5),
+      focusColor: isDarkTheme ? const Color(0xff0B2512) : const Color(0xffA8DAB5),
       disabledColor: Colors.grey,
-      cardColor: isDarkTheme ? Color(0xFF151515) : Colors.white,
+      cardColor: isDarkTheme ? const Color(0xFF151515) : Colors.white,
       canvasColor: isDarkTheme ? Colors.black : Colors.grey[50],
       brightness: isDarkTheme ? Brightness.dark : Brightness.light,
       buttonTheme: Theme.of(context).buttonTheme.copyWith(
-          colorScheme: isDarkTheme ? ColorScheme.dark() : ColorScheme.light()),
-      appBarTheme: AppBarTheme(
+          colorScheme: isDarkTheme ? const ColorScheme.dark() : const ColorScheme.light()),
+      appBarTheme: const AppBarTheme(
         elevation: 0.0,
       ),
     );

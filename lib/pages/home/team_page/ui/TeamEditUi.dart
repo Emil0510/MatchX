@@ -47,22 +47,14 @@ class _TeamEditPageState extends State<TeamEditPage> {
 
   void check() {
 
-    print(widget.team?.description != (teamDescriptionController.text));
-    print(widget.team?.name != (teamNameController.text));
-    print(widget.team?.isPrivate != isPrivate);
-    print("Team ${widget.team?.isPrivate}");
-    print("Normal ${isPrivate}");
-
 
     if (_image == null) {
-      print("object");
       setState(() {
         isButtonEnabled = (widget.team?.name != teamNameController.text) ||
             (widget.team?.description != teamDescriptionController.text) ||
             (widget.team?.isPrivate != isPrivate);
       });
     }
-    print(isButtonEnabled);
   }
 
   @override

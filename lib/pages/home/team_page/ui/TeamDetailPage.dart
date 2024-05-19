@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home/team_page/team_detail_cubit/team_detail_logics.dart';
 
@@ -15,7 +14,6 @@ class TeamDetailPage extends StatefulWidget {
 
 class _TeamDetailPageState extends State<TeamDetailPage> {
   bool isPrivate = false;
-  File? _image;
 
   @override
   Widget build(BuildContext context) {

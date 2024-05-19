@@ -24,7 +24,7 @@ class CustomTextFieldWidget extends StatelessWidget {
       decoration: InputDecoration(
         filled: true,
         prefixIconColor: const Color(goldColor),
-        fillColor: Color(blackColor),
+        fillColor: const Color(blackColor),
         labelText: hintText,
         hintStyle: const TextStyle(color: Color(0xFF888888)),
         prefixIcon: prefixIcon,
@@ -58,7 +58,7 @@ class CustomPasswordTextFieldWidget extends StatelessWidget {
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         filled: true,
-        fillColor: Color(blackColor),
+        fillColor: const Color(blackColor),
         labelText: labelText,
         labelStyle: const TextStyle(color: Colors.grey),
         // Here is key idea
@@ -97,7 +97,7 @@ class CustomReadOnlyText extends StatelessWidget {
       decoration: InputDecoration(
         filled: true,
         prefixIconColor: const Color(goldColor),
-        fillColor: Color(blackColor),
+        fillColor: const Color(blackColor),
         hintStyle: const TextStyle(color: Color(0xFF888888)),
         labelStyle: const TextStyle(color: Colors.grey),
         border: OutlineInputBorder(

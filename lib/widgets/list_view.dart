@@ -1,10 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Utils.dart';
 import 'package:flutter_app/network/model/Team.dart';
 import 'package:flutter_app/pages/home/team_page/team_cubit/team_cubit.dart';
-import 'package:flutter_app/widgets/loading_widget.dart';
 import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 import '../Constants.dart';
 import '../pages/home/team_page/team_detail_cubit/team_detail_cubit.dart';
 import '../pages/home/team_page/ui/TeamDetailPage.dart';
@@ -46,18 +47,27 @@ class _TeamListItemState extends State<TeamListItem> {
                 ),
               );
 
-              print("Komandam  ${data}");
               if (data != null) {
                 context.read<TeamCubit>().isLoaded = false;
                 context.read<TeamCubit>().start();
               }
             },
             child: ListTile(
-              leading: Image.network(
-                widget.team.teamLogoUrl ?? "",
+              leading: CachedNetworkImage(
+                imageUrl: widget.team.teamLogoUrl ?? "",
                 height: width / 8,
                 width: width / 8,
                 fit: BoxFit.cover,
+                placeholder: (context, url) => Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  enabled: true,
+                  child: Container(
+                    width: width * 4 / 5,
+                    height: width * 4 / 5,
+                    color: Colors.black54,
+                  ),
+                ),
               ),
               title: Text(
                 widget.team.name ?? "",
@@ -76,7 +86,8 @@ class _TeamListItemState extends State<TeamListItem> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1C1918),
+                          // color: const Color(0xFF1C1918),
+                          color: const Color(blackColor3),
                           borderRadius: BorderRadius.circular(
                               8.0), // Set the border radius here
                         ),
@@ -96,12 +107,10 @@ class _TeamListItemState extends State<TeamListItem> {
                       ? const SizedBox()
                       : GestureDetector(
                           onTap: () {
-                            print("tap");
                             if (isLoading == false) {
                               if (widget.team.memberCount! >= 11) {
                                 showCustomSnackbar(context, "Komanda doludur");
                               } else {
-                                print("work");
                                 setState(() {
                                   isLoading = true;
                                 });
@@ -111,8 +120,6 @@ class _TeamListItemState extends State<TeamListItem> {
                                   setState(() {
                                     isLoading = false;
                                   });
-                                  print("Message $message");
-
                                   showCustomSnackbar(context, message);
                                 });
                               }

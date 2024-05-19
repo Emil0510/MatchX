@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
 import 'package:flutter_app/pages/home/team_page/widgets/team_detail_latest_match.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../../network/model/Game.dart';
 
 class UpcomingGameWidget extends StatelessWidget {
@@ -47,13 +49,27 @@ class SingleGameWidget extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Image.network(
-                game.homeTeamImageUrl ?? "",
+              child: CachedNetworkImage(
+                imageUrl: game.homeTeamImageUrl ?? "",
                 width: width / 10,
                 height: width / 10,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  enabled: true,
+                  child: Container(
+                    width: width * 4 / 5,
+                    height: width * 4 / 5,
+                    color: Colors.black54,
+                  ),
+                ),
               ),
             ),
-            Text(game.homeTeamName ?? "", style: const TextStyle(color: Color(goldColor)),),
+            Text(
+              game.homeTeamName ?? "",
+              style: const TextStyle(color: Color(goldColor)),
+            ),
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -62,13 +78,25 @@ class SingleGameWidget extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             )),
-            Text(game.awayTeamName ?? "", style: const TextStyle(color: Color(goldColor))),
+            Text(game.awayTeamName ?? "",
+                style: const TextStyle(color: Color(goldColor))),
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Image.network(
-                game.awayTeamImageUrl ?? "",
+              child: CachedNetworkImage(
+                imageUrl: game.awayTeamImageUrl ?? "",
                 width: width / 10,
                 height: width / 10,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  enabled: true,
+                  child: Container(
+                    width: width * 4 / 5,
+                    height: width * 4 / 5,
+                    color: Colors.black54,
+                  ),
+                ),
               ),
             ),
           ],

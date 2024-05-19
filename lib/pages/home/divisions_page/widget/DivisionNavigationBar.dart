@@ -1,9 +1,11 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
+import 'package:flutter_app/pages/home/divisions_page/division_cubit/division_cubit.dart';
 import 'package:flutter_app/pages/home/divisions_page/widget/division_team.dart';
 import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../network/model/Division.dart';
 import '../../../../network/model/Team.dart';
@@ -66,13 +68,13 @@ class _DivisionNavigationBarState extends State<DivisionNavigationBar> {
                                 selected = index;
                                 divisionTeams =
                                     divisions[selected].divisionTeams;
-                                selectedDivisionName = divisions[selected].divisionName;
+                                selectedDivisionName =
+                                    divisions[selected].divisionName;
                               },
                             );
                           } else {
                             showCustomSnackbar(context,
                                 "${divisions[index].divisionName} aktiv deyil");
-
                           }
                         },
                         child: index == selected
@@ -85,8 +87,8 @@ class _DivisionNavigationBarState extends State<DivisionNavigationBar> {
                                         bottomLeft: Radius.circular(60),
                                         bottomRight: Radius.circular(60)),
                                     color: Colors.black54),
-                                child: Image.network(
-                                  divisions[index].divisionImage,
+                                child: CachedNetworkImage(
+                                 imageUrl:  divisions[index].divisionImage,
                                   width: 0.3 * width,
                                   height: 0.4 * width,
                                 ),
@@ -98,26 +100,29 @@ class _DivisionNavigationBarState extends State<DivisionNavigationBar> {
                                   height: 0.25 * width,
                                   decoration: const BoxDecoration(
                                       borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(15),
-                                          topRight: Radius.circular(15),
-                                          bottomLeft: Radius.circular(40),
-                                          bottomRight: Radius.circular(40)),
+                                        topLeft: Radius.circular(15),
+                                        topRight: Radius.circular(15),
+                                        bottomLeft: Radius.circular(40),
+                                        bottomRight: Radius.circular(40),
+                                      ),
                                       color: Colors.black54),
                                   foregroundDecoration:
                                       divisions[index].isActive == true
                                           ? null
                                           : const BoxDecoration(
-                                              color: Colors.grey,
+                                              color: Color(blackColor2),
                                               backgroundBlendMode:
                                                   BlendMode.saturation,
                                             ),
-                                  child: Image.network(
-                                    divisions[index].divisionImage,
-                                    width: 0.20 * width,
-                                    height: 0.20 * width,
+                                  child: Opacity(
                                     opacity: divisions[index].isActive == true
-                                        ? null
-                                        : const AlwaysStoppedAnimation(.3),
+                                        ? 1.0
+                                        : .3,
+                                    child: CachedNetworkImage(
+                                      imageUrl:  divisions[index].divisionImage,
+                                      width: 0.20 * width,
+                                      height: 0.20 * width,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -131,32 +136,46 @@ class _DivisionNavigationBarState extends State<DivisionNavigationBar> {
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Text(
                 selectedDivisionName,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: divisionTeams.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BlocProvider(
-                            create: (context) => TeamDetailCubit()
-                              ..startTeamDetail(divisionTeams[index].id!),
-                            child: TeamDetailPage(
-                                teamName: divisionTeams[index].name ?? ""),
-                          ),
-                        ),
+              child: SizedBox(
+                child: RefreshIndicator(
+
+                  onRefresh: () async{
+                    var data = await context.read<DivisionCubit>().refresh();
+                    setState(() {
+                      divisions = data;
+                      divisionTeams = divisions[selected].divisionTeams;
+                      selectedDivisionName = divisions[selected].divisionName;
+                    });
+                  },
+                  child: ListView.builder(
+                    itemCount: divisionTeams.length,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                create: (context) => TeamDetailCubit()
+                                  ..startTeamDetail(divisionTeams[index].id!),
+                                child: TeamDetailPage(
+                                    teamName: divisionTeams[index].name ?? ""),
+                              ),
+                            ),
+                          );
+                        },
+                        child: DivisionTeamWidget(
+                            order: index + 1, team: divisionTeams[index]),
                       );
                     },
-                    child: DivisionTeamWidget(
-                        order: index + 1, team: divisionTeams[index]),
-                  );
-                },
+                  ),
+                ),
               ),
             )
           ],

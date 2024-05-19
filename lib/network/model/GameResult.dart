@@ -5,6 +5,6 @@ class GameResult {
   GameResult({required this.userId, required this.goalCount});
 
   Map<String, dynamic> toJson() {
-    return {'userId': this.userId, 'goalCount': this.goalCount};
+    return {'userId': userId, 'goalCount': goalCount};
   }
 }

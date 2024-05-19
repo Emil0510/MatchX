@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:spinner_dropdown/spinner_list_item.dart';
 
 abstract class CreateMatchStates extends Equatable{}
 

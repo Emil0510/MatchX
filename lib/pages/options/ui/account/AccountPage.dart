@@ -4,9 +4,7 @@ import 'package:flutter_app/pages/options/cubit/edit_profile_logics.dart';
 import 'package:flutter_app/pages/options/cubit/options_cubit.dart';
 import 'package:flutter_app/pages/options/widgets/options_item.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../Constants.dart';
-import 'EditProfilePage.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});

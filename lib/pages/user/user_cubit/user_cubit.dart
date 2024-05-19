@@ -2,7 +2,6 @@ import 'package:age_calculator/age_calculator.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_app/pages/user/user_cubit/user_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Constants.dart';
 import '../../../network/model/User.dart';
@@ -28,28 +27,19 @@ class UserCubit extends Cubit<UserStates> {
         ),
       );
 
-      print(response.statusCode);
       if (response.statusCode == 200) {
         var user = User.fromJson(response.data);
 
         //Date of birth to age
         var birthDate = user.dateOfBirth?.split('T')[0];
-        var joinDate = user.joinDate!.split('T')[0];
+
         var dateTimeBirth = DateTime(
             int.parse(birthDate!.split('-')[0]),
             int.parse(birthDate.split('-')[1]),
             int.parse(birthDate.split('-')[2]));
 
-        var dateTimeJoin = DateTime(
-            int.parse(joinDate.split('-')[0]),
-            int.parse(joinDate.split('-')[1]),
-            int.parse(joinDate.split('-')[2]));
-
         var age = AgeCalculator.age(dateTimeBirth).years;
 
-        var format = DateFormat("MMMM dd, yyyy");
-        var dateTimeString = format.format(dateTimeBirth);
-        var joinTimeString = format.format(dateTimeJoin);
 
         emit(UserPageState(user: user, age: age));
       } else {
@@ -73,7 +63,6 @@ class UserCubit extends Cubit<UserStates> {
         ),
       );
 
-      print(response.statusCode);
       if (response.statusCode == 200) {
         var user = User.fromJson(response.data);
 
@@ -85,16 +74,9 @@ class UserCubit extends Cubit<UserStates> {
             int.parse(birthDate.split('-')[1]),
             int.parse(birthDate.split('-')[2]));
 
-        var dateTimeJoin = DateTime(
-            int.parse(joinDate.split('-')[0]),
-            int.parse(joinDate.split('-')[1]),
-            int.parse(joinDate.split('-')[2]));
 
         var age = AgeCalculator.age(dateTimeBirth).years;
 
-        var format = DateFormat("MMMM dd, yyyy");
-        var dateTimeString = format.format(dateTimeBirth);
-        var joinTimeString = format.format(dateTimeJoin);
 
         return UserData(user: user, age: age, joinDate: joinDate, birthDate: birthDate);
       } else {

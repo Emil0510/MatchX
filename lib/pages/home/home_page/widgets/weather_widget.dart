@@ -1,8 +1,7 @@
 import 'package:adv_flutter_weather/bg/weather_bg.dart';
 import 'package:adv_flutter_weather/utils/weather_type.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 import '../../../../network/model/Weather.dart';
 
 class WeatherWidget extends StatelessWidget {
@@ -43,15 +42,15 @@ class WeatherWidget extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Image.network(
-                        "https://${weather.current.condition.icon.substring(2)}",
+                      CachedNetworkImage(
+                        imageUrl: "https://${weather.current.condition.icon.substring(2)}",
                         width: width / 5,
                         height: width / 5,
                       ),
                       Text(
                         "${weather.current.temp_c}℃",
                         style:
-                            TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       )
                     ],
                   ),

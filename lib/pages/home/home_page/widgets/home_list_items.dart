@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/network/model/Team.dart';
 import 'package:flutter_app/pages/home/home_page/widgets/last_3_games_widget.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../network/model/User.dart';
 
@@ -61,7 +63,7 @@ class Top10UserSingleItem extends StatelessWidget {
                 child: Center(
                   child: Text(
                     user.goalCount.toString(),
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -69,7 +71,7 @@ class Top10UserSingleItem extends StatelessWidget {
             Expanded(
               flex: 9,
               child: Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: TopListContainer(
                   color: const Color(goldColor),
                   child: Padding(
@@ -77,7 +79,7 @@ class Top10UserSingleItem extends StatelessWidget {
                     child: Center(
                       child: Text(
                         user.average.toString(),
-                        style: TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -135,11 +137,21 @@ class Top10TeamSingleItem extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
-                          child: Image.network(
-                            team.teamLogoUrl ?? "",
+                          child: CachedNetworkImage(
+                            imageUrl: team.teamLogoUrl ?? "",
                             height: width / 10,
                             width: width / 10,
                             fit: BoxFit.cover,
+                            placeholder: (context, url) => Shimmer.fromColors(
+                              baseColor: Colors.grey.shade300,
+                              highlightColor: Colors.grey.shade100,
+                              enabled: true,
+                              child: Container(
+                                width: width*4/5,
+                                height: width*4/5,
+                                color: Colors.black54,
+                              ),
+                            ),
                           ),
                         ),
                         Expanded(
@@ -185,7 +197,7 @@ class Top10TeamSingleItem extends StatelessWidget {
                 child: TopListContainer(
                   color: const Color(goldColor),
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Center(
                       child: Text(
                         team.point.toString(),

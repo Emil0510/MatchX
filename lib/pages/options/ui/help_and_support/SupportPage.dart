@@ -38,10 +38,8 @@ class SupportPage extends StatelessWidget {
             email: '',
           ),
           onLoad: () {
-            print('Hello Tawk!');
           },
           onLinkTap: (String url) {
-            print(url);
           },
           placeholder: const Center(
             child: Text('Loading...'),

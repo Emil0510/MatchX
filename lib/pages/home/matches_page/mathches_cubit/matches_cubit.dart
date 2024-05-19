@@ -63,16 +63,14 @@ class MatchesCubit extends Cubit<MatchesStates> {
             ?.map((e) => TeamGame.fromJson(e))
             .toList();
         this.games = games??[];
-        this.isLoaded = true;
+        isLoaded = true;
         matchesPageCubit = this;
 
-        print(games);
         return this.games;
       }else{
         return games;
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       return games;
     }
   }
@@ -99,15 +97,12 @@ class MatchesCubit extends Cubit<MatchesStates> {
             ?.map((e) => TeamGame.fromJson(e))
             .toList();
         this.games = games??[];
-        this.isLoaded = true;
+        isLoaded = true;
         matchesPageCubit = this;
 
-        print(games);
         emit(MatchesPageState(games: games, selectedId: selectedId));
       }
-    } on DioException catch (e) {
-      print(e.response?.data);
-    }
+    } on DioException catch (e) {}
   }
 
   void getSelectedRegionGames(int selectedRegion) async {
@@ -135,15 +130,12 @@ class MatchesCubit extends Cubit<MatchesStates> {
             ?.map((e) => TeamGame.fromJson(e))
             .toList();
         this.games = games??[];
-        this.isLoaded = true;
+        isLoaded = true;
         matchesPageCubit = this;
-        print(games);
 
         emit(MatchesPageState(games: games, selectedId: selectedId));
       }
-    } on DioException catch (e) {
-      print(e.response?.data);
-    }
+    } on DioException catch (e) {}
   }
 
   void loadMoreGames(Function (List<TeamGame>) callback) async {
@@ -172,13 +164,11 @@ class MatchesCubit extends Cubit<MatchesStates> {
         this.games.addAll(games??[]);
         isLoaded = true;
         matchesPageCubit = this;
-        print(games);
 
         callback(games??[]);
 
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       callback([]);
     }
 
@@ -268,7 +258,6 @@ class MatchesCubit extends Cubit<MatchesStates> {
         showCustomSnackbar(context, "Səhvlik");
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       Navigator.pop(context);
       showCustomSnackbar(context, e.response?.data['message']);
     }
@@ -279,13 +268,9 @@ class MatchesCubit extends Cubit<MatchesStates> {
     var dio = locator.get<Dio>();
     var token = sharedPreferences.getString(tokenKey);
 
-    // try {
-    Map<String, dynamic> body = {"id": id};
-    print(id);
-
     try {
       var response = await dio.post(
-        baseUrl + findPairApi + "/" + id,
+        "$baseUrl$findPairApi/$id",
         options: Options(
           headers: {
             "Authorization": "Bearer $token",
@@ -301,7 +286,6 @@ class MatchesCubit extends Cubit<MatchesStates> {
         showCustomSnackbar(context, "Səhvlik");
       }
     } on DioException catch (e) {
-      print(e);
       Navigator.pop(context);
       showCustomSnackbar(context, "Səhvlik");
     }

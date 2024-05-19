@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
-
+import 'package:shimmer/shimmer.dart';
 import '../../../../network/model/User.dart';
 import '../../../user/user_cubit/user_logics.dart';
 
@@ -38,11 +38,21 @@ class UserCaruselItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ClipOval(
-                child: Image.network(
-                  user.profilePhotoUrl ?? "",
+                child: CachedNetworkImage(
+                  imageUrl: user.profilePhotoUrl,
                   width: width / 5,
                   height: width / 5,
                   fit: BoxFit.cover,
+                  placeholder: (context, url) => Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    enabled: true,
+                    child: Container(
+                      width: width*4/5,
+                      height: width*4/5,
+                      color: Colors.black54,
+                    ),
+                  ),
                 ),
               ),
               Padding(
@@ -89,7 +99,7 @@ class UserCaruselItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 10.0, top: 8.0),
+                  padding: const EdgeInsets.only(left: 10.0, top: 8.0),
                   child: Text(
                     "Komanda",
                     style: TextStyle(color: color),

@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
 import '../../../Constants.dart';
 import '../../../network/network.dart';
 
@@ -154,11 +152,11 @@ class _CreateAccountState extends State<CreateAccount> {
                 content: Text("Parollar bir biri ilə üst üstə gəlmir"),
               ));
             } else {
-              setState(() {
-                isLoading = true;
-              });
               if (passwordController.text.trim().length >= 8 &&
                   regEx.hasMatch(passwordController.text.trim())) {
+                setState(() {
+                  isLoading = true;
+                });
                 checkExistenceOfUser(emailAddressController.text.trim(),
                         usernameController.text.trim())
                     .then((value) {
@@ -273,6 +271,7 @@ class _CreateAccountState extends State<CreateAccount> {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     usernameController = TextEditingController();
@@ -375,9 +374,9 @@ class _CreateAccountState extends State<CreateAccount> {
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Color(blackColor),
+                  fillColor: const Color(blackColor),
                   labelText: "E-mail adresi",
-                  labelStyle: TextStyle(color: Colors.grey),
+                  labelStyle: const TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(
@@ -413,13 +412,13 @@ class _CreateAccountState extends State<CreateAccount> {
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Color(blackColor),
+                    fillColor: const Color(blackColor),
                     labelText: 'Parol',
-                    labelStyle: TextStyle(color: Colors.grey),
+                    labelStyle: const TextStyle(color: Colors.grey),
                     // Here is key idea
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(color: Colors.grey)),
+                        borderSide: const BorderSide(color: Colors.grey)),
                   ),
                 ),
               ),
@@ -447,21 +446,21 @@ class _CreateAccountState extends State<CreateAccount> {
                 child: TextField(
                   controller: confirmPasswordController,
                   obscureText: !(_passwordVisible),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Color(blackColor),
+                    fillColor: const Color(blackColor),
                     labelText: 'Parolu təsdiqlə',
-                    labelStyle: TextStyle(color: Colors.grey),
+                    labelStyle: const TextStyle(color: Colors.grey),
                     // Here is key idea
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(color: Colors.grey)),
+                        borderSide: const BorderSide(color: Colors.grey)),
                     suffixIcon: IconButton(
                       icon: Icon(
                         // Based on passwordVisible state choose the icon
                         _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                        color: Color(0xff888888),
+                        color: const Color(0xff888888),
                       ),
                       onPressed: () {
                         // Update the state i.e. toogle the state of passwordVisible variable
@@ -509,9 +508,9 @@ class _CreateAccountState extends State<CreateAccount> {
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Color(blackColor),
+                fillColor: const Color(blackColor),
                 labelText: "Ad",
-                labelStyle: TextStyle(color: Colors.grey),
+                labelStyle: const TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                   borderSide: const BorderSide(
@@ -545,9 +544,9 @@ class _CreateAccountState extends State<CreateAccount> {
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Color(blackColor),
+                fillColor: const Color(blackColor),
                 labelText: "Soyad",
-                labelStyle: TextStyle(color: Colors.grey),
+                labelStyle: const TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                   borderSide: const BorderSide(

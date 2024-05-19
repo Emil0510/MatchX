@@ -20,7 +20,7 @@ class _HomePageLogicsState extends State<HomePageLogics> {
       if (state is HomePageLoadingState) {
         return const CircularLoadingWidget();
       } else if (state is HomePageErrorState) {
-        return Text("Error");
+        return const Text("Error");
       } else if (state is HomePageMainState) {
         return HomeMainPage(
           top10Teams: state.top10Teams,

@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/network/network.dart';
-import 'package:flutter_app/pages/home/more_page/ui/widget/team_widget.dart';
 import 'package:flutter_app/pages/home/team_page/team_detail_cubit/team_detail_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,7 +30,6 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
 
     if (response.statusCode == 200) {
       var team = Team.fromJson(response.data['data']);
-      print(response.data);
       this.team = team;
       emit(TeamDetailPageState(
           team: team, isSuccessful: false, message: "", isThrow: false));
@@ -56,7 +53,6 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
 
     if (response.statusCode == 200) {
       var team = Team.fromJson(response.data['data']);
-      print(response.data);
       this.team = team;
       return this.team;
     } else {
@@ -77,7 +73,6 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
     var sharedPreferences = locator.get<SharedPreferences>();
     var token = sharedPreferences.getString(tokenKey);
 
-    print("Name $teamName");
     String? fileName;
     FormData? formData;
 
@@ -104,7 +99,6 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
           queryParameters: body);
 
       if (response.statusCode == 200) {
-        print(response.data);
         if(response.data['success']){
           emit(EditTeamPageState(
               team: team, isSuccessful: true, message: "Dəyişdirildi"));
@@ -119,7 +113,6 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
 
 
     } on DioException catch (e) {
-      print(e.response?.data);
 
       emit(EditTeamPageState(
           team: team, isSuccessful: false, message: e.response?.data));
@@ -142,7 +135,6 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
 
     if (response.statusCode == 200) {
       var team = Team.fromJson(response.data['data']);
-      print(response.data);
       this.team = team;
       emit(TeamDetailPageState(
           team: team, isSuccessful: isSuccesfull, message: "", isThrow: false));
@@ -186,7 +178,6 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
             isThrow: true));
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       emit(TeamDetailPageState(
           team: team!,
           isSuccessful: false,
@@ -208,7 +199,6 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
         ),
       );
       if (response.statusCode == 200) {
-        print(response.data);
         String token = response.data['data'];
         await sharedPreferences.setString(tokenKey, token);
         var list = ["User"];
@@ -222,7 +212,6 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
             message: "Komanda silindi"));
       }
     } on DioException catch (e) {
-      print(e.response?.data);
 
       emit(TeamDetailPageState(
           isThrow: false,
@@ -263,7 +252,6 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
         }
       }
     } on DioException catch (e) {
-      print(e.response?.data);
 
       emit(TeamDetailPageState(
           isThrow: false,
@@ -296,7 +284,6 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
         await sharedPreferences.setString(myTeamIdKey, "");
       }
     } on DioException catch (e) {
-      print(e.response?.data);
 
       emit(TeamDetailPageState(
           team: team!,
@@ -314,7 +301,6 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
     var sharedPreferences = locator.get<SharedPreferences>();
     var token = sharedPreferences.getString(tokenKey);
 
-    print("Name $teamName");
     String? fileName;
     FormData? formData;
 
@@ -337,13 +323,6 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
       });
     }
 
-    Map<String, dynamic> body = {
-      "Name": teamName,
-      "Description": teamDescription,
-      "IsPrivate": isPrivate,
-      "PhoneNumber": phoneNumber,
-    };
-
     try {
       var response = await dio.post(baseUrl + teamCreateApi,
           options: Options(headers: {"Authorization": "Bearer $token"}),
@@ -363,9 +342,7 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
         emit(TeamCreatePageState(
             isSuccessful: true, message: "Komanda yaradıldı"));
       }
-      print(response.data);
     } on DioException catch (e) {
-      print(e.response?.data);
 
       emit(TeamCreatePageState(isSuccessful: false, message: e.response?.data));
     }

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../network/model/Team.dart';
+import '../../../../network/model/TeamFilter.dart';
 
 abstract class TeamCubitStates extends Equatable {}
 
@@ -23,7 +24,8 @@ class TeamErrorState extends TeamCubitStates{
 
 class AllTeamPageState extends TeamCubitStates {
   final List<Team> teams;
-  AllTeamPageState({required this.teams});
+  final TeamFilter filter;
+  AllTeamPageState({required this.teams, required this.filter});
 
   @override
   List<Object?> get props => throw UnimplementedError();

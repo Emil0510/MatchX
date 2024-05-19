@@ -1,5 +1,3 @@
-
-import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,35 +24,25 @@ class _OnboardPageState extends State<OnboardPage> {
 
 
   final List<Widget> _pages = [
-    Container(
-      child: Align(
-        alignment: Alignment.center,
-        child: Image.asset("assets/image1.png"),
-        ),
+    Align(
+      alignment: Alignment.center,
+      child: Image.asset("assets/image1.png"),
       ),
-    Container(
-      child: Align(
-        alignment: Alignment.center,
-        child: Image.asset("assets/image2.png"),
-      ),
+    Align(
+      alignment: Alignment.center,
+      child: Image.asset("assets/image2.png"),
     ),
-    Container(
-      child: Align(
-        alignment: Alignment.center,
-        child: Image.asset("assets/image3.png"),
-      ),
+    Align(
+      alignment: Alignment.center,
+      child: Image.asset("assets/image3.png"),
     ),
-    Container(
-      child: Align(
-        alignment: Alignment.center,
-        child: Image.asset("assets/image4.png"),
-      ),
+    Align(
+      alignment: Alignment.center,
+      child: Image.asset("assets/image4.png"),
     ),
-    Container(
-      child: Align(
-        alignment: Alignment.center,
-        child: Image.asset("assets/image5.png"),
-      ),
+    Align(
+      alignment: Alignment.center,
+      child: Image.asset("assets/image5.png"),
     ),
   ];
 
@@ -92,7 +80,7 @@ class _OnboardPageState extends State<OnboardPage> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => SignInSignUp(),
+        builder: (context) => const SignInSignUp(),
       ),
           (e) => false,
     );
@@ -117,7 +105,7 @@ class _OnboardPageState extends State<OnboardPage> {
     var height = MediaQuery.of(context).size.height;
 
 
-    return Container(
+    return SizedBox(
       height: double.maxFinite,
       width: double.maxFinite,
       child: Stack(
@@ -152,22 +140,22 @@ class _OnboardPageState extends State<OnboardPage> {
                     },
                   ),
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(onboardText[_currentIndex],textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: height/40, fontStyle: FontStyle.normal, decoration: TextDecoration.none,  fontFamily: 'NotoSans'),),
                 ),
-                SizedBox(height: 30,),
+                const SizedBox(height: 30,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: _pages.asMap().entries.map((entry) {
                     return Container(
                       width: 8.0,
                       height: 8.0,
-                      margin: EdgeInsets.symmetric(horizontal: 2.0),
+                      margin: const EdgeInsets.symmetric(horizontal: 2.0),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: _currentIndex == entry.key ? Color(goldColor) : Colors.grey,
+                        color: _currentIndex == entry.key ? const Color(goldColor) : Colors.grey,
                       ),
                     );
                   }).toList(),
@@ -245,7 +233,7 @@ class _OnboardPageState extends State<OnboardPage> {
                       child:  Center(
                         child: Text(
                           buttonText,
-                          style: TextStyle(color: Colors.black, fontSize: 16),
+                          style: const TextStyle(color: Colors.black, fontSize: 16),
                         ),
                       ),
                     ),

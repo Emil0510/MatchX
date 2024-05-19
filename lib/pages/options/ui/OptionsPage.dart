@@ -63,7 +63,7 @@ class _OptionsPageState extends State<OptionsPage> {
               ),
               OptionsItem(
                 leadingIcon: Icons.notifications,
-                title: "Bildirimlər",
+                title: "Bildiriş parametri",
                 onTap: () {
                   AppSettings.openAppSettings(
                       type: AppSettingsType.notification);
@@ -141,7 +141,7 @@ class _OptionsPageState extends State<OptionsPage> {
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Color(blackColor2),
+                      color: const Color(blackColor2),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Padding(
@@ -155,7 +155,7 @@ class _OptionsPageState extends State<OptionsPage> {
                               Icon(
                                 Icons.logout,
                                 size: width / 15,
-                                color: Color(redColor),
+                                color: const Color(redColor),
                               ),
                               const Padding(
                                 padding: EdgeInsets.only(left: 8.0),

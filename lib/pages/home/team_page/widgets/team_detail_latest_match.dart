@@ -1,12 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
 import 'package:flutter_app/network/model/Game.dart';
 import 'package:flutter_app/widgets/infinity_scroll_loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../network/network.dart';
 
@@ -125,11 +125,21 @@ class TeamNameWidget extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(5),
-          child: Image.network(
-            photoUrl,
+          child: CachedNetworkImage(
+            imageUrl: photoUrl,
             width: width / 5,
             height: width / 5,
             fit: BoxFit.cover,
+            placeholder: (context, url) => Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              enabled: true,
+              child: Container(
+                width: width * 4 / 5,
+                height: width * 4 / 5,
+                color: Colors.black54,
+              ),
+            ),
           ),
         ),
         Center(
@@ -324,7 +334,9 @@ class _TeamDetailMatchesListState extends State<TeamDetailMatchesList> {
     return ListView.builder(
       controller: controller,
       padding: EdgeInsets.zero,
-      itemCount: games.length % 10 == 0 && games.isNotEmpty ? games.length + 1 : games.length,
+      itemCount: games.length % 10 == 0 && games.isNotEmpty
+          ? games.length + 1
+          : games.length,
       shrinkWrap: true,
       itemBuilder: (context, index) {
         if (index < games.length) {
@@ -367,11 +379,21 @@ class TeamFinishedGameWidget extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Image.network(
-                      game.homeTeamImageUrl ?? "",
+                    CachedNetworkImage(
+                      imageUrl: game.homeTeamImageUrl ?? "",
                       width: width / 8,
                       height: width / 8,
                       fit: BoxFit.cover,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        enabled: true,
+                        child: Container(
+                          width: width * 4 / 5,
+                          height: width * 4 / 5,
+                          color: Colors.black54,
+                        ),
+                      ),
                     ),
                     Expanded(
                       child: Padding(
@@ -380,6 +402,8 @@ class TeamFinishedGameWidget extends StatelessWidget {
                           children: [
                             Text(
                               textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               game.homeTeamName ?? "",
                               style: const TextStyle(color: Color(goldColor)),
                             ),
@@ -430,7 +454,9 @@ class TeamFinishedGameWidget extends StatelessWidget {
                           children: [
                             Text(
                               textAlign: TextAlign.center,
-                              game.awayTeamName! ?? "",
+                              game.awayTeamName!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(color: Color(goldColor)),
                             ),
                             RichText(
@@ -459,11 +485,21 @@ class TeamFinishedGameWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Image.network(
-                      game.awayTeamImageUrl ?? "",
+                    CachedNetworkImage(
+                      imageUrl: game.awayTeamImageUrl ?? "",
                       width: width / 8,
                       height: width / 8,
                       fit: BoxFit.cover,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        enabled: true,
+                        child: Container(
+                          width: width * 4 / 5,
+                          height: width * 4 / 5,
+                          color: Colors.black54,
+                        ),
+                      ),
                     ),
                   ],
                 ),

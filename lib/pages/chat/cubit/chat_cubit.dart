@@ -19,13 +19,16 @@ import '../../home/more_page/more_cubit/more_page_cubit.dart';
 import '../../home/team_page/team_cubit/team_cubit.dart';
 import '../../sign_in_sign_up/login_signup.dart';
 
+import 'dart:io' show Platform;
+
 class ChatPageCubit extends Cubit<ChatPageStates> {
   ChatPageCubit() : super(ChatPageInitialState());
 
   late final HubConnection hubConnection;
   bool isNotificationVisible = true;
   int active = 0;
-  late Function(List<Message>, bool, bool) callback;
+  Function(List<Message>, bool, bool) callback =
+      (List<Message> list, bool test, bool test1) {};
   late BuildContext context;
   bool isLoading = true;
   final List<Message> messages = [
@@ -95,10 +98,6 @@ class ChatPageCubit extends Cubit<ChatPageStates> {
     List<Message> oldMessages = (data[0]?['unReadMessages'] as List)
         .map((e) => Message.fromJson(e, false))
         .toList();
-    // var online = data[0]['online'];
-    // active = online;
-
-    print(data);
 
     if (messages.length == 1) {
       messages.addAll(oldMessages);
@@ -117,12 +116,15 @@ class ChatPageCubit extends Cubit<ChatPageStates> {
     if (message.tagUserName != "" && message.tagUserName == getMyUsername()) {
       AwesomeNotifications().createNotification(
         content: NotificationContent(
-          id: 10,
-          channelKey: 'basic_channel',
-          actionType: ActionType.Default,
-          title: '${message.username} sizi tağ etdi!',
-          body: message.message,
+            id: 10,
+            channelKey: 'basic_channel',
+            actionType: ActionType.Default,
+            title: '${message.username} sizi tağ etdi!',
+            body: message.message,
+            icon : Platform.isAndroid ? 'resource://drawable/ic_notification' : null,
+
         ),
+
       );
     }
 
@@ -168,14 +170,12 @@ class ChatPageCubit extends Cubit<ChatPageStates> {
   }
 
   void checkCoursing() {
-    print("Checkkkkk");
     var sharedPreferences = locator.get<SharedPreferences>();
     coursingCount = sharedPreferences.getInt(countCursingKey) ?? 0;
     var lockOutTime =
         sharedPreferences.getString(lockoutLimitForMessagingKey) ?? "";
     bool isBefore = true;
 
-    print("LockOUt Time ${lockOutTime}");
     if (!(lockOutTime == "")) {
       var time = DateTime.parse(lockOutTime);
       isBefore = time.isBefore(DateTime.now());
@@ -183,7 +183,6 @@ class ChatPageCubit extends Cubit<ChatPageStates> {
 
     if (coursingCount % 5 == 0) {
       if (!isBefore) {
-        print("Messsage lockeddddddddd");
         callback(messages.reversed.toList(), true, isLoading);
         emit(ChatPageMessageLockingState(messages, true, 0));
       }

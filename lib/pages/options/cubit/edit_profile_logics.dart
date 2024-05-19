@@ -20,7 +20,7 @@ class _EditProfileLogicsState extends State<EditProfileLogics> {
       if(state is OptionsLoadingState){
         return const CircularLoadingWidget();
       }else if(state is OptionsErrorState){
-        return Text("Error");
+        return const Text("Error");
       }else if(state is OptionsEditProfileState){
         return EditProfilePage(user: state.user);
       }else{

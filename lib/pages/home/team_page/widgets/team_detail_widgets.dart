@@ -1,10 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
 import 'package:flutter_app/pages/home/team_page/team_detail_cubit/team_detail_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:shimmer/shimmer.dart';
 import '../../../../network/model/Team.dart';
 import '../../../../network/model/User.dart';
 import '../../../user/user_cubit/user_logics.dart';
@@ -200,8 +200,8 @@ class TeamInformationPhotoSingleItem extends StatelessWidget {
             child: Center(
                 child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Image.network(
-                photoUrl,
+              child: CachedNetworkImage(
+                imageUrl: photoUrl,
                 fit: BoxFit.fill,
               ),
             )),
@@ -289,11 +289,23 @@ class TeamMembersListWidget extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: members.length,
-        itemBuilder: (context, index) {
-          return Padding(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: members.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            //To member profile
+            if (getMyUsername() != members[index].userName) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => UserLogics(
+                        username: members[index].userName ?? "")),
+              );
+            }
+          },
+          child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Container(
@@ -301,113 +313,106 @@ class TeamMembersListWidget extends StatelessWidget {
                   color: Colors.black,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: GestureDetector(
-                  onTap: () {
-                    //To member profile
-                    if (getMyUsername() != members[index].userName) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UserLogics(
-                                username: members[index].userName ?? "")),
-                      );
-                    }
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: ClipOval(
-                          child: Image.network(
-                            members[index].profilePhotoUrl,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: ClipOval(
+                        child: CachedNetworkImage(
+                          imageUrl: members[index].profilePhotoUrl,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.grey.shade100,
+                            enabled: true,
+                            child: Container(
+                              width: width * 4 / 5,
+                              height: width * 4 / 5,
+                              color: Colors.black54,
+                            ),
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16, bottom: 16),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              members[index].name,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "@${members[index].userName}",
-                              style: TextStyle(color: Colors.grey),
-                            )
-                          ],
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16, bottom: 16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            members[index].name,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            "@${members[index].userName}",
+                            style: const TextStyle(color: Colors.grey),
+                          )
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            if ((teamCapitanUsername !=
-                                    members[index].userName &&
-                                getMyUsername() == teamCapitanUsername)) {
-                              print("Throw user work");
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          if ((teamCapitanUsername != members[index].userName &&
+                              getMyUsername() == teamCapitanUsername)) {
+                            AlertDialog alert = AlertDialog(
+                              title: const Text(
+                                  "Oyunçunu komandadan atmağa əminsiz?"),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text(
+                                      "Xeyr",
+                                      style: TextStyle(color: Colors.white),
+                                    )),
+                                TextButton(
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                      context
+                                          .read<TeamDetailCubit>()
+                                          .throwUser(members[index].id ?? "");
+                                    },
+                                    child: const Text("Bəli",
+                                        style: TextStyle(color: Colors.white))),
+                              ],
+                            );
 
-                              AlertDialog alert = AlertDialog(
-                                title:
-                                    Text("Oyunçunu komandadan atmağa əminsiz?"),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text(
-                                        "Xeyr",
-                                        style: TextStyle(color: Colors.white),
-                                      )),
-                                  TextButton(
-                                      onPressed: () async {
-                                        Navigator.pop(context);
-                                        context
-                                            .read<TeamDetailCubit>()
-                                            .throwUser(members[index].id ?? "");
-                                      },
-                                      child: const Text("Bəli",
-                                          style:
-                                              TextStyle(color: Colors.white))),
-                                ],
-                              );
-
-                              // show the dialog
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return alert;
-                                },
-                              );
-                            }
-                          },
-                          child: (teamCapitanUsername !=
-                                      members[index].userName &&
-                                  getMyUsername() == teamCapitanUsername)
-                              ? const Icon(
-                                  Icons.exit_to_app,
-                                  color: Colors.grey,
-                                )
-                              : Text(
-                                  teamCapitanUsername == members[index].userName
-                                      ? "Lider"
-                                      : "       ",
-                                  style:
-                                      const TextStyle(color: Color(goldColor)),
-                                ),
-                        ),
+                            // show the dialog
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return alert;
+                              },
+                            );
+                          }
+                        },
+                        child: (teamCapitanUsername != members[index].userName &&
+                                getMyUsername() == teamCapitanUsername)
+                            ? const Icon(
+                                Icons.exit_to_app,
+                                color: Colors.grey,
+                              )
+                            : Text(
+                                teamCapitanUsername == members[index].userName
+                                    ? "Lider"
+                                    : "       ",
+                                style: const TextStyle(color: Color(goldColor)),
+                              ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

@@ -39,7 +39,6 @@ class MorePageCubit extends Cubit<MorePageCubitStates> {
         baseUrl + usersApi + username,
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
-      print(response.statusCode);
       if (response.statusCode == 200) {
         var user = User.fromJson(response.data);
         mine = user;
@@ -53,16 +52,7 @@ class MorePageCubit extends Cubit<MorePageCubitStates> {
             int.parse(birthDate.split('-')[1]),
             int.parse(birthDate.split('-')[2]));
 
-        var dateTimeJoin = DateTime(
-            int.parse(joinDate.split('-')[0]),
-            int.parse(joinDate.split('-')[1]),
-            int.parse(joinDate.split('-')[2]));
-
         var age = AgeCalculator.age(dateTimeBirth).years;
-
-        var format = DateFormat("MMMM dd, yyyy");
-        var dateTimeString = format.format(dateTimeBirth);
-        var joinTimeString = format.format(dateTimeJoin);
 
         return UserData(user: mine!, age: age, joinDate: joinDate, birthDate: birthDate);
       } else {
@@ -103,7 +93,6 @@ class MorePageCubit extends Cubit<MorePageCubitStates> {
         baseUrl + usersApi + username,
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
-      print(response.statusCode);
       if (response.statusCode == 200) {
         var user = User.fromJson(response.data);
         mine = user;

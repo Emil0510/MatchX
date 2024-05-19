@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/network/model/TeamFilter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../Constants.dart';
 import '../team_cubit/team_cubit.dart';
 
 class FilterPage extends StatefulWidget {
-  const FilterPage({super.key});
+  final TeamFilter filter;
+  const FilterPage({super.key, required this.filter});
 
   @override
   State<FilterPage> createState() => _FilterPageState();
 }
 
 class _FilterPageState extends State<FilterPage> {
+
+  late TeamFilter filter;
   int _minRankValue = 100;
   int _maxRankValue = 3500;
-  RangeValues _selectedRankRange = const RangeValues(100, 3500);
+  late RangeValues _selectedRankRange;
   int _minMemberValue = 1;
   int _maxMemberValue = 11;
-  RangeValues _selectedMemberRange = const RangeValues(1, 11);
-  String selectedSort = 'Default';
+  late RangeValues _selectedMemberRange;
+  String selectedSort = 'Defolt';
   int selectedSortInt = 0; // Default selected value
   List<String> sortOptions = [
-    'Default',
+    'Defolt',
     'A-Z',
     'Ən populyar',
     'Yeni',
@@ -46,6 +50,64 @@ class _FilterPageState extends State<FilterPage> {
   String selectedPrivate = "Hamısı";
   List<String> privateOptions = ["Hamısı", "Açıq", "Qapalı"];
 
+  @override
+  void initState() {
+    super.initState();
+    sortOptions = [
+      'Defolt',
+      'A-Z',
+      'Ən populyar',
+      'Yeni',
+      'Köhnə'
+      // Add more options as needed
+    ];
+
+    divisionOptions = [
+      'Hamısı',
+      'Həvəskar 2',
+      'Həvəskar 1',
+      'Diviziya 3',
+      'Diviziya 2',
+      'Diviziya 1',
+      'Super Liq',
+      // Add more options as needed
+    ];
+
+    privateOptions = ["Hamısı", "Açıq", "Qapalı"];
+
+    filter = widget.filter;
+    _minRankValue = 100;
+    _maxRankValue = 3500;
+
+    _selectedRankRange =  RangeValues(filter.minRange.toDouble(), filter.maxRange.toDouble());
+
+    _minMemberValue = 1;
+    _maxMemberValue = 11;
+
+    _selectedMemberRange =   RangeValues(filter.minMembersCount.toDouble(), filter.maxMembersCount.toDouble());
+
+    selectedSortInt = filter.sort;
+    selectedSort = sortOptions.elementAt(selectedSortInt);
+
+    selectedDivisionInt = filter.division;
+
+    selectedDivision = divisionOptions.elementAt(selectedDivisionInt);
+
+    isPrivate = filter.isPrivate;
+
+
+
+    if(isPrivate == null){
+      selectedPrivate = "Hamısı";
+    }else if(isPrivate == true){
+      selectedPrivate = privateOptions.elementAt(2);
+    }else if(isPrivate == false){
+      selectedPrivate = privateOptions.elementAt(1);
+    }
+
+
+  }
+
   void changeState(bool isPrivate) {
     setState(() {
       this.isPrivate = isPrivate;
@@ -54,6 +116,7 @@ class _FilterPageState extends State<FilterPage> {
 
   void onResetTapped() {
     setState(() {
+
       _minRankValue = 100;
       _maxRankValue = 3500;
       _selectedRankRange = const RangeValues(100, 3500);
@@ -70,11 +133,14 @@ class _FilterPageState extends State<FilterPage> {
         _selectedMemberRange.start.roundToDouble(),
         _selectedMemberRange.end.roundToDouble(),
       );
-      selectedSort = 'Default';
-      selectedDivision = 'All';
+      selectedSort = 'Defolt';
+      selectedDivision = 'Hamısı';
       selectedSortInt = 0;
       selectedDivisionInt = 0;
-      isPrivate = false;
+      isPrivate = null;
+      selectedPrivate = "Hamısı";
+
+
     });
   }
 
@@ -82,6 +148,7 @@ class _FilterPageState extends State<FilterPage> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
+
     return Container(
       decoration: const BoxDecoration(color: Color.fromRGBO(18, 17, 17, 1)),
       child: Column(
@@ -89,7 +156,7 @@ class _FilterPageState extends State<FilterPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: const Icon(
                 Icons.drag_handle,
                 size: 40.0,
@@ -114,7 +181,7 @@ class _FilterPageState extends State<FilterPage> {
                           const Padding(
                             padding: EdgeInsets.only(left: 16),
                             child: Text(
-                              "Rank",
+                              "Reytinq",
                               style: TextStyle(
                                   color: Color(goldColor),
                                   fontWeight: FontWeight.bold,
@@ -123,9 +190,10 @@ class _FilterPageState extends State<FilterPage> {
                           ),
                           RangeSlider(
                             values: _selectedRankRange,
-                            activeColor: Color(goldColor),
+                            activeColor: const Color(goldColor),
                             min: _minRankValue.toDouble(),
                             max: _maxRankValue.toDouble(),
+
                             onChanged: (RangeValues values) {
                               setState(() {
                                 _selectedRankRange = values;
@@ -140,8 +208,8 @@ class _FilterPageState extends State<FilterPage> {
                         ],
                       ),
                       Text(
-                        'Rank: ${_selectedRankRange.start.toInt()} - ${_selectedRankRange.end.toInt()}',
-                        style: TextStyle(color: Colors.white),
+                        'Reytinq: ${_selectedRankRange.start.toInt()} - ${_selectedRankRange.end.toInt()}',
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ],
                   ),
@@ -173,12 +241,12 @@ class _FilterPageState extends State<FilterPage> {
                                   color: Color(goldColor),
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16),
-                              textAlign: TextAlign.start,
+                                  textAlign: TextAlign.start,
                             ),
                           ),
                           RangeSlider(
                             values: _selectedMemberRange,
-                            activeColor: Color(goldColor),
+                            activeColor: const Color(goldColor),
                             min: _minMemberValue.toDouble(),
                             max: _maxMemberValue.toDouble(),
                             onChanged: (RangeValues values) {
@@ -196,7 +264,7 @@ class _FilterPageState extends State<FilterPage> {
                       ),
                       Text(
                         'Üzv sayı: ${_selectedMemberRange.start.toInt()} - ${_selectedMemberRange.end.toInt()}',
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ],
                   ),
@@ -225,7 +293,7 @@ class _FilterPageState extends State<FilterPage> {
                                 style: TextStyle(color: Colors.grey),
                                 textAlign: TextAlign.left,
                               ),
-                              Container(
+                              SizedBox(
                                 width: double.maxFinite,
                                 child: DropdownButton<String>(
                                   isExpanded: true,
@@ -246,7 +314,7 @@ class _FilterPageState extends State<FilterPage> {
                                       child: Text(
                                         value,
                                         style:
-                                            TextStyle(color: Color(goldColor)),
+                                            const TextStyle(color: Color(goldColor)),
                                       ),
                                     );
                                   }).toList(),
@@ -276,12 +344,12 @@ class _FilterPageState extends State<FilterPage> {
                                 style: TextStyle(color: Colors.grey),
                                 textAlign: TextAlign.start,
                               ),
-                              Container(
+                              SizedBox(
                                 width: double.maxFinite,
                                 child: DropdownButton<String>(
                                   isExpanded: true,
                                   value: selectedDivision,
-                                  hint: Text('Division'),
+                                  hint: const Text('Division'),
                                   onChanged: (String? newValue) {
                                     setState(() {
                                       selectedDivision = newValue!;
@@ -298,7 +366,7 @@ class _FilterPageState extends State<FilterPage> {
                                       child: Text(
                                         value,
                                         style:
-                                            TextStyle(color: Color(goldColor)),
+                                            const TextStyle(color: Color(goldColor)),
                                       ),
                                     );
                                   }).toList(),
@@ -330,12 +398,12 @@ class _FilterPageState extends State<FilterPage> {
                         style: TextStyle(color: Colors.grey),
                         textAlign: TextAlign.start,
                       ),
-                      Container(
+                      SizedBox(
                         width: double.maxFinite,
                         child: DropdownButton<String>(
                           isExpanded: true,
                           value: selectedPrivate,
-                          hint: Text('Komanda Tipi'),
+                          hint: const Text('Komanda Tipi'),
                           onChanged: (String? newValue) {
                             setState(() {
                               selectedPrivate = newValue!;
@@ -357,7 +425,7 @@ class _FilterPageState extends State<FilterPage> {
                                   child: Text(
                                     value,
                                     style:
-                                    TextStyle(color: Color(goldColor)),
+                                    const TextStyle(color: Color(goldColor)),
                                   ),
                                 );
                               }).toList(),
@@ -374,7 +442,7 @@ class _FilterPageState extends State<FilterPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Container(
+                  child: SizedBox(
                     width: width / 3,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -392,11 +460,11 @@ class _FilterPageState extends State<FilterPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Container(
+                  child: SizedBox(
                     width: width / 3,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(goldColor)),
+                          backgroundColor: const Color(goldColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
                         context.read<TeamCubit>().loadWithFilter(

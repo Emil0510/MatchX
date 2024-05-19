@@ -68,44 +68,42 @@ class _SignInSignUpState extends State<SignInSignUp>
           },
           child: Stack(
             children: [
-              Container(
-                child: Column(
-                  children: [
-                    Container(
-                      height: height,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(25),
-                            topRight: Radius.circular(25)),
-                        // Adjust the radius value as needed
-                        color: Colors.black, // Adjust the color as needed
-                      ),
-                      child: ClipRRect(
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: height,
-                              child: isLogin
-                                  ? BlocProvider(
-                                      create: (BuildContext context) =>
-                                          LogInCubit(),
-                                      child: const LogIn())
-                                  : SignUp(
-                                      toLogIn: toLogIn,
-                                    ),
-                            ),
-                          ],
-                        ),
+              Column(
+                children: [
+                  Container(
+                    height: height,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25),
+                          topRight: Radius.circular(25)),
+                      // Adjust the radius value as needed
+                      color: Colors.black, // Adjust the color as needed
+                    ),
+                    child: ClipRRect(
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: height,
+                            child: isLogin
+                                ? BlocProvider(
+                                    create: (BuildContext context) =>
+                                        LogInCubit(),
+                                    child: const LogIn())
+                                : SignUp(
+                                    toLogIn: toLogIn,
+                                  ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               Positioned(
                 bottom: height / 15 ,
                 left: 10,
                 right: 10,
-                child: Container(
+                child: SizedBox(
                   width: double.maxFinite,
                   child: Align(
                       alignment: Alignment.center,

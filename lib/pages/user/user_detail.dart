@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/user/user_cubit/user_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../network/model/User.dart';
 import '../../../widgets/text.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
@@ -64,11 +66,21 @@ class _UserDetailPageState extends State<UserDetailPage> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ClipOval(
-                        child: Image.network(
-                          "${widget.user.profilePhotoUrl}",
+                        child: CachedNetworkImage(
+                          imageUrl: widget.user.profilePhotoUrl,
                           height: width / 4,
                           width: width / 4,
                           fit: BoxFit.cover,
+                          placeholder: (context, url) => Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.grey.shade100,
+                            enabled: true,
+                            child: Container(
+                              width: width*4/5,
+                              height: width*4/5,
+                              color: Colors.black54,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -154,18 +166,18 @@ class _UserDetailPageState extends State<UserDetailPage> {
                                       label: "${widget.user.roles?[0]}"),
                                 ),
                               )
-                            : SizedBox()
+                            : const SizedBox()
                       ],
                     ),
                     widget.user.upComingGame != null
                         ? UpcomingGameWidget(game: widget.user.upComingGame!)
-                        : SizedBox(),
+                        : const SizedBox(),
                     widget.user.userGames!.isNotEmpty
                         ? UserGamesWidget(games: widget.user.userGames!)
-                        : SizedBox(),
+                        : const SizedBox(),
                     widget.user.userTeam != null
                         ? UserTeamWidget(team: widget.user.userTeam!)
-                        : SizedBox()
+                        : const SizedBox()
                   ],
                 ),
               ),

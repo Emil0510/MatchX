@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_app/pages/home/home.dart';
 import 'package:flutter_app/pages/sign_in_sign_up/ForgotPasswordPage.dart';
 import 'package:flutter_app/pages/sign_in_sign_up/log_in/log_in_cubit/log_in_cubit.dart';
@@ -8,8 +7,6 @@ import 'package:flutter_app/pages/sign_in_sign_up/log_in/widget/log_in_button.da
 import 'package:flutter_app/widgets/container.dart';
 import 'package:flutter_app/widgets/input_text_widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../../Constants.dart';
 import '../../chat/cubit/chat_cubit.dart';
 import '../../home/home_cubit/home_cubit.dart';
 import '../../notification_page/notification_cubit/notification_cubit.dart';

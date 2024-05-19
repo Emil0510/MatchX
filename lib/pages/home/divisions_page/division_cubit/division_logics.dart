@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home/divisions_page/division_cubit/DivisionStates.dart';
 import 'package:flutter_app/pages/home/divisions_page/division_cubit/division_cubit.dart';
 import 'package:flutter_app/pages/home/divisions_page/ui/DivisionUi.dart';
-import 'package:flutter_app/pages/home/divisions_page/ui/divisions_page.dart';
 import 'package:flutter_app/widgets/loading_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

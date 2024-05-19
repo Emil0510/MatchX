@@ -14,8 +14,6 @@ bool checkLeader() {
 bool checkExistingTeam() {
   var sharedPreferences = locator.get<SharedPreferences>();
   var teamId = sharedPreferences.getString(myTeamIdKey);
-  print("Team id $teamId");
-  print(teamId != -1);
   return teamId != "";
 }
 
@@ -42,7 +40,6 @@ String getGameDate(String date) {
 String getNotificationDate(String date) {
   DateTime dateTime = DateTime.parse(date);
   var month = DateFormat('MMMM').format(dateTime);
-  print(dateTime.hour);
   String gameDate = "${dateTime.day} $month, ${dateTime.hour}:${dateTime.minute>9?"":"0"}${dateTime.minute}";
   return gameDate;
 }

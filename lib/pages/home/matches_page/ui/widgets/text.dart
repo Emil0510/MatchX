@@ -11,11 +11,11 @@ class MatchesText extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: Color(goldColor)
+        color: const Color(goldColor)
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: FittedBox(fit: BoxFit.contain, child: Text(text, style: TextStyle(color: Colors.black, fontSize:12),)),
+        child: FittedBox(fit: BoxFit.contain, child: Text(text, style: const TextStyle(color: Colors.black, fontSize:12),)),
       ),
     );
   }

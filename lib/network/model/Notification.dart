@@ -35,15 +35,15 @@ class Notificationn {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': this.Id,
-      'createdAt': this.CreatedAt,
-      'to': this.To,
-      'from': this.From,
-      'title': this.Title,
-      'description': this.Description,
-      'isInformation': this.IsInformation,
-      'idForDirect': this.IdForDirect,
-      'isRead': this.IsRead,
+      'id': Id,
+      'createdAt': CreatedAt,
+      'to': To,
+      'from': From,
+      'title': Title,
+      'description': Description,
+      'isInformation': IsInformation,
+      'idForDirect': IdForDirect,
+      'isRead': IsRead,
     };
   }
 }

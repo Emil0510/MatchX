@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Utils.dart';
+import 'package:flutter_app/network/model/TeamFilter.dart';
 import 'package:flutter_app/pages/home/team_page/team_detail_cubit/create_team_logics.dart';
 import 'package:flutter_app/pages/home/team_page/widgets/team_button_child.dart';
 import 'package:flutter_app/widgets/infinity_scroll_loading.dart';
@@ -16,8 +16,9 @@ import 'TeamDetailPage.dart';
 
 class AllTeamPage extends StatefulWidget {
   final List<Team> teams;
+  final TeamFilter filter;
 
-  const AllTeamPage({super.key, required this.teams});
+  const AllTeamPage({super.key, required this.teams, required this.filter});
 
   @override
   State<AllTeamPage> createState() => _AllTeamPageState();
@@ -28,33 +29,45 @@ class _AllTeamPageState extends State<AllTeamPage> {
   late List<Team> teams;
   bool isEnd = false;
   ScrollController scrollController = ScrollController();
+  late TeamFilter filter;
 
   @override
   void initState() {
     super.initState();
+    filter = widget.filter;
     _searchController = TextEditingController();
     teams = widget.teams;
-    scrollController.addListener(() {
-      if (scrollController.position.maxScrollExtent ==
-              scrollController.offset &&
-          !isEnd &&
-          teams.length % 10 == 0 &&
-          teams.isNotEmpty) {
-        print("End");
-        //Fetch Data
-        context.read<TeamCubit>().loadMore((newItems) {
-          if (newItems.isEmpty) {
-            setState(() {
-              isEnd = true;
-            });
-            return;
-          } else {
-            setState(() {
-              teams.addAll(newItems);
-            });
-          }
-        });
-      }
+    scrollController.addListener(
+      () {
+        if (scrollController.position.maxScrollExtent ==
+                scrollController.offset &&
+            !isEnd &&
+            teams.length % 10 == 0 &&
+            teams.isNotEmpty) {
+          //Fetch Data
+          context.read<TeamCubit>().loadMore((newItems) {
+            if (newItems.isEmpty) {
+              setState(() {
+                isEnd = true;
+              });
+              return;
+            } else {
+              setState(() {
+                teams.addAll(newItems);
+              });
+            }
+          });
+        }
+      },
+    );
+    _searchController.text = widget.filter.search;
+  }
+
+  void refreshTeams() async {
+    var data = await context.read<TeamCubit>().refresh();
+    setState(() {
+      teams = data;
+      filter = TeamFilter();
     });
   }
 
@@ -75,6 +88,7 @@ class _AllTeamPageState extends State<AllTeamPage> {
         var data = await context.read<TeamCubit>().refresh();
         setState(() {
           teams = data;
+          filter = TeamFilter();
         });
       },
       child: SingleChildScrollView(
@@ -154,7 +168,7 @@ class _AllTeamPageState extends State<AllTeamPage> {
                                 return BlocProvider.value(
                                   value: BlocProvider.of<TeamCubit>(context,
                                       listen: false),
-                                  child: const FilterPage(),
+                                  child:  FilterPage(filter: filter,),
                                 );
                               },
                             );
@@ -182,7 +196,6 @@ class _AllTeamPageState extends State<AllTeamPage> {
                                 ),
                               );
 
-                              print("Komandam  ${data}");
                               if (data != null) {
                                 context.read<TeamCubit>().isLoaded = false;
                                 context.read<TeamCubit>().start();
@@ -200,7 +213,6 @@ class _AllTeamPageState extends State<AllTeamPage> {
                                   ),
                                 ),
                               );
-                              print("Komandam  ${data}");
                               if (data != null) {
                                 context.read<TeamCubit>().start();
                               }
@@ -227,7 +239,6 @@ class _AllTeamPageState extends State<AllTeamPage> {
                   if (index < teams.length) {
                     return TeamListItem(team: teams.elementAt(index));
                   } else {
-                    print("End");
                     if (!isEnd) {
                       return const InfinityScrollLoading();
                     } else {

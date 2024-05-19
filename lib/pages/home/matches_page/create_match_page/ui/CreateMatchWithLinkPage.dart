@@ -5,7 +5,6 @@ import 'package:flutter_app/widgets/input_text_widgets.dart';
 import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../../Constants.dart';
 
@@ -33,11 +32,10 @@ class _CreateMatchWithLinkState extends State<CreateMatchWithLink> {
       dateFormat: 'dd MMMM yyyy HH',
       initialDateTime: DateTime.now(),
       minDateTime: DateTime.now(),
-      maxDateTime: DateTime.now().add(Duration(days: 30)),
+      maxDateTime: DateTime.now().add(const Duration(days: 30)),
       onMonthChangeStartWithFirstDate: true,
       onConfirm: (dateTime, List<int> index) {
         DateTime selectdate = dateTime;
-        final selIOS = DateFormat('dd-MMM-yyyy - HH:mm').format(selectdate);
         setState(() {
           selectedDate = selectdate;
         });
@@ -88,7 +86,7 @@ class _CreateMatchWithLinkState extends State<CreateMatchWithLink> {
                 ),
                 widget.guide.trim().isNotEmpty
                     ? Padding(
-                        padding: EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(20.0),
                         child: CustomReadOnlyText(controller: controller),
                       )
                     : Column(
@@ -158,7 +156,7 @@ class _CreateMatchWithLinkState extends State<CreateMatchWithLink> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(top: 8.0, bottom: MediaQuery.of(context).viewInsets.bottom),
-                            child: Container(
+                            child: SizedBox(
                               width: 2 * width / 3,
                               child: TextField(
                                 controller: messageController,
@@ -195,7 +193,6 @@ class _CreateMatchWithLinkState extends State<CreateMatchWithLink> {
                                   setState(() {
                                     selectedRegion = newValue!;
                                     selectedRegionId = regionsConstants.indexOf(newValue);
-                                    print(selectedRegionId);
                                   });
                                 },
                                 dropdownColor: Colors.black,

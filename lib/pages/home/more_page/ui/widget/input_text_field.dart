@@ -26,13 +26,13 @@ class MorePageTextField extends StatelessWidget {
       decoration: InputDecoration(
         filled: true,
         prefixIconColor: const Color(goldColor),
-        fillColor: Color(blackColor3),
+        fillColor: const Color(blackColor3),
         labelText: text,
         suffixIcon: iconVisibility ? IconButton(
           icon: Icon(
             // Based on passwordVisible state choose the icon
             passwordVisible ? Icons.visibility : Icons.visibility_off,
-            color: Color(0xff888888),
+            color: const Color(0xff888888),
           ),
           onPressed: () {
             // Update the state i.e. toogle the state of passwordVisible variable

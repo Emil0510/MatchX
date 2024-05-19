@@ -20,7 +20,7 @@ class _EditProfileLogicsState extends State<ChangePasswordLogics> {
       if(state is OptionsLoadingState){
         return const CircularLoadingWidget();
       }else if(state is OptionsErrorState){
-        return Text("Error");
+        return const Text("Error");
       }else if(state is OptionsChangePasswordState){
         return ChangePasswordPage(user: state.user);
       }else{

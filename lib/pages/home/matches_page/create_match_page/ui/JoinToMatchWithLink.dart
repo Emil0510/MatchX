@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/network/network.dart';
 import 'package:flutter_app/widgets/input_text_widgets.dart';
 import 'package:flutter_app/widgets/snackbar.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../Constants.dart';
@@ -41,7 +40,6 @@ class _JoinToMatchWithLinkState extends State<JoinToMatchWithLink> {
       });
 
       if(response.statusCode == 200){
-        print("Status code 200");
         Navigator.pop(context);
         var teamGame = TeamGame.fromJson(response.data['data']);
         widget.function(teamGame, context, true, text);
@@ -52,7 +50,6 @@ class _JoinToMatchWithLinkState extends State<JoinToMatchWithLink> {
         showToastMessage(context, "Səhv link");
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       setState(() {
         isLoading = false;
       });

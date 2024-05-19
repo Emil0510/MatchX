@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../../Constants.dart';
 import '../../../../../network/model/Team.dart';
@@ -25,18 +27,28 @@ class UserTeamWidget extends StatelessWidget {
         Container(
           width: width,
           decoration: BoxDecoration(
-              color: Color(blackColor2),
+              color: const Color(blackColor2),
               borderRadius: BorderRadius.circular(8)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Image.network(
-                  team.teamLogoUrl ?? "",
+                child: CachedNetworkImage(
+                  imageUrl: team.teamLogoUrl ?? "",
                   width: width / 4,
                   height: width / 4,
                   fit: BoxFit.cover,
+                  placeholder: (context, url) => Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    enabled: true,
+                    child: Container(
+                      width: width * 4 / 5,
+                      height: width * 4 / 5,
+                      color: Colors.black54,
+                    ),
+                  ),
                 ),
               ),
               Text(
@@ -63,10 +75,27 @@ class UserTeamWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              TeamResultWidget(resultName: "Oyun sayı", resultCount: ((team.victory??0) + (team.fail??0) + (team.draw??0)), resultColor: const Color(goldColor),),
-              TeamResultWidget(resultName: "Qələbə", resultCount: team.victory??0, resultColor: const Color(greenColor),),
-              TeamResultWidget(resultName: "Məğlubiyyət", resultCount: team.fail??0, resultColor: const Color(redColor),),
-              TeamResultWidget(resultName: "Heç-heçə", resultCount: team.draw??0, resultColor: Color(goldColor),),
+              TeamResultWidget(
+                resultName: "Oyun sayı",
+                resultCount:
+                    ((team.victory ?? 0) + (team.fail ?? 0) + (team.draw ?? 0)),
+                resultColor: const Color(goldColor),
+              ),
+              TeamResultWidget(
+                resultName: "Qələbə",
+                resultCount: team.victory ?? 0,
+                resultColor: const Color(greenColor),
+              ),
+              TeamResultWidget(
+                resultName: "Məğlubiyyət",
+                resultCount: team.fail ?? 0,
+                resultColor: const Color(redColor),
+              ),
+              TeamResultWidget(
+                resultName: "Heç-heçə",
+                resultCount: team.draw ?? 0,
+                resultColor: const Color(goldColor),
+              ),
             ],
           ),
         )
@@ -81,7 +110,10 @@ class TeamResultWidget extends StatelessWidget {
   final Color resultColor;
 
   const TeamResultWidget(
-      {super.key, required this.resultName, required this.resultCount, required this.resultColor});
+      {super.key,
+      required this.resultName,
+      required this.resultCount,
+      required this.resultColor});
 
   @override
   Widget build(BuildContext context) {
@@ -90,9 +122,8 @@ class TeamResultWidget extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
-          color: Color(blackColor3),
-          borderRadius: BorderRadius.circular(10)
-        ),
+            color: const Color(blackColor3),
+            borderRadius: BorderRadius.circular(10)),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -100,13 +131,16 @@ class TeamResultWidget extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Text(resultName, style: TextStyle(fontSize: 18),),
+                child: Text(
+                  resultName,
+                  style: const TextStyle(fontSize: 18),
+                ),
               ),
               Padding(
-                padding:  EdgeInsets.only(right: width/10),
+                padding: EdgeInsets.only(right: width / 10),
                 child: Text(
                   resultCount.toString(),
-                  style:  TextStyle(color: resultColor, fontSize: 18),
+                  style: TextStyle(color: resultColor, fontSize: 18),
                 ),
               )
             ],

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_app/data.dart';
 import 'package:flutter_app/network/model/Question.dart';
 import 'package:flutter_app/pages/home/divisions_page/division_cubit/division_cubit.dart';
@@ -9,14 +8,11 @@ import 'package:flutter_app/pages/home/matches_page/mathches_cubit/matches_cubit
 import 'package:flutter_app/pages/home/more_page/more_cubit/more_page_cubit.dart';
 import 'package:flutter_app/pages/home/team_page/team_cubit/team_cubit.dart';
 import 'package:flutter_app/pages/options/cubit/options_states.dart';
-import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../Constants.dart';
 import '../../../network/model/User.dart';
 import '../../../network/network.dart';
-import '../../sign_in_sign_up/login_signup.dart';
 
 class OptionsCubit extends Cubit<OptionsStates> {
   OptionsCubit() : super(OptionsInitialState());
@@ -33,7 +29,6 @@ class OptionsCubit extends Cubit<OptionsStates> {
     emit(OptionsLoadingState());
     var sharedPreferences = locator.get<SharedPreferences>();
     var dio = locator.get<Dio>();
-    var token = sharedPreferences.getString(tokenKey);
     var username = sharedPreferences.getString(usernameKey) ?? "";
 
     try {
@@ -45,7 +40,6 @@ class OptionsCubit extends Cubit<OptionsStates> {
         emit(OptionsEditProfileState(user: user));
       }
     } on DioException catch (e) {
-      print(e.response?.data);
     }
   }
 
@@ -53,7 +47,6 @@ class OptionsCubit extends Cubit<OptionsStates> {
     emit(OptionsLoadingState());
     var sharedPreferences = locator.get<SharedPreferences>();
     var dio = locator.get<Dio>();
-    var token = sharedPreferences.getString(tokenKey);
     var username = sharedPreferences.getString(usernameKey) ?? "";
 
     try {
@@ -65,7 +58,6 @@ class OptionsCubit extends Cubit<OptionsStates> {
         emit(OptionsChangePasswordState(user: user));
       }
     } on DioException catch (e) {
-      print(e.response?.data);
     }
   }
 
@@ -107,7 +99,6 @@ class OptionsCubit extends Cubit<OptionsStates> {
         fun(true, "Profil yeniləndi");
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       fun(false, "Səhvlik");
     }
   }
@@ -116,7 +107,6 @@ class OptionsCubit extends Cubit<OptionsStates> {
     emit(OptionsLoadingState());
 
     var dio = locator.get<Dio>();
-    var sharedPreferences = locator.get<SharedPreferences>();
 
     try {
       var response = await dio.get(baseUrl + questionsApi);
@@ -129,7 +119,6 @@ class OptionsCubit extends Cubit<OptionsStates> {
         emit(OptionsHelpPageState(questions: questions));
       }
     } on DioException catch (e) {
-      print(e.response?.data);
     }
   }
 
@@ -155,7 +144,6 @@ class OptionsCubit extends Cubit<OptionsStates> {
         fun(true, "Parol dəyişdirildi!");
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       fun(false, "Köhnə parol səhvdir!");
     }
   }
@@ -168,7 +156,7 @@ class OptionsCubit extends Cubit<OptionsStates> {
     emit(OptionsLoadingState());
     var dio = locator.get<Dio>();
     try {
-      FormData? formData = null;
+      FormData? formData;
       if (Image != null) {
         formData = FormData.fromMap({
           "Image": await MultipartFile.fromFile(Image.path,
@@ -189,7 +177,6 @@ class OptionsCubit extends Cubit<OptionsStates> {
         emit(OptionsSuggestionSuccesfullPageState());
       }
     } on DioException catch (e) {
-      print(e.response?.data);
     }
   }
 
@@ -220,7 +207,6 @@ class OptionsCubit extends Cubit<OptionsStates> {
       }
 
     } on DioException catch (e) {
-      print(e.response?.data);
       emit(OptionsHomePageState(isLogOut: false));
     }
   }

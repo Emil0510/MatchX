@@ -75,9 +75,7 @@ class HomePageCubit extends Cubit<HomePageStates> {
           }
         }
       }
-    } on DioException catch (e) {
-      print(e.response?.data);
-    }
+    } on DioException catch (e) {}
   }
 
   Future<HomeData> refresh() async {
@@ -130,36 +128,34 @@ class HomePageCubit extends Cubit<HomePageStates> {
                 var weather = Weather.fromJson(response.data);
                 this.top10Teams = top10Teams;
                 this.top10Users = top10Users;
-                this.blogs = blogs;
+                blogs = blogs;
                 this.weather = weather;
-                this.isLoaded = true;
+                isLoaded = true;
                 homePageCubit = this;
 
                 return HomeData(
                     blogs, this.top10Users, this.top10Teams, this.weather);
               } else {
                 return HomeData(
-                    blogs, this.top10Users, this.top10Teams, this.weather);
+                    blogs, this.top10Users, this.top10Teams, weather);
               }
             } on DioException catch (e) {
-              print(e.response?.data);
               return HomeData(
-                  blogs, this.top10Users, this.top10Teams, this.weather);
+                  blogs, this.top10Users, this.top10Teams, weather);
             }
           } else {
             return HomeData(
-                blogs, this.top10Users, this.top10Teams, this.weather);
+                blogs, this.top10Users, top10Teams, weather);
           }
         } else {
           return HomeData(
-              blogs, this.top10Users, this.top10Teams, this.weather);
+              blogs, top10Users, top10Teams, weather);
         }
       } else {
-        return HomeData(blogs, this.top10Users, this.top10Teams, this.weather);
+        return HomeData(blogs, top10Users, top10Teams, weather);
       }
     } on DioException catch (e) {
-      print(e.response?.data);
-      return HomeData(blogs, this.top10Users, this.top10Teams, this.weather);
+      return HomeData(blogs, top10Users, top10Teams, weather);
     }
   }
 
@@ -226,7 +222,7 @@ class HomePageCubit extends Cubit<HomePageStates> {
         this.top10Users = top10Users;
         this.blogs = blogs;
         this.weather = weather;
-        this.isLoaded = true;
+        isLoaded = true;
         homePageCubit = this;
         emit(
           HomePageMainState(
@@ -236,9 +232,7 @@ class HomePageCubit extends Cubit<HomePageStates> {
               weather: weather),
         );
       }
-    } on DioException catch (e) {
-      print(e.response?.data);
-    }
+    } on DioException catch (e) {}
   }
 
   getBlogs() async {
@@ -262,9 +256,7 @@ class HomePageCubit extends Cubit<HomePageStates> {
           ),
         );
       }
-    } on DioException catch (e) {
-      print(e.response?.data);
-    }
+    } on DioException catch (e) {}
   }
 
   Future<List<Blog>> refreshBlogs() async{
@@ -285,7 +277,6 @@ class HomePageCubit extends Cubit<HomePageStates> {
         return [];
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       return [];
     }
   }
@@ -317,7 +308,6 @@ class HomePageCubit extends Cubit<HomePageStates> {
         callback([]);
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       callback([]);
     }
   }

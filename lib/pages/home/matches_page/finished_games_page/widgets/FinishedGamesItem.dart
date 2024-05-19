@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
-import 'package:flutter_app/widgets/buttons_widgets.dart';
 import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../../network/model/Game.dart';
 import '../cubit/finished_game_cubit.dart';
@@ -32,19 +32,46 @@ class _FinishedGamesItemState extends State<FinishedGamesItem> {
             .toConfirmPage(widget.myGame, context);
       } else {
         //Cancel game
-        // Navigator.of(context).pop();
-        context.read<FinishedGamesCubit>().cancelGame((isSuccesfull, message) {
-          print(message);
-          // Navigator.of(context).pop();
-          // showCustomSnackbar(contextt, message);
-          setState(() {
-            isLoading = false;
-          });
-          showCustomSnackbar(context, message);
-          if (isSuccesfull) {
-            context.read<FinishedGamesCubit>().start();
-          }
-        }, widget.myGame.id ?? "");
+
+        AlertDialog alert = AlertDialog(
+          title: const Text("Oyunu ləğv etmə"),
+          content: const Text("Oyunu ləğv etməyə əminsiz?"),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  "Xeyr",
+                  style: TextStyle(color: Colors.white),
+                )),
+            TextButton(
+              onPressed: () async {
+                context.read<FinishedGamesCubit>().cancelGame((isSuccesfull, message) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                  showCustomSnackbar(context, message);
+                  if (isSuccesfull) {
+                    context.read<FinishedGamesCubit>().start();
+                  }
+                }, widget.myGame.id ?? "");
+              },
+              child: const Text(
+                "Bəli",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+
+        // show the dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
       }
     };
   }
@@ -72,11 +99,21 @@ class _FinishedGamesItemState extends State<FinishedGamesItem> {
                     padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
                     child: Row(
                       children: [
-                        Image.network(
-                          widget.myGame.homeTeamImageUrl ?? "",
+                        CachedNetworkImage(
+                          imageUrl: widget.myGame.homeTeamImageUrl ?? "",
                           width: width / 12,
                           height: width / 12,
                           fit: BoxFit.cover,
+                          placeholder: (context, url) => Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.grey.shade100,
+                            enabled: true,
+                            child: Container(
+                              width: width * 4 / 5,
+                              height: width * 4 / 5,
+                              color: Colors.black54,
+                            ),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -90,11 +127,22 @@ class _FinishedGamesItemState extends State<FinishedGamesItem> {
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: Row(
                             children: [
-                              Image.network(
-                                widget.myGame.awayTeamImageUrl ?? "",
+                              CachedNetworkImage(
+                                imageUrl: widget.myGame.awayTeamImageUrl ?? "",
                                 width: width / 12,
                                 height: width / 12,
                                 fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    Shimmer.fromColors(
+                                  baseColor: Colors.grey.shade300,
+                                  highlightColor: Colors.grey.shade100,
+                                  enabled: true,
+                                  child: Container(
+                                    width: width * 4 / 5,
+                                    height: width * 4 / 5,
+                                    color: Colors.black54,
+                                  ),
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),

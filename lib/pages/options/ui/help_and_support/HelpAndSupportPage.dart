@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/options/cubit/help_page_logics.dart';
 import 'package:flutter_app/pages/options/cubit/options_cubit.dart';
 import 'package:flutter_app/pages/options/cubit/suggesetion_logics.dart';
-import 'package:flutter_app/pages/options/ui/help_and_support/HelpPage.dart';
-import 'package:flutter_app/pages/options/ui/help_and_support/SuggestionAndCommentPage.dart';
 import 'package:flutter_app/pages/options/ui/help_and_support/SupportPage.dart';
 import 'package:flutter_app/pages/options/widgets/options_item.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

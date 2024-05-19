@@ -1,11 +1,9 @@
-import 'dart:ui';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_app/data.dart';
+import 'package:flutter_app/network/model/TeamFilter.dart';
 import 'package:flutter_app/pages/home/team_page/team_cubit/team_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../../Constants.dart';
 import '../../../../network/model/Team.dart';
 import '../../../../network/network.dart';
@@ -17,18 +15,20 @@ class TeamCubit extends Cubit<TeamCubitStates> {
   bool isLoaded = false;
   Map<String, dynamic> body = {};
   int page = 1;
+  TeamFilter filter = TeamFilter();
 
 
-  set(List<Team> teams, bool isLoaded, Map<String, dynamic> body, int page) {
+  set(List<Team> teams, bool isLoaded, Map<String, dynamic> body, int page, TeamFilter filter) {
     this.teams = teams;
     this.isLoaded = isLoaded;
     this.body = body;
     this.page = page;
+    this.filter = filter;
   }
 
   start() {
     if (isLoaded) {
-      emit(AllTeamPageState(teams: teams));
+      emit(AllTeamPageState(teams: teams, filter: filter));
       return;
     }
     emit(TeamLoadingState());
@@ -41,6 +41,7 @@ class TeamCubit extends Cubit<TeamCubitStates> {
     var token = sharedPreferences.getString("token");
 
     body = {};
+    filter = TeamFilter();
     var response = await dio.get(baseUrl + teamsApi,
         options: Options(headers: {
           "Authorization": "Bearer $token",
@@ -66,7 +67,7 @@ class TeamCubit extends Cubit<TeamCubitStates> {
     var token = sharedPreferences.getString("token");
     
     page = 1;
-
+    filter = TeamFilter();
     var response = await dio.get(baseUrl + teamsApi,
         options: Options(headers: {
           "Authorization": "Bearer $token",
@@ -79,7 +80,7 @@ class TeamCubit extends Cubit<TeamCubitStates> {
       this.teams = teams;
       isLoaded = true;
       teamPageCubit = this;
-      emit(AllTeamPageState(teams: teams));
+      emit(AllTeamPageState(teams: teams, filter: TeamFilter()));
     } else if (response.statusCode == 401 || response.statusCode == 404) {
     } else {
       emit(TeamErrorState());
@@ -95,8 +96,6 @@ class TeamCubit extends Cubit<TeamCubitStates> {
       int sort,
       int division,
       int page) async {
-    print(maxRange);
-    print(minRange);
 
     emit(TeamLoadingState());
     var dio = locator.get<Dio>();
@@ -115,13 +114,12 @@ class TeamCubit extends Cubit<TeamCubitStates> {
 
     body = query;
     page = 1;
+    filter = TeamFilter(minRange: minRange, maxRange: maxRange, isPrivate: isPrivate, minMembersCount: minMembersCount, maxMembersCount: maxMembersCount, sort: sort, division: division);
     var response = await dio.get(baseUrl + teamsApi,
         options: Options(headers: {
           "Authorization": "Bearer $token",
         }),
         queryParameters: body);
-
-    print(response.data);
 
     if (response.statusCode == 200) {
       List<Team> teams = (response.data['data']['teams'] as List)
@@ -130,7 +128,7 @@ class TeamCubit extends Cubit<TeamCubitStates> {
       this.teams = teams;
       isLoaded = true;
       teamPageCubit = this;
-      emit(AllTeamPageState(teams: teams));
+      emit(AllTeamPageState(teams: teams, filter: filter));
     } else if (response.statusCode == 401 || response.statusCode == 404) {
     } else {
       emit(TeamErrorState());
@@ -146,6 +144,7 @@ class TeamCubit extends Cubit<TeamCubitStates> {
 
     body = {"search": search};
     page = 1;
+    filter = TeamFilter(search: search);
     var response = await dio.get(baseUrl + teamsApi,
         options: Options(headers: {
           "Authorization": "Bearer $token",
@@ -153,14 +152,14 @@ class TeamCubit extends Cubit<TeamCubitStates> {
         queryParameters: body);
 
     if (response.statusCode == 200) {
-      List<Team>? teams = (response.data['teams'] as List?)
+      List<Team>? teams = (response.data['data']['teams'] as List?)
           ?.map((e) => Team.fromJson(e))
           .toList();
 
       this.teams = teams ?? [];
       isLoaded = true;
       teamPageCubit = this;
-      emit(AllTeamPageState(teams: teams ?? []));
+      emit(AllTeamPageState(teams: teams ?? [], filter:filter ));
     } else if (response.statusCode == 401 || response.statusCode == 404) {
     } else {
       emit(TeamErrorState());
@@ -181,7 +180,6 @@ class TeamCubit extends Cubit<TeamCubitStates> {
         ),
       );
 
-      print(response.data);
       if (response.statusCode == 200) {
         if (response.data["success"]) {
           if (isPrivate) {
@@ -197,7 +195,6 @@ class TeamCubit extends Cubit<TeamCubitStates> {
         }
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       function(false, e.response?.data['message'] ?? "");
     }
   }

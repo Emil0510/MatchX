@@ -35,7 +35,6 @@ class _FinishedGamesConfirmPageState extends State<FinishedGamesConfirmPage> {
     isHome = (getMyTeamId() == widget.game.homeTeamId);
     controllers = [];
     if (isHome) {
-      print("Is Home");
       widget.game.homeTeamMembers?.forEach((element) {
         var elementt = TextEditingController();
         elementt.text = "0";
@@ -52,7 +51,6 @@ class _FinishedGamesConfirmPageState extends State<FinishedGamesConfirmPage> {
         });
       }
     } else {
-      print("Is Not Home");
       widget.game.awayTeamMembers?.forEach((element) {
         var elementt = TextEditingController();
         elementt.text = "0";
@@ -85,8 +83,7 @@ class _FinishedGamesConfirmPageState extends State<FinishedGamesConfirmPage> {
         ),
       ),
       body: GestureDetector(
-        onTap: (){
-
+        onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: Container(
@@ -146,7 +143,8 @@ class _FinishedGamesConfirmPageState extends State<FinishedGamesConfirmPage> {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ConfirmRow(
-                          isReadOnly: isHome && widget.game.homeTeamGoal != null,
+                          isReadOnly:
+                              isHome && widget.game.homeTeamGoal != null,
                           text: isHome
                               ? widget.game.homeTeamMembers![index].name
                               : widget.game.awayTeamMembers![index].name,
@@ -166,27 +164,94 @@ class _FinishedGamesConfirmPageState extends State<FinishedGamesConfirmPage> {
                         onPressed: () {
                           if (!isLoadingReject) {
                             if (isHome) {
-                              setState(() {
-                                isLoadingReject = true;
-                              });
-                              context.read<FinishedGamesCubit>().cancelGame(
-                                  (isSuccesfull, message) {
-                                showCustomSnackbar(context, message);
-                                if (isSuccesfull) {
-                                  Navigator.of(context).pop();
-                                }
-                              }, widget.game.id ?? "");
+
+                              AlertDialog alert = AlertDialog(
+                                title: const Text("Oyun silmə"),
+                                content: const Text("Oyunu silməyə əminsiz?"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text(
+                                        "Xeyr",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                  TextButton(
+                                    onPressed: () async {
+                                      setState(() {
+                                        isLoadingReject = true;
+                                      });
+                                      context.read<FinishedGamesCubit>().cancelGame(
+                                              (isSuccesfull, message) {
+                                            showCustomSnackbar(context, message);
+                                            if (isSuccesfull) {
+                                              Navigator.of(context).pop();
+                                            }
+                                          }, widget.game.id ?? "");
+                                    },
+                                    child: const Text(
+                                      "Bəli",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              );
+
+                              // show the dialog
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return alert;
+                                },
+                              );
+
                             } else {
-                              setState(() {
-                                isLoadingReject = true;
-                              });
-                              context.read<FinishedGamesCubit>().rejectGame(
-                                  widget.game.id ?? "", (isSuccesfull, message) {
-                                showCustomSnackbar(context, message);
-                                if (isSuccesfull) {
-                                  Navigator.of(context).pop();
-                                }
-                              });
+
+
+                              AlertDialog alert = AlertDialog(
+                                title: const Text("Oyunu ləğv etmə"),
+                                content: const Text("Oyunu ləğv etməyə əminsiz?"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text(
+                                        "Xeyr",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                  TextButton(
+                                    onPressed: () async {
+                                      setState(() {
+                                        isLoadingReject = true;
+                                      });
+                                      context
+                                          .read<FinishedGamesCubit>()
+                                          .rejectGame(widget.game.id ?? "",
+                                              (isSuccesfull, message) {
+                                            showCustomSnackbar(context, message);
+                                            if (isSuccesfull) {
+                                              Navigator.of(context).pop();
+                                            }
+                                          });
+                                    },
+                                    child: const Text(
+                                      "Bəli",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              );
+
+                              // show the dialog
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return alert;
+                                },
+                              );
+
                             }
                           }
                         },
@@ -212,33 +277,74 @@ class _FinishedGamesConfirmPageState extends State<FinishedGamesConfirmPage> {
                                   homeGoalController.text.trim().isNotEmpty &&
                                   awayGoalController.text.trim().isNotEmpty) {
                                 if (widget.game.homeTeamGoal == null) {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  List<GameResult> results = [];
-                                  for (int i = 0; i < controllers.length; i++) {
-                                    results.add(GameResult(
-                                        userId:
-                                            widget.game.homeTeamMembers![i].id ??
-                                                "",
-                                        goalCount: int.parse(
-                                            controllers[i].text.trim())));
-                                  }
-                                  context
-                                      .read<FinishedGamesCubit>()
-                                      .setGameResult(
-                                    widget.game.id ?? "",
-                                    int.parse(homeGoalController.text.trim()),
-                                    int.parse(awayGoalController.text.trim()),
-                                    results,
-                                    (isSuccesfull, message) {
-                                      setState(() {
-                                        isLoading = false;
-                                      });
-                                      showCustomSnackbar(context, message);
-                                      if (isSuccesfull) {
-                                        Navigator.of(context).pop();
-                                      }
+                                  AlertDialog alert = AlertDialog(
+                                    title: const Text("Oyunu təsdiqləmə"),
+                                    content: const Text(
+                                        "Oyunu təsdiqləməyə əminsiz?"),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text(
+                                            "Xeyr",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )),
+                                      TextButton(
+                                        onPressed: () async {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          List<GameResult> results = [];
+                                          for (int i = 0;
+                                              i < controllers.length;
+                                              i++) {
+                                            results.add(GameResult(
+                                                userId: widget
+                                                        .game
+                                                        .homeTeamMembers![i]
+                                                        .id ??
+                                                    "",
+                                                goalCount: int.parse(
+                                                    controllers[i]
+                                                        .text
+                                                        .trim())));
+                                          }
+                                          context
+                                              .read<FinishedGamesCubit>()
+                                              .setGameResult(
+                                            widget.game.id ?? "",
+                                            int.parse(
+                                                homeGoalController.text.trim()),
+                                            int.parse(
+                                                awayGoalController.text.trim()),
+                                            results,
+                                            (isSuccesfull, message) {
+                                              setState(() {
+                                                isLoading = false;
+                                              });
+                                              showCustomSnackbar(
+                                                  context, message);
+                                              if (isSuccesfull) {
+                                                Navigator.of(context).pop();
+                                              }
+                                            },
+                                          );
+                                        },
+                                        child: const Text(
+                                          "Bəli",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+
+                                  // show the dialog
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return alert;
                                     },
                                   );
                                 } else {
@@ -250,41 +356,74 @@ class _FinishedGamesConfirmPageState extends State<FinishedGamesConfirmPage> {
                                     context, "Məlumatları tam daxil edin!");
                               }
                             } else {
-                              print("Away");
                               var check = true;
                               for (var i in controllers) {
                                 check = i.text.trim().isNotEmpty;
                                 if (!check) {
                                   break;
                                 }
-                                print("Checl ${check}");
                               }
-                              print(check);
                               if (check) {
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                List<GameResult> results = [];
-                                for (int i = 0; i < controllers.length; i++) {
-                                  results.add(GameResult(
-                                      userId:
-                                          widget.game.awayTeamMembers![i].id ??
-                                              "",
-                                      goalCount:
-                                          int.parse(controllers[i].text.trim())));
-                                }
-                                context.read<FinishedGamesCubit>().verifyGame(
-                                  widget.game.id ?? "",
-                                  widget.game.awayTeamGoal,
-                                  results,
-                                  (isSuccesfull, message) {
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                    showCustomSnackbar(context, message);
-                                    if (isSuccesfull) {
-                                      Navigator.of(context).pop();
-                                    }
+                                AlertDialog alert = AlertDialog(
+                                  title: const Text("Oyunu təsdiqləmə"),
+                                  content:
+                                      const Text("Oyunu təsdiqləməyə əminsiz?"),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text(
+                                          "Xeyr",
+                                          style: TextStyle(color: Colors.white),
+                                        )),
+                                    TextButton(
+                                      onPressed: () async {
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        List<GameResult> results = [];
+                                        for (int i = 0;
+                                            i < controllers.length;
+                                            i++) {
+                                          results.add(GameResult(
+                                              userId: widget.game
+                                                      .awayTeamMembers![i].id ??
+                                                  "",
+                                              goalCount: int.parse(
+                                                  controllers[i].text.trim())));
+                                        }
+                                        context
+                                            .read<FinishedGamesCubit>()
+                                            .verifyGame(
+                                          widget.game.id ?? "",
+                                          widget.game.awayTeamGoal,
+                                          results,
+                                          (isSuccesfull, message) {
+                                            setState(() {
+                                              isLoading = false;
+                                            });
+                                            showCustomSnackbar(
+                                                context, message);
+                                            if (isSuccesfull) {
+                                              Navigator.of(context).pop();
+                                            }
+                                          },
+                                        );
+                                      },
+                                      child: const Text(
+                                        "Bəli",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ],
+                                );
+
+                                // show the dialog
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return alert;
                                   },
                                 );
                               } else {

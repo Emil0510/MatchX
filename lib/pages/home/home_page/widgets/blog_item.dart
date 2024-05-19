@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
@@ -42,24 +43,34 @@ class BlogSingleItem extends StatelessWidget {
                                   0, 0, bounds.width, bounds.height));
                             },
                             blendMode: BlendMode.dstIn,
-                            child: Image.network(
-                                blog.imageUrl!,
+                            child: CachedNetworkImage(
+                                imageUrl: blog.imageUrl!,
                                 width: width,
                                 height: height / 3,
+                                placeholder: (context, url) => Shimmer.fromColors(
+                                  baseColor: Colors.grey.shade300,
+                                  highlightColor: Colors.grey.shade100,
+                                  enabled: true,
+                                  child: Container(
+                                    width: width*4/5,
+                                    height: width*4/5,
+                                    color: Colors.black54,
+                                  ),
+                                ),
                                 fit: BoxFit.contain,
-                                loadingBuilder: (context, child, progress) {
-                                  if (progress == null) return child;
-                                  return Shimmer.fromColors(
-                                      baseColor: Colors.grey.shade300,
-                                      highlightColor: Colors.grey.shade100,
-                                      enabled: true,
-                                      child: Container(
-                                        width: width*4/5,
-                                        height: width*4/5,
-                                        color: Colors.black54,
-                                      ),
-                                    );
-                                },
+                                // loadingBuilder: (context, child, progress) {
+                                //   if (progress == null) return child;
+                                //   return Shimmer.fromColors(
+                                //       baseColor: Colors.grey.shade300,
+                                //       highlightColor: Colors.grey.shade100,
+                                //       enabled: true,
+                                //       child: Container(
+                                //         width: width*4/5,
+                                //         height: width*4/5,
+                                //         color: Colors.black54,
+                                //       ),
+                                //     );
+                                // },
                               ),
                           ),
                         )
@@ -72,7 +83,7 @@ class BlogSingleItem extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
+                          const Text(
                             "BLOQ",
                             style: TextStyle(color: Color(goldColor)),
                           ),
@@ -90,7 +101,7 @@ class BlogSingleItem extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     blog.title ?? "",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),

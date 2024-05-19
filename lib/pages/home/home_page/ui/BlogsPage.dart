@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home/home_page/cubit/home_page_cubit.dart';
-import 'package:flutter_app/pages/home/home_page/ui/home_page.dart';
 import 'package:flutter_app/widgets/infinity_scroll_loading.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

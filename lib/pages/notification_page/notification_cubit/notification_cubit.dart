@@ -13,6 +13,8 @@ import '../../../Constants.dart';
 import '../../../network/model/Notification.dart';
 import '../../../network/network.dart';
 
+import 'dart:io' show Platform;
+
 class NotificationCubit extends Cubit<NotificationStates> {
   NotificationCubit() : super(NotificationInitialState());
 
@@ -46,10 +48,7 @@ class NotificationCubit extends Cubit<NotificationStates> {
       await hubConnection.start();
       hubConnection.on('ReciveNotification', _handleNotification);
       hubConnection.on("AddNotify", addNotification);
-      print('SignalR Connection Establishedddddddd');
-    } catch (error) {
-      print('Error establishing SignalR connection: $error');
-    }
+    } catch (error) {}
   }
 
   void refreshNotifications() {
@@ -78,6 +77,7 @@ class NotificationCubit extends Cubit<NotificationStates> {
           actionType: ActionType.Default,
           title: 'Yeni bildirişiniz var',
           body: "${data[0]['msg']}",
+          icon: Platform.isAndroid ? 'resource://drawable/ic_notification' : null,
         ),
       );
     }
@@ -114,12 +114,11 @@ class NotificationCubit extends Cubit<NotificationStates> {
     var token = sharedPreferences.getString(tokenKey);
 
     try {
-      var response = await dio.post(
+      await dio.post(
         baseUrl + readNotifyApi,
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
     } on DioException catch (e) {
-      print(e.response?.data);
     }
   }
 
@@ -164,7 +163,6 @@ class NotificationCubit extends Cubit<NotificationStates> {
         ),
       );
 
-      print(response.data);
 
       if (response.statusCode == 200) {
         fun(response.data['success'], response.data['message']);
@@ -172,7 +170,6 @@ class NotificationCubit extends Cubit<NotificationStates> {
         fun(false, response.data['message']);
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       fun(false, e.response?.data['message']);
     }
   }
@@ -196,7 +193,6 @@ class NotificationCubit extends Cubit<NotificationStates> {
         fun(false, response.data['message']);
       }
     } on DioException catch (e) {
-      print(e.response?.data);
       fun(false, e.response?.data['message']);
     }
   }

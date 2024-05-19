@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home/matches_page/finished_games_page/cubit/finished_game_cubit.dart';
 import 'package:flutter_app/pages/home/matches_page/finished_games_page/cubit/finished_games_state.dart';
 import 'package:flutter_app/pages/home/matches_page/finished_games_page/ui/AllFinishedGamesPage.dart';
-import 'package:flutter_app/pages/home/matches_page/finished_games_page/ui/FinishedGamesConfirmPage.dart';
 import 'package:flutter_app/widgets/loading_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

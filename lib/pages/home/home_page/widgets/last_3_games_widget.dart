@@ -12,7 +12,7 @@ class Last3GamesWidget extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     IconData? icon;
     Color? color;
-    Color? backColor = null;
+    Color? backColor;
     if (game == "d") {
       color = Colors.grey;
       icon = Icons.remove_circle;
@@ -23,7 +23,6 @@ class Last3GamesWidget extends StatelessWidget {
       backColor = Colors.transparent;
     } else if (game == "f") {
       color = Colors.black;
-      ;
       backColor = const Color(redColor);
       icon = Icons.close;
     }

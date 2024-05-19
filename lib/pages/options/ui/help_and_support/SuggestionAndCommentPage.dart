@@ -111,7 +111,7 @@ class _SuggestionAndCommentPageState extends State<SuggestionAndCommentPage> {
                 //   ),
                 // ),
               ),
-              Text("Mesajınızla bağlı təsvir daxil edə bilərsiniz"),
+              const Text("Mesajınızla bağlı təsvir daxil edə bilərsiniz"),
               SizedBox(
                 height: height / 30,
               ),
@@ -162,7 +162,7 @@ class _SuggestionAndCommentPageState extends State<SuggestionAndCommentPage> {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color(blackColor2),
+                  color: const Color(blackColor2),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -177,7 +177,7 @@ class _SuggestionAndCommentPageState extends State<SuggestionAndCommentPage> {
                           isSuggestion = suggesetion.indexOf(newValue) == 0;
                         });
                       },
-                      dropdownColor: Color(blackColor2),
+                      dropdownColor: const Color(blackColor2),
                       items: suggesetion
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(

@@ -40,7 +40,6 @@ class _TeamCreateLogicsState extends State<TeamCreateLogics> {
           count++;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (state.isSuccessful) {
-              print("Create true");
               showCustomSnackbar(context, state.message);
               Navigator.pop(context, true);
             } else if (count > 1) {
