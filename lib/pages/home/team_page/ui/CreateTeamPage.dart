@@ -344,12 +344,47 @@ class _CreateTeamState extends State<CreateTeam> {
                         teamDescriptionController.text.trim().isNotEmpty &&
                         phoneNumberController.text.trim().isNotEmpty) {
                       if (phoneNumberValidated) {
-                        context.read<TeamDetailCubit>().createTeam(
-                            teamNameController.text,
-                            teamDescriptionController.text,
-                            _image,
-                            phoneNumber,
-                            isPrivate);
+
+                        AlertDialog alert = AlertDialog(
+                          title: const Text("Komanda yaratma"),
+                          content: const Text("Komanda yaratmağa əminsiz?"),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  "Xeyr",
+                                  style: TextStyle(color: Colors.white),
+                                )),
+                            TextButton(
+                              onPressed: () async {
+
+                                Navigator.pop(context);
+                                context.read<TeamDetailCubit>().createTeam(
+                                    teamNameController.text,
+                                    teamDescriptionController.text,
+                                    _image,
+                                    phoneNumber,
+                                    isPrivate);
+
+                              },
+                              child: const Text(
+                                "Bəli",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        );
+                        // show the dialog
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alert;
+                          },
+                        );
+
+
                       } else {
                         showCustomSnackbar(
                             context, "Telefon nömrəsini düzgün daxil edin");

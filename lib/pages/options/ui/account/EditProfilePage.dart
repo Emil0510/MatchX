@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/network/model/User.dart';
 import 'package:flutter_app/pages/home/more_page/ui/widget/input_text_field.dart';
@@ -6,8 +7,10 @@ import 'package:flutter_app/pages/options/cubit/options_cubit.dart';
 import 'package:flutter_app/widgets/buttons_widgets.dart';
 import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../Constants.dart';
 
@@ -126,9 +129,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         child: SizedBox(
                           height: heightDistance,
                           width: width,
-                          child: Image.asset(
-                            "assets/profile_background.jpeg",
+                          child: CachedNetworkImage(
+                            imageUrl: "assets/profile_background.jpeg",
                             fit: BoxFit.fill,
+                            placeholder: (context, url) => Shimmer.fromColors(
+                              baseColor: Colors.grey.shade300,
+                              highlightColor: Colors.grey.shade100,
+                              enabled: true,
+                              child: Container(
+                                width: width*4/5,
+                                height: width*4/5,
+                                color: Colors.black54,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -162,8 +175,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               child: MorePageTextField(
                                 controller: nameController,
                                 text: "Ad",
-                                onSufficsTap: () {
-                                },
+                                onSufficsTap: () {},
                                 passwordVisible: true,
                                 iconVisibility: false,
                               ),
@@ -173,8 +185,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               child: MorePageTextField(
                                 controller: surnameController,
                                 text: "Soyad",
-                                onSufficsTap: () {
-                                },
+                                onSufficsTap: () {},
                                 passwordVisible: true,
                                 iconVisibility: false,
                               ),

@@ -146,7 +146,7 @@ class _GameDetailPageState extends State<GameDetailPage> {
                   if (!isLoading) {
 
                     AlertDialog alert = AlertDialog(
-                      title: const Text("Oyuna qouşlma"),
+                      title: const Text("Oyuna qoşulma"),
                       content: const Text("Oyuna qoşulmağa əminsiz?"),
                       actions: [
                         TextButton(
@@ -159,6 +159,7 @@ class _GameDetailPageState extends State<GameDetailPage> {
                             )),
                         TextButton(
                           onPressed: () async {
+                            Navigator.pop(context);
                             setState(() {
                               isLoading = true;
                             });

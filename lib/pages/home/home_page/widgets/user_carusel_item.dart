@@ -31,50 +31,51 @@ class UserCaruselItem extends StatelessWidget {
         color: const Color(darkGray3),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ClipOval(
-                child: CachedNetworkImage(
-                  imageUrl: user.profilePhotoUrl,
-                  width: width / 5,
-                  height: width / 5,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: Colors.grey.shade300,
-                    highlightColor: Colors.grey.shade100,
-                    enabled: true,
-                    child: Container(
-                      width: width*4/5,
-                      height: width*4/5,
-                      color: Colors.black54,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    UserLogics(username: user.userName ?? "")),
+          );
+        },
+        splashColor: Colors.grey,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: user.profilePhotoUrl,
+                    width: width / 5,
+                    height: width / 5,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      enabled: true,
+                      child: Container(
+                        width: width * 4 / 5,
+                        height: width * 4 / 5,
+                        color: Colors.black54,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "${user.name} ${user.surName}",
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "${user.name} ${user.surName}",
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                  ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            UserLogics(username: user.userName ?? "")),
-                  );
-                },
-                child: Container(
+                Container(
                   decoration: BoxDecoration(
                       color: const Color(goldColor),
                       borderRadius: BorderRadius.circular(15)),
@@ -87,122 +88,122 @@ class UserCaruselItem extends StatelessWidget {
                     ),
                   ),
                 ),
-              )
-            ],
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0, top: 8.0),
-                  child: Text(
-                    "Komanda",
-                    style: TextStyle(color: color),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Text(
-                    user.teamName ?? "Yoxdur",
-                    style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  ),
-                ),
               ],
             ),
-          ),
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 10.0, top: 8.0),
-                  child: Text(
-                    "Qol sayı",
-                    style: TextStyle(color: color),
+            Positioned(
+              top: 0,
+              left: 0,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0, top: 8.0),
+                    child: Text(
+                      "Komanda",
+                      style: TextStyle(color: color),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: Text(
-                    user.goalCount.toString(),
-                    style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: Text(
+                      user.teamName ?? "Yoxdur",
+                      style: TextStyle(
+                          color: color,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Text(
-                    "Ortalama",
-                    style: TextStyle(color: color),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0, top: 8.0),
+                    child: Text(
+                      "Qol sayı",
+                      style: TextStyle(color: color),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0, bottom: 10),
-                  child: Text(
-                    user.average.toString(),
-                    style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: Text(
+                      user.goalCount.toString(),
+                      style: TextStyle(
+                          color: color,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: Text(
-                    "Yer",
-                    style: TextStyle(color: color),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: Text(
+                      "Ortalama",
+                      style: TextStyle(color: color),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 10.0, bottom: 10),
-                  child: Text(
-                    "#${index + 1}",
-                    style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0, bottom: 10),
+                    child: Text(
+                      user.average.toString(),
+                      style: TextStyle(
+                          color: color,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: Text(
+                      "Yer",
+                      style: TextStyle(color: color),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0, bottom: 10),
+                    child: Text(
+                      "#${index + 1}",
+                      style: TextStyle(
+                          color: color,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

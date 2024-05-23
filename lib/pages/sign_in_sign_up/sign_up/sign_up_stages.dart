@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../../Constants.dart';
@@ -133,24 +134,17 @@ class _CreateAccountState extends State<CreateAccount> {
           emailAddressController.text.trim().isEmpty ||
           passwordController.text.trim().isEmpty ||
           confirmPasswordController.text.trim().isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Xaiş olunur məlumatları tam daxil edin"),
-        ));
+        showCustomSnackbar(context, "Xaiş olunur məlumatları tam daxil edin");
       } else {
         if (usernameController.text.trim().length < 4 ||
             usernameController.text.trim().contains("@") ||
             usernameController.text.trim().length > 16) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                "Istifadəçi adı minimum 4 maximum 16 hərfdən ibarət olmalıdır və '@' işarəsi ola bilməz"),
-          ));
+          showCustomSnackbar(context, "Istifadəçi adı minimum 4 maximum 16 hərfdən ibarət olmalıdır və '@' işarəsi ola bilməz");
         } else {
           if (mailRegEx.hasMatch(emailAddressController.text.trim())) {
             if (passwordController.text.trim() !=
                 confirmPasswordController.text.trim()) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Parollar bir biri ilə üst üstə gəlmir"),
-              ));
+              showCustomSnackbar(context, "Parollar bir biri ilə üst üstə gəlmir");
             } else {
               if (passwordController.text.trim().length >= 8 &&
                   regEx.hasMatch(passwordController.text.trim())) {
@@ -173,23 +167,15 @@ class _CreateAccountState extends State<CreateAccount> {
                       }
                     });
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text(
-                          "İstifadəçi adı və ya email artıq istifadə olunub"),
-                    ));
+                    showCustomSnackbar(context, "İstifadəçi adı və ya email artıq istifadə olunub");
                   }
                 }).catchError((onError) {});
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text(
-                      "Parol minimum 8 hərfdən ibarət olmalıdır, 1 böyük və 1 balaca hərf"),
-                ));
+                showCustomSnackbar(context, "Parol minimum 8 hərfdən ibarət olmalıdır, 1 böyük və 1 balaca hərf");
               }
             }
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Mail adresi səhv daxil edilib"),
-            ));
+            showCustomSnackbar(context, "Mail adresi səhv daxil edilib");
           }
         }
       }
@@ -217,14 +203,10 @@ class _CreateAccountState extends State<CreateAccount> {
         });
 
         if (value.canSignUp) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Mailinizə qeydiyyat təsdiqi göndərildi!"),
-          ));
+          showCustomSnackbar(context, "Mailinizə qeydiyyat təsdiqi göndərildi!");
           widget.toLogIn();
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Xəta baş verdi"),
-          ));
+          showCustomSnackbar(context, value.message);
         }
       }).catchError((onError) {});
     }

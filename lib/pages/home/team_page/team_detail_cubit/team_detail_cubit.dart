@@ -329,18 +329,24 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
           data: formData);
 
       if (response.statusCode == 200) {
-        var teamId = response.data["data"]['teamId'];
-        var token = response.data["data"]['token'];
+        if(!response.data['success']){
 
-        var roles = sharedPreferences.getStringList(rolesKey);
-        roles?.add("TeamCapitan");
+          emit(TeamCreatePageState(
+              isSuccessful: false, message: response.data['message']));
+        }else {
+          var teamId = response.data["data"]['teamId'];
+          var token = response.data["data"]['token'];
 
-        await sharedPreferences.setString(myTeamIdKey, teamId);
-        await sharedPreferences.setStringList(rolesKey, roles ?? []);
-        await sharedPreferences.setString(tokenKey, token);
+          var roles = sharedPreferences.getStringList(rolesKey);
+          roles?.add("TeamCapitan");
 
-        emit(TeamCreatePageState(
-            isSuccessful: true, message: "Komanda yaradıldı"));
+          await sharedPreferences.setString(myTeamIdKey, teamId);
+          await sharedPreferences.setStringList(rolesKey, roles ?? []);
+          await sharedPreferences.setString(tokenKey, token);
+
+          emit(TeamCreatePageState(
+              isSuccessful: true, message: "Komanda yaradıldı"));
+        }
       }
     } on DioException catch (e) {
 

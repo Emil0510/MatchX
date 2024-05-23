@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 void showCustomSnackbar(BuildContext context, String message) {
   if(message!="") {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context)..hideCurrentSnackBar()..showSnackBar(SnackBar(
       content: Text(message),
     ));
   }

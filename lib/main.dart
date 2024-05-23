@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app/pages/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_app/utils/NavigatorObserver.dart';
+import 'package:flutter_app/widgets/snackbar.dart';
 import 'firebase_options.dart';
 
 import 'dart:io' show Platform;

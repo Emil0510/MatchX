@@ -17,8 +17,8 @@ class TeamCubit extends Cubit<TeamCubitStates> {
   int page = 1;
   TeamFilter filter = TeamFilter();
 
-
-  set(List<Team> teams, bool isLoaded, Map<String, dynamic> body, int page, TeamFilter filter) {
+  set(List<Team> teams, bool isLoaded, Map<String, dynamic> body, int page,
+      TeamFilter filter) {
     this.teams = teams;
     this.isLoaded = isLoaded;
     this.body = body;
@@ -41,6 +41,7 @@ class TeamCubit extends Cubit<TeamCubitStates> {
     var token = sharedPreferences.getString("token");
 
     body = {};
+    page = 1;
     filter = TeamFilter();
     var response = await dio.get(baseUrl + teamsApi,
         options: Options(headers: {
@@ -51,7 +52,6 @@ class TeamCubit extends Cubit<TeamCubitStates> {
       List<Team>? teams = (response.data['data']['teams'] as List)
           .map((e) => Team.fromJson(e))
           .toList();
-      page = 1;
       this.teams = teams;
       isLoaded = true;
       teamPageCubit = this;
@@ -65,7 +65,7 @@ class TeamCubit extends Cubit<TeamCubitStates> {
     var dio = locator.get<Dio>();
     var sharedPreferences = locator.get<SharedPreferences>();
     var token = sharedPreferences.getString("token");
-    
+
     page = 1;
     filter = TeamFilter();
     var response = await dio.get(baseUrl + teamsApi,
@@ -96,8 +96,10 @@ class TeamCubit extends Cubit<TeamCubitStates> {
       int sort,
       int division,
       int page) async {
-
     emit(TeamLoadingState());
+
+    this.page = 1;
+
     var dio = locator.get<Dio>();
     var sharedPreferences = locator.get<SharedPreferences>();
     var token = sharedPreferences.getString("token");
@@ -109,12 +111,19 @@ class TeamCubit extends Cubit<TeamCubitStates> {
       "maxMembersCount": maxMembersCount,
       "sort": sort,
       "division": division,
-      "page": page
+      "page": this.page
     };
 
     body = query;
-    page = 1;
-    filter = TeamFilter(minRange: minRange, maxRange: maxRange, isPrivate: isPrivate, minMembersCount: minMembersCount, maxMembersCount: maxMembersCount, sort: sort, division: division);
+
+    filter = TeamFilter(
+        minRange: minRange,
+        maxRange: maxRange,
+        isPrivate: isPrivate,
+        minMembersCount: minMembersCount,
+        maxMembersCount: maxMembersCount,
+        sort: sort,
+        division: division);
     var response = await dio.get(baseUrl + teamsApi,
         options: Options(headers: {
           "Authorization": "Bearer $token",
@@ -141,7 +150,6 @@ class TeamCubit extends Cubit<TeamCubitStates> {
     var sharedPreferences = locator.get<SharedPreferences>();
     var token = sharedPreferences.getString("token");
 
-
     body = {"search": search};
     page = 1;
     filter = TeamFilter(search: search);
@@ -159,7 +167,7 @@ class TeamCubit extends Cubit<TeamCubitStates> {
       this.teams = teams ?? [];
       isLoaded = true;
       teamPageCubit = this;
-      emit(AllTeamPageState(teams: teams ?? [], filter:filter ));
+      emit(AllTeamPageState(teams: teams ?? [], filter: filter));
     } else if (response.statusCode == 401 || response.statusCode == 404) {
     } else {
       emit(TeamErrorState());
@@ -199,45 +207,42 @@ class TeamCubit extends Cubit<TeamCubitStates> {
     }
   }
 
-  void loadMore(Function (List<Team>) callback) async{
+  void loadMore(Function(List<Team>) callback) async {
     var dio = locator.get<Dio>();
     var sharedPreferences = locator.get<SharedPreferences>();
     var token = sharedPreferences.getString("token");
 
-    try{
+    try {
+      page++;
 
-      page ++;
-
-      if(!body.containsKey("page")){
+      if (!body.containsKey("page")) {
         body["page"] = page;
-      }else{
+      } else {
         body.update("page", (value) => page);
       }
 
-
       var response = await dio.get(baseUrl + teamsApi,
-          options: Options(headers: {
-            "Authorization": "Bearer $token",
-          }),
+          options: Options(
+            headers: {
+              "Authorization": "Bearer $token",
+            },
+          ),
           queryParameters: body);
 
-      if(response.statusCode == 200){
-        List<Team>? teams = (response.data['teams'] as List?)
+      if (response.statusCode == 200) {
+        List<Team>? teams = (response.data['data']['teams'] as List?)
             ?.map((e) => Team.fromJson(e))
             .toList();
         this.teams.addAll(teams ?? []);
         isLoaded = true;
         teamPageCubit = this;
 
-        callback(teams??[]);
-
-      }else{
+        callback(teams ?? []);
+      } else {
         callback([]);
       }
-
-    }on DioException catch (e){
+    } on DioException catch (e) {
       callback([]);
     }
   }
-
 }

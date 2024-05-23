@@ -6,6 +6,7 @@ import 'package:flutter_app/pages/sign_in_sign_up/log_in/log_in_cubit/log_in_cub
 import 'package:flutter_app/pages/sign_in_sign_up/log_in/widget/log_in_button.dart';
 import 'package:flutter_app/widgets/container.dart';
 import 'package:flutter_app/widgets/input_text_widgets.dart';
+import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../chat/cubit/chat_cubit.dart';
 import '../../home/home_cubit/home_cubit.dart';
@@ -86,7 +87,7 @@ class _LogInState extends State<LogIn> {
                   CustomShadowContainer(
                     child: CustomTextFieldWidget(
                       controller: usernameController,
-                      hintText: "İstifadəçi adı",
+                      hintText: "İstifadəçi adı və ya mail",
                       prefixIcon: null,
                     ),
                   ),
@@ -141,9 +142,7 @@ class _LogInState extends State<LogIn> {
                 setState(() {
                   isLoading = false;
                 });
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(state.message),
-                ));
+                showCustomSnackbar(context, state.message);
               } else if (state is LogInLoggedInState) {
                 setState(() {
                   isLoading = false;

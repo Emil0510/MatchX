@@ -143,6 +143,7 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                                       )),
                                   TextButton(
                                     onPressed: () async {
+                                      Navigator.pop(context);
                                       context.read<TeamDetailCubit>().leftTeam();
                                     },
                                     child: const Text(
@@ -270,6 +271,7 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                                       )),
                                   TextButton(
                                     onPressed: () async {
+                                      Navigator.pop(context);
                                       context.read<TeamDetailCubit>().deleteTeam();
                                     },
                                     child: const Text(

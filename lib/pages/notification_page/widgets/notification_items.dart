@@ -4,6 +4,7 @@ import 'package:flutter_app/Utils.dart';
 import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../network/model/Notification.dart';
+import '../../user/user_cubit/user_logics.dart';
 import '../notification_cubit/notification_cubit.dart';
 
 class NotificationItem extends StatefulWidget {
@@ -50,13 +51,26 @@ class _NotificationItemState extends State<NotificationItem> {
                     )
                   ],
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      textAlign: TextAlign.end,
-                      "Kimdən: ${widget.notification.From}",
-                      style: const TextStyle(color: Colors.grey),
+                InkWell(
+                  onTap: () {
+                    if (widget.notification.From != "MatchX") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                UserLogics(username: widget.notification.From)),
+                      );
+                    }
+                  },
+                  splashColor: Colors.grey,
+                  child: Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        textAlign: TextAlign.end,
+                        "Kimdən: ${widget.notification.From}",
+                        style: const TextStyle(color: Colors.grey),
+                      ),
                     ),
                   ),
                 )
@@ -105,15 +119,17 @@ class _NotificationItemState extends State<NotificationItem> {
                                     context
                                         .read<NotificationCubit>()
                                         .rejectJoin(
-                                          widget.notification.IdForDirect ?? "",
-                                          (isSuccesfull, message) {
-                                            setState(() {
-                                              isLoading = false;
-                                            });
-                                            showCustomSnackbar(context, message);
-                                            context.read<NotificationCubit>().refreshNotifications();
-                                          },
-                                        );
+                                      widget.notification.IdForDirect ?? "",
+                                      (isSuccesfull, message) {
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                        showCustomSnackbar(context, message);
+                                        context
+                                            .read<NotificationCubit>()
+                                            .refreshNotifications();
+                                      },
+                                    );
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -134,15 +150,17 @@ class _NotificationItemState extends State<NotificationItem> {
                                     context
                                         .read<NotificationCubit>()
                                         .acceptJoin(
-                                          widget.notification.IdForDirect ?? "",
-                                          (isSuccesfull, message) {
-                                            setState(() {
-                                              isLoading = false;
-                                            });
-                                            showCustomSnackbar(context, message);
-                                            context.read<NotificationCubit>().refreshNotifications();
-                                          },
-                                        );
+                                      widget.notification.IdForDirect ?? "",
+                                      (isSuccesfull, message) {
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                        showCustomSnackbar(context, message);
+                                        context
+                                            .read<NotificationCubit>()
+                                            .refreshNotifications();
+                                      },
+                                    );
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
