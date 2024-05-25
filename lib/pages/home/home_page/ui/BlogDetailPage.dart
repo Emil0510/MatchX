@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Utils.dart';
 import 'package:shimmer/shimmer.dart';
@@ -15,6 +16,12 @@ class BlogDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
+
+    var string = "";
+    blog.description?.split("||").forEach((element) {
+      string += element;
+      string+="\n";
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -46,6 +53,7 @@ class BlogDetailPage extends StatelessWidget {
               ),
             ),
             SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
                   blog.imageUrl != null
@@ -53,23 +61,20 @@ class BlogDetailPage extends StatelessWidget {
                           padding: const EdgeInsets.all(10.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              blog.imageUrl!,
+                            child: CachedNetworkImage(
+                              imageUrl: blog.imageUrl!,
                               width: width,
                               height: height / 4,
-                              loadingBuilder: (context, child, progress) {
-                                if (progress == null) return child;
-                                return Shimmer.fromColors(
-                                    baseColor: Colors.grey.shade300,
-                                    highlightColor: Colors.grey.shade100,
-                                    enabled: true,
-                                    child: Container(
-                                      width: width,
-                                      height: height/4,
-                                      color: Colors.black54,
-                                    ),
-                                  );
-                              },
+                              placeholder: (context, url) => Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                enabled: true,
+                                child: Container(
+                                  width: width,
+                                  height: height / 4,
+                                  color: Colors.black54,
+                                ),
+                              ),
                             ),
                           ),
                         )
@@ -87,7 +92,6 @@ class BlogDetailPage extends StatelessWidget {
                   ),
                   Container(
                     width: width,
-                    height: height * 3 / 4,
                     color: const Color(blackColor2),
                     child: Column(
                       children: [
@@ -104,11 +108,13 @@ class BlogDetailPage extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              blog.description ?? "",
+                            child: RichText(
+                              text: TextSpan(
+                                text:string ?? "",
+                                style: const TextStyle(fontSize: 18, color: Colors.white),
+                              ),
                               textAlign: TextAlign.start,
-                              style: const TextStyle(fontSize: 18),
-                            ),
+                            )
                           ),
                         ),
                       ],

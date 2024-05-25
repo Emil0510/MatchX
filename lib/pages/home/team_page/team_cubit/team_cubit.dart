@@ -211,7 +211,7 @@ class TeamCubit extends Cubit<TeamCubitStates> {
     var dio = locator.get<Dio>();
     var sharedPreferences = locator.get<SharedPreferences>();
     var token = sharedPreferences.getString("token");
-
+    print("Called");
     try {
       page++;
 
@@ -230,14 +230,13 @@ class TeamCubit extends Cubit<TeamCubitStates> {
           queryParameters: body);
 
       if (response.statusCode == 200) {
-        List<Team>? teams = (response.data['data']['teams'] as List?)
+        List<Team>? newTeams = (response.data['data']['teams'] as List?)
             ?.map((e) => Team.fromJson(e))
             .toList();
-        this.teams.addAll(teams ?? []);
+        // teams.addAll(newTeams ?? []);
         isLoaded = true;
         teamPageCubit = this;
-
-        callback(teams ?? []);
+        callback(newTeams ?? []);
       } else {
         callback([]);
       }
@@ -245,4 +244,5 @@ class TeamCubit extends Cubit<TeamCubitStates> {
       callback([]);
     }
   }
+
 }

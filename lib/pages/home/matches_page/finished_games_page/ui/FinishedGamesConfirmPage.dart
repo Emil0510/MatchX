@@ -179,6 +179,7 @@ class _FinishedGamesConfirmPageState extends State<FinishedGamesConfirmPage> {
                                       )),
                                   TextButton(
                                     onPressed: () async {
+                                      Navigator.pop(context);
                                       setState(() {
                                         isLoadingReject = true;
                                       });
@@ -223,6 +224,7 @@ class _FinishedGamesConfirmPageState extends State<FinishedGamesConfirmPage> {
                                       )),
                                   TextButton(
                                     onPressed: () async {
+                                      Navigator.pop(context);
                                       setState(() {
                                         isLoadingReject = true;
                                       });
@@ -293,6 +295,7 @@ class _FinishedGamesConfirmPageState extends State<FinishedGamesConfirmPage> {
                                           )),
                                       TextButton(
                                         onPressed: () async {
+                                          Navigator.pop(context);
                                           setState(() {
                                             isLoading = true;
                                           });
@@ -379,6 +382,7 @@ class _FinishedGamesConfirmPageState extends State<FinishedGamesConfirmPage> {
                                         )),
                                     TextButton(
                                       onPressed: () async {
+                                        Navigator.pop(context);
                                         setState(() {
                                           isLoading = true;
                                         });

@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_app/Utils.dart';
 import 'package:flutter_app/network/model/TeamFilter.dart';
 import 'package:flutter_app/pages/home/team_page/team_detail_cubit/create_team_logics.dart';
@@ -32,6 +30,7 @@ class _AllTeamPageState extends State<AllTeamPage> {
   bool isEnd = false;
   ScrollController scrollController = ScrollController();
   late TeamFilter filter;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -48,18 +47,26 @@ class _AllTeamPageState extends State<AllTeamPage> {
     if (scrollController.position.maxScrollExtent == scrollController.offset &&
         !isEnd &&
         teams.length % 10 == 0 &&
-        teams.isNotEmpty) {
-      context.read<TeamCubit>().loadMore((newItems) async {
-        if (newItems.isEmpty) {
-          setState(() {
-            isEnd = true;
-          });
-        } else {
+        teams.isNotEmpty &&
+        !isLoading) {
+      setState(() {
+        isLoading = true;
+      });
+      context.read<TeamCubit>().loadMore(
+            (newItems) {
+          if (newItems.isEmpty) {
+            setState(() {
+              isEnd = true;
+              isLoading = false;
+            });
+            return;
+          }
           setState(() {
             teams.addAll(newItems);
+            isLoading = false;
           });
-        }
-      });
+        },
+      );
     }
   }
 
@@ -137,7 +144,8 @@ class _AllTeamPageState extends State<AllTeamPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 12, right: 8, top: 8, bottom: 8),
+            padding:
+                const EdgeInsets.only(left: 12, right: 8, top: 8, bottom: 8),
             child: SizedBox(
               height: height / 18 - 16,
               width: double.maxFinite,
@@ -152,7 +160,8 @@ class _AllTeamPageState extends State<AllTeamPage> {
                           isScrollControlled: true,
                           builder: (innerContext) {
                             return BlocProvider.value(
-                              value: BlocProvider.of<TeamCubit>(context, listen: false),
+                              value: BlocProvider.of<TeamCubit>(context,
+                                  listen: false),
                               child: FilterPage(filter: filter),
                             );
                           },
@@ -173,8 +182,10 @@ class _AllTeamPageState extends State<AllTeamPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => BlocProvider(
-                                create: (context) => TeamDetailCubit()..startTeamDetail(id ?? ""),
-                                child: const TeamDetailPage(teamName: "Komandam"),
+                                create: (context) => TeamDetailCubit()
+                                  ..startTeamDetail(id ?? ""),
+                                child:
+                                    const TeamDetailPage(teamName: "Komandam"),
                               ),
                             ),
                           );
@@ -187,9 +198,11 @@ class _AllTeamPageState extends State<AllTeamPage> {
                           var data = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              settings: const RouteSettings(name: createTeamRoute),
+                              settings:
+                                  const RouteSettings(name: createTeamRoute),
                               builder: (context) => BlocProvider(
-                                create: (context) => TeamDetailCubit()..startCreateTeam(),
+                                create: (context) =>
+                                    TeamDetailCubit()..startCreateTeam(),
                                 child: const TeamCreateLogics(),
                               ),
                             ),
@@ -200,7 +213,8 @@ class _AllTeamPageState extends State<AllTeamPage> {
                         }
                       },
                       child: TeamButtonContainer(
-                        text: checkExistingTeam() ? "Komandam" : "Komanda yarat",
+                        text:
+                            checkExistingTeam() ? "Komandam" : "Komanda yarat",
                       ),
                     ),
                   )
@@ -219,14 +233,18 @@ class _AllTeamPageState extends State<AllTeamPage> {
                 });
               },
               child: ListView.builder(
-                itemCount: (teams.length % 10 == 0 && teams.isNotEmpty) ? teams.length + 1 : teams.length,
+                itemCount: (teams.length % 10 == 0 && teams.isNotEmpty)
+                    ? teams.length + 1
+                    : teams.length,
                 controller: scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   if (index < teams.length) {
                     return TeamListItem(team: teams.elementAt(index));
                   } else {
-                    return !isEnd ? const InfinityScrollLoading() : const SizedBox();
+                    return !isEnd
+                        ? const InfinityScrollLoading()
+                        : const SizedBox();
                   }
                 },
               ),
