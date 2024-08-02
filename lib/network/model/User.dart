@@ -140,3 +140,27 @@ class UserCredentials {
         roles: (json['roles'] as List).map((e) => e.toString()).toList());
   }
 }
+
+class StaffItem {
+  final String fullName;
+  final String userName;
+  final String imageUrl;
+  final int? goalCount;
+  final bool side;
+
+  StaffItem(
+      {required this.fullName,
+      required this.userName,
+      required this.imageUrl,
+      required this.goalCount,
+      required this.side});
+
+  factory StaffItem.fromJson(Map<String, dynamic> json) {
+    return StaffItem(
+        fullName: json["fullName"],
+        userName: json["userName"],
+        imageUrl: json["imageUrl"],
+        goalCount: json['goalCount'],
+        side: json['side']);
+  }
+}

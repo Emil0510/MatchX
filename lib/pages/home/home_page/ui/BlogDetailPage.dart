@@ -1,16 +1,42 @@
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Utils.dart';
+import 'package:flutter_app/network/network.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../../Constants.dart';
 import '../../../../network/model/Blog.dart';
 
-class BlogDetailPage extends StatelessWidget {
+class BlogDetailPage extends StatefulWidget {
   final Blog blog;
 
   const BlogDetailPage({super.key, required this.blog});
+
+  @override
+  State<BlogDetailPage> createState() => _BlogDetailPageState();
+}
+
+class _BlogDetailPageState extends State<BlogDetailPage> {
+  @override
+  void initState() {
+    super.initState();
+    sendRequestBlog();
+  }
+
+  void sendRequestBlog() async {
+    var dio = locator.get<Dio>();
+    var sharedPreferences = locator.get<SharedPreferences>();
+    var token = sharedPreferences.getString(tokenKey);
+
+    try {
+      var response = await dio.get(baseUrl + getBlogIdApi,
+          options: Options(headers: {"Authorization": "Bearer $token"}),
+          queryParameters: {"id": widget.blog.id});
+    } on DioException catch (e) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +44,9 @@ class BlogDetailPage extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
 
     var string = "";
-    blog.description?.split("||").forEach((element) {
+    widget.blog.description?.split("||").forEach((element) {
       string += element;
-      string+="\n";
+      string += "\n";
     });
 
     return Scaffold(
@@ -56,13 +82,13 @@ class BlogDetailPage extends StatelessWidget {
               physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
-                  blog.imageUrl != null
+                  widget.blog.imageUrl != null
                       ? Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
                             child: CachedNetworkImage(
-                              imageUrl: blog.imageUrl!,
+                              imageUrl: widget.blog.imageUrl!,
                               width: width,
                               height: height / 4,
                               placeholder: (context, url) => Shimmer.fromColors(
@@ -84,7 +110,7 @@ class BlogDetailPage extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15.0, bottom: 8),
                       child: Text(
-                        "Tarix: ${getGameDate(blog.createdAt).split(",")[0]}",
+                        "Tarix: ${getGameDate(widget.blog.createdAt).split(",")[0]}",
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
@@ -98,7 +124,7 @@ class BlogDetailPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            blog.title ?? "",
+                            widget.blog.title ?? "",
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 24),
@@ -107,15 +133,15 @@ class BlogDetailPage extends StatelessWidget {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: RichText(
-                              text: TextSpan(
-                                text:string ?? "",
-                                style: const TextStyle(fontSize: 18, color: Colors.white),
-                              ),
-                              textAlign: TextAlign.start,
-                            )
-                          ),
+                              padding: const EdgeInsets.all(8.0),
+                              child: RichText(
+                                text: TextSpan(
+                                  text: string ?? "",
+                                  style: const TextStyle(
+                                      fontSize: 18, color: Colors.white),
+                                ),
+                                textAlign: TextAlign.start,
+                              )),
                         ),
                       ],
                     ),

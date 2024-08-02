@@ -20,6 +20,8 @@ class TeamGame {
   final bool? isRated;
   final double? homeTeamRating;
   final double? awayTeamRating;
+  final bool? isVerificated;
+  final List<StaffItem>? stats;
 
   TeamGame(
       {required this.homeTeamName,
@@ -40,7 +42,9 @@ class TeamGame {
       required this.homeTeamId,
       required this.awayTeamId,
       required this.homeTeamMembers,
-      required this.awayTeamMembers});
+      required this.awayTeamMembers,
+      this.stats,
+      this.isVerificated});
 
   factory TeamGame.fromJson(Map<String, dynamic> json) {
     return TeamGame(
@@ -61,7 +65,15 @@ class TeamGame {
         id: json['id'],
         homeTeamId: json['homeTeamId'],
         awayTeamId: json['awayTeamId'],
-        homeTeamMembers: (json['homeTeamMembers'] as List?)?.map((e) => User.fromJson(e)).toList(),
-        awayTeamMembers: (json['awayTeamMembers'] as List?)?.map((e) => User.fromJson(e)).toList());
+        homeTeamMembers: (json['homeTeamMembers'] as List?)
+            ?.map((e) => User.fromJson(e))
+            .toList(),
+        awayTeamMembers: (json['awayTeamMembers'] as List?)
+            ?.map((e) => User.fromJson(e))
+            .toList(),
+        stats: (json['stats'] as List?)
+            ?.map((e) => StaffItem.fromJson(e))
+            .toList(),
+        isVerificated: json["isVerificated"]);
   }
 }

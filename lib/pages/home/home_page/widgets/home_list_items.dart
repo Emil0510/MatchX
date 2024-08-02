@@ -27,14 +27,14 @@ class Top10UserSingleItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              flex: 4,
+              flex: 5,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TopListContainer(
                   color: const Color(blackColor3),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Center(child: Text((index + 1).toString())),
+                    child: Center(child: Text((index + 1).toString(), maxLines: 1,style: const TextStyle(fontSize: 12),)),
                   ),
                 ),
               ),
@@ -122,7 +122,7 @@ class Top10TeamSingleItem extends StatelessWidget {
                   color: const Color(blackColor3),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Center(child: index==0 ? Image.asset("assets/first.png", fit: BoxFit.contain,width: width/12, height: width/12,) : index==1?Image.asset("assets/second.png", fit: BoxFit.contain,width: width/12, height: width/12,) :index==2? Image.asset("assets/third.png", fit: BoxFit.contain,width: width/12, height: width/12,): Text((index + 1).toString())),
+                    child: Center(child: index==0 ? Image.asset("assets/first.png", fit: BoxFit.contain,width: width/12, height: width/12,) : index==1?Image.asset("assets/second.png", fit: BoxFit.contain,width: width/12, height: width/12,) :index==2? Image.asset("assets/third.png", fit: BoxFit.contain,width: width/12, height: width/12,): Text((index + 1).toString(), style: const TextStyle(fontSize: 12),)),
                   ),
                 ),
               ),

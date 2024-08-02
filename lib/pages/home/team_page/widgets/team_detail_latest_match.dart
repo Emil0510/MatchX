@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../../network/network.dart';
+import '../../matches_page/finished_games_page/ui/ScheduledGameDetailPage.dart';
 
 class TeamDetailLatestMatchWidget extends StatelessWidget {
   final TeamGame teamGame;
@@ -355,156 +356,168 @@ class _TeamDetailMatchesListState extends State<TeamDetailMatchesList> {
 
 class TeamFinishedGameWidget extends StatelessWidget {
   final TeamGame game;
-
-  const TeamFinishedGameWidget({super.key, required this.game});
+  final Color? backgroundColor;
+  const TeamFinishedGameWidget({super.key, required this.game, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
 
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: Container(
-        width: double.maxFinite,
-        decoration: BoxDecoration(
-            color: const Color(blackColor3),
-            borderRadius: BorderRadius.circular(10)),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: game.homeTeamImageUrl ?? "",
-                      width: width / 8,
-                      height: width / 8,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        enabled: true,
-                        child: Container(
-                          width: width * 4 / 5,
-                          height: width * 4 / 5,
-                          color: Colors.black54,
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => ScheduledGameDetail(
+              gameId: game.id ?? "",
+            ),
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Container(
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+              color: backgroundColor ?? const Color(blackColor3),
+              borderRadius: BorderRadius.circular(10)),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl: game.homeTeamImageUrl ?? "",
+                        width: width / 8,
+                        height: width / 8,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          enabled: true,
+                          child: Container(
+                            width: width * 4 / 5,
+                            height: width * 4 / 5,
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              textAlign: TextAlign.center,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              game.homeTeamName ?? "",
-                              style: const TextStyle(color: Color(goldColor)),
-                            ),
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: game.homeTeamRating.toString(),
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 13),
-                                children: [
-                                  TextSpan(
-                                    text:
-                                        " (${game.homeTeamPointChange.toString()})",
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: game.homeTeamPointChange == 0
-                                          ? Colors.white
-                                          : game.homeTeamPointChange! > 0
-                                              ? const Color(greenColor)
-                                              : const Color(redColor),
-                                    ),
-                                  )
-                                ],
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                game.homeTeamName ?? "",
+                                style: const TextStyle(color: Color(goldColor)),
                               ),
-                            ),
-                          ],
+                              RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  text: game.homeTeamRating.toString(),
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 13),
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          " (${game.homeTeamPointChange.toString()})",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: game.homeTeamPointChange == 0
+                                            ? Colors.white
+                                            : (game.homeTeamPointChange??0) > 0
+                                                ? const Color(greenColor)
+                                                : const Color(redColor),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    "${game.homeTeamGoal}-${game.awayTeamGoal}",
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                      )
+                    ],
                   ),
                 ),
-              ),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              textAlign: TextAlign.center,
-                              game.awayTeamName!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(color: Color(goldColor)),
-                            ),
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: game.awayTeamRating.toString(),
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 13),
-                                children: [
-                                  TextSpan(
-                                    text:
-                                        " (${game.awayTeamPointChange.toString()})",
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: game.awayTeamPointChange == 0
-                                          ? Colors.white
-                                          : game.awayTeamPointChange! > 0
-                                              ? const Color(greenColor)
-                                              : const Color(redColor),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      "${game.homeTeamGoal}-${game.awayTeamGoal}",
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
                     ),
-                    CachedNetworkImage(
-                      imageUrl: game.awayTeamImageUrl ?? "",
-                      width: width / 8,
-                      height: width / 8,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        enabled: true,
-                        child: Container(
-                          width: width * 4 / 5,
-                          height: width * 4 / 5,
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                textAlign: TextAlign.center,
+                                game.awayTeamName!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(color: Color(goldColor)),
+                              ),
+                              RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  text: game.awayTeamRating.toString(),
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 13),
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          " (${game.awayTeamPointChange.toString()})",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: game.awayTeamPointChange == 0
+                                            ? Colors.white
+                                            : (game.awayTeamPointChange??0) > 0
+                                                ? const Color(greenColor)
+                                                : const Color(redColor),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      CachedNetworkImage(
+                        imageUrl: game.awayTeamImageUrl ?? "",
+                        width: width / 8,
+                        height: width / 8,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          enabled: true,
+                          child: Container(
+                            width: width * 4 / 5,
+                            height: width * 4 / 5,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -63,17 +63,14 @@ class _NotificationItemState extends State<NotificationItem> {
                     }
                   },
                   splashColor: Colors.grey,
-                  child: Expanded(
-                    child: Padding(
+                  child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        textAlign: TextAlign.end,
                         "Kimdən: ${widget.notification.From}",
                         style: const TextStyle(color: Colors.grey),
                       ),
                     ),
                   ),
-                )
               ],
             ),
             Padding(

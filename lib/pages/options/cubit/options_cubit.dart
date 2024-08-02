@@ -17,13 +17,9 @@ import '../../../network/network.dart';
 class OptionsCubit extends Cubit<OptionsStates> {
   OptionsCubit() : super(OptionsInitialState());
 
-
-
-
-  start(){
+  start() {
     emit(OptionsHomePageState(isLogOut: false));
   }
-
 
   startEditProfile() async {
     emit(OptionsLoadingState());
@@ -39,8 +35,7 @@ class OptionsCubit extends Cubit<OptionsStates> {
 
         emit(OptionsEditProfileState(user: user));
       }
-    } on DioException catch (e) {
-    }
+    } on DioException catch (e) {}
   }
 
   startChangePassword() async {
@@ -57,8 +52,7 @@ class OptionsCubit extends Cubit<OptionsStates> {
 
         emit(OptionsChangePasswordState(user: user));
       }
-    } on DioException catch (e) {
-    }
+    } on DioException catch (e) {}
   }
 
   saveEditProfile(String name, String surname, File? image, DateTime dateTime,
@@ -118,8 +112,7 @@ class OptionsCubit extends Cubit<OptionsStates> {
 
         emit(OptionsHelpPageState(questions: questions));
       }
-    } on DioException catch (e) {
-    }
+    } on DioException catch (e) {}
   }
 
   changePassword(String oldPassword, String newPassword, String dateTime,
@@ -164,24 +157,21 @@ class OptionsCubit extends Cubit<OptionsStates> {
           "IsTekif": IsTekif,
           "Description": description,
         });
-      }else{
+      } else {
         formData = FormData.fromMap({
           "IsTekif": IsTekif,
           "Description": description,
         });
       }
-      var response = await dio.post(baseUrl + suggestionApi,
-          data: formData);
+      var response = await dio.post(baseUrl + suggestionApi, data: formData);
 
       if (response.statusCode == 200) {
         emit(OptionsSuggestionSuccesfullPageState());
       }
-    } on DioException catch (e) {
-    }
+    } on DioException catch (e) {}
   }
 
   void logOut() async {
-
     emit(OptionsLoadingState());
     var sharedPreferences = locator.get<SharedPreferences>();
     var dio = locator.get<Dio>();
@@ -202,12 +192,33 @@ class OptionsCubit extends Cubit<OptionsStates> {
         teamPageCubit = TeamCubit();
         morePageCubit = MorePageCubit();
         divisionPageCubit = DivisionCubit();
-      }else{
+      } else {
         emit(OptionsHomePageState(isLogOut: false));
+      }
+    } on DioException catch (e) {
+      emit(OptionsHomePageState(isLogOut: false));
+    }
+  }
+
+  void deleteUser(String password, Function(bool, String) callback) async {
+    var dio = locator.get<Dio>();
+    var sharedPreferencess = locator.get<SharedPreferences>();
+    var token = sharedPreferencess.getString(tokenKey);
+    print(token);
+
+    try {
+      var response = await dio.delete(baseUrl + deleteUserApi,
+          options: Options(headers: {"Authorization": "Bearer $token"}),
+          queryParameters: {"password": password});
+
+      if(response.statusCode == 200){
+        callback(true, response.data['message']);
+      }else{
+        callback(false, response.data['message']);
       }
 
     } on DioException catch (e) {
-      emit(OptionsHomePageState(isLogOut: false));
+      callback(false, e.response?.data['message']);
     }
   }
 }

@@ -37,6 +37,23 @@ String getGameDate(String date) {
 }
 
 
+String getGameLeftTime(String date){
+  DateTime dateTime = DateTime.parse(date);
+  var now = DateTime.now();
+  if(now.isBefore(dateTime)){
+    var time = dateTime.difference(now);
+    if(time.inDays != 0){
+      return "${time.inDays} gün qaldı";
+    }else if(time.inHours !=0){
+      return "${time.inHours} saat qaldı";
+    }else{
+      return "${time.inMinutes} dəqiqə qaldı";
+    }
+  }else{
+    return "Bitdi";
+  }
+}
+
 String getNotificationDate(String date) {
   DateTime dateTime = DateTime.parse(date);
   var month = DateFormat('MMMM').format(dateTime);

@@ -148,7 +148,7 @@ class _AllMatchesPageState extends State<AllMatchesPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              checkLeader()
+              checkExistingTeam()
                   ? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(

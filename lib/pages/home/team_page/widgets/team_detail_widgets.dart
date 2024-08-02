@@ -2,12 +2,23 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
+import 'package:flutter_app/pages/chat/widgets/chat_tooltip_button.dart';
 import 'package:flutter_app/pages/home/team_page/team_detail_cubit/team_detail_cubit.dart';
+import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:super_tooltip/super_tooltip.dart';
+import '../../../../data.dart';
 import '../../../../network/model/Team.dart';
 import '../../../../network/model/User.dart';
+import '../../../sign_in_sign_up/login_signup.dart';
 import '../../../user/user_cubit/user_logics.dart';
+import '../../divisions_page/division_cubit/division_cubit.dart';
+import '../../home_page/cubit/home_page_cubit.dart';
+import '../../matches_page/mathches_cubit/matches_cubit.dart';
+import '../../more_page/more_cubit/more_page_cubit.dart';
+import '../team_cubit/team_cubit.dart';
 
 class TeamMembersContainer extends StatelessWidget {
   final int memberCount;
@@ -277,7 +288,7 @@ class TeamDivisionMedalsWidget extends StatelessWidget {
   }
 }
 
-class TeamMembersListWidget extends StatelessWidget {
+class TeamMembersListWidget extends StatefulWidget {
   final List<User> members;
   final String teamCapitanUsername;
 
@@ -285,23 +296,143 @@ class TeamMembersListWidget extends StatelessWidget {
       {super.key, required this.members, required this.teamCapitanUsername});
 
   @override
+  State<TeamMembersListWidget> createState() => _TeamMembersListWidgetState();
+}
+
+class _TeamMembersListWidgetState extends State<TeamMembersListWidget> {
+  List<SuperTooltipController> controllers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    widget.members.forEach((element) {
+      controllers.add(SuperTooltipController());
+    });
+  }
+
+  void throwClick(
+    int index,
+  ) {
+    if ((widget.teamCapitanUsername != widget.members[index].userName &&
+        getMyUsername() == widget.teamCapitanUsername)) {
+      AlertDialog alert = AlertDialog(
+        title: const Text("Oyunçu atma"),
+        content: const Text("Oyunçunu komandadan atmağa əminsiz?"),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                "Xeyr",
+                style: TextStyle(color: Colors.white),
+              )),
+          TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                context
+                    .read<TeamDetailCubit>()
+                    .throwUser(widget.members[index].id ?? "");
+              },
+              child: const Text("Bəli", style: TextStyle(color: Colors.white))),
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+  }
+
+  void makeLeader(int index) {
+    if ((widget.teamCapitanUsername != widget.members[index].userName &&
+        getMyUsername() == widget.teamCapitanUsername)) {
+      AlertDialog alert = AlertDialog(
+        title: const Text("Lider etmə"),
+        content: const Text("Oyunçunu lider etməyə əminsiz?\n\nLider etsəniz hesabınıza yenidən giriş etməli olacaqsınız"),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                "Xeyr",
+                style: TextStyle(color: Colors.white),
+              )),
+          TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                context.read<TeamDetailCubit>().makeCapitan(
+                    widget.members[index].userName ?? "", (success, message) async{
+                      showCustomSnackbar(context, message);
+                      if(success){
+                        var sharedPreferences = locator.get<SharedPreferences>();
+                        await sharedPreferences.clear();
+                        await sharedPreferences.setBool(shouldShowOnboardKey, false);
+                        homePageCubit = HomePageCubit();
+                        matchesPageCubit = MatchesCubit();
+                        teamPageCubit = TeamCubit();
+                        morePageCubit = MorePageCubit();
+                        divisionPageCubit = DivisionCubit();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                            const SignInSignUp(),
+                          ),
+                              (e) => false,
+                        );
+                      }
+                });
+              },
+              child: const Text("Bəli", style: TextStyle(color: Colors.white))),
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+  }
+
+  Future<bool> _willPopCallback(
+      SuperTooltipController superTooltipController) async {
+    // If the tooltip is open we don't pop the page on a backbutton press
+    // but close the ToolTip
+    if (superTooltipController.isVisible) {
+      await superTooltipController.hideTooltip();
+      return false;
+    }
+    return true;
+  }
+
+  @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
+
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: members.length,
+      itemCount: widget.members.length,
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
             //To member profile
-            if (getMyUsername() != members[index].userName) {
+            if (getMyUsername() != widget.members[index].userName) {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => UserLogics(
-                        username: members[index].userName ?? "")),
+                        username: widget.members[index].userName ?? "")),
               );
             }
           },
@@ -320,7 +451,7 @@ class TeamMembersListWidget extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 8.0),
                       child: ClipOval(
                         child: CachedNetworkImage(
-                          imageUrl: members[index].profilePhotoUrl,
+                          imageUrl: widget.members[index].profilePhotoUrl,
                           width: 50,
                           height: 50,
                           fit: BoxFit.cover,
@@ -343,11 +474,11 @@ class TeamMembersListWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            members[index].name,
+                            widget.members[index].name,
                             style: const TextStyle(color: Colors.white),
                           ),
                           Text(
-                            "@${members[index].userName}",
+                            "@${widget.members[index].userName}",
                             style: const TextStyle(color: Colors.grey),
                           )
                         ],
@@ -356,50 +487,49 @@ class TeamMembersListWidget extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(right: 16.0),
                       child: GestureDetector(
-                        onTap: () {
-                          if ((teamCapitanUsername != members[index].userName &&
-                              getMyUsername() == teamCapitanUsername)) {
-                            AlertDialog alert = AlertDialog(
-                              title: const Text(
-                                  "Oyunçunu komandadan atmağa əminsiz?"),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text(
-                                      "Xeyr",
-                                      style: TextStyle(color: Colors.white),
-                                    )),
-                                TextButton(
-                                    onPressed: () async {
-                                      Navigator.pop(context);
-                                      context
-                                          .read<TeamDetailCubit>()
-                                          .throwUser(members[index].id ?? "");
-                                    },
-                                    child: const Text("Bəli",
-                                        style: TextStyle(color: Colors.white))),
-                              ],
-                            );
-
-                            // show the dialog
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return alert;
-                              },
-                            );
-                          }
-                        },
-                        child: (teamCapitanUsername != members[index].userName &&
-                                getMyUsername() == teamCapitanUsername)
-                            ? const Icon(
-                                Icons.exit_to_app,
-                                color: Colors.grey,
+                        onTap: () {},
+                        child: (widget.teamCapitanUsername !=
+                                    widget.members[index].userName &&
+                                getMyUsername() == widget.teamCapitanUsername)
+                            ? SuperTooltip(
+                                controller: controllers[index],
+                                showBarrier: true,
+                                popupDirection: TooltipDirection.left,
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ChatTooltipButton(
+                                      text: "Komandadan at",
+                                      onPressed: () {
+                                        _willPopCallback(controllers[index]);
+                                        throwClick(index);
+                                      },
+                                    ),
+                                    ChatTooltipButton(
+                                      text: "Lider et",
+                                      onPressed: () {
+                                        _willPopCallback(controllers[index]);
+                                        makeLeader(index);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: const Color(blackColor2),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(4.0),
+                                    child: Icon(
+                                      Icons.more_vert,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
                               )
                             : Text(
-                                teamCapitanUsername == members[index].userName
+                                widget.teamCapitanUsername ==
+                                        widget.members[index].userName
                                     ? "Lider"
                                     : "       ",
                                 style: const TextStyle(color: Color(goldColor)),

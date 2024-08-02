@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
+import 'package:flutter_app/pages/home/matches_page/finished_games_page/ui/ScheduledGameDetailPage.dart';
 import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -47,7 +48,8 @@ class _FinishedGamesItemState extends State<FinishedGamesItem> {
                 )),
             TextButton(
               onPressed: () async {
-                context.read<FinishedGamesCubit>().cancelGame((isSuccesfull, message) {
+                context.read<FinishedGamesCubit>().cancelGame(
+                    (isSuccesfull, message) {
                   setState(() {
                     isLoading = false;
                   });
@@ -81,52 +83,112 @@ class _FinishedGamesItemState extends State<FinishedGamesItem> {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
 
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Container(
-        color: const Color(blackColor2),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
-                    child: Row(
-                      children: [
-                        CachedNetworkImage(
-                          imageUrl: widget.myGame.homeTeamImageUrl ?? "",
-                          width: width / 12,
-                          height: width / 12,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Shimmer.fromColors(
-                            baseColor: Colors.grey.shade300,
-                            highlightColor: Colors.grey.shade100,
-                            enabled: true,
-                            child: Container(
-                              width: width * 4 / 5,
-                              height: width * 4 / 5,
-                              color: Colors.black54,
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => ScheduledGameDetail(
+              gameId: widget.myGame.id ?? "",
+            ),
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Container(
+          color: const Color(blackColor2),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
+                      child: Row(
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl: widget.myGame.homeTeamImageUrl ?? "",
+                            width: width / 12,
+                            height: width / 12,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Shimmer.fromColors(
+                              baseColor: Colors.grey.shade300,
+                              highlightColor: Colors.grey.shade100,
+                              enabled: true,
+                              child: Container(
+                                width: width * 4 / 5,
+                                height: width * 4 / 5,
+                                color: Colors.black54,
+                              ),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(widget.myGame.homeTeamName ?? ""),
-                        )
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(widget.myGame.homeTeamName ?? ""),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  ((widget.myGame.awayTeamImageUrl ?? "").isNotEmpty)
+                    !checkLeader()
+                        ? const SizedBox()
+                        : ((widget.myGame.awayTeamImageUrl ?? "").isNotEmpty)
+                            ? Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: Row(
+                                  children: [
+                                    CachedNetworkImage(
+                                      imageUrl:
+                                          widget.myGame.awayTeamImageUrl ?? "",
+                                      width: width / 12,
+                                      height: width / 12,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          Shimmer.fromColors(
+                                        baseColor: Colors.grey.shade300,
+                                        highlightColor: Colors.grey.shade100,
+                                        enabled: true,
+                                        child: Container(
+                                          width: width * 4 / 5,
+                                          height: width * 4 / 5,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                          "${widget.myGame.awayTeamName}" ??
+                                              ""),
+                                    )
+                                  ],
+                                ),
+                              )
+                            : const SizedBox(),
+                  ],
+                ),
+              ),
+              Expanded(
+                  child: Text(
+                getGameDate(widget.myGame.gameDate ?? ""),
+                textAlign: TextAlign.center,
+              )),
+              !checkLeader()
+                  ? ((widget.myGame.awayTeamImageUrl ?? "").isNotEmpty)
                       ? Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(right: 8.0),
                           child: Row(
                             children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child:
+                                    Text("${widget.myGame.awayTeamName}" ?? ""),
+                              ),
                               CachedNetworkImage(
                                 imageUrl: widget.myGame.awayTeamImageUrl ?? "",
                                 width: width / 12,
@@ -144,39 +206,31 @@ class _FinishedGamesItemState extends State<FinishedGamesItem> {
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(widget.myGame.awayTeamName ?? ""),
-                              )
                             ],
                           ),
                         )
-                      : const SizedBox(),
-                ],
-              ),
-            ),
-            Expanded(child: Text(getGameDate(widget.myGame.gameDate ?? ""))),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ((widget.myGame.awayTeamImageUrl ?? "").isNotEmpty)
-                  ? CustomGoldButton(
-                      onPressed: () {
-                        onPressed();
-                      },
-                    )
-                  : CustomRedButton(
-                      onPressed: () {
-                        if (!isLoading) {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          onPressed();
-                        }
-                      },
-                      isLoading: isLoading,
-                    ),
-            )
-          ],
+                      : const SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ((widget.myGame.awayTeamImageUrl ?? "").isNotEmpty)
+                          ? CustomGoldButton(
+                              onPressed: () {
+                                onPressed();
+                              },
+                            )
+                          : CustomRedButton(
+                              onPressed: () {
+                                if (!isLoading) {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  onPressed();
+                                }
+                              },
+                              isLoading: isLoading,
+                            ))
+            ],
+          ),
         ),
       ),
     );

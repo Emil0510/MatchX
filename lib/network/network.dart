@@ -16,6 +16,9 @@ const String usersApi = "nam/Auth/Users/";
 const String readNotifyApi = "nam/Auth/ReadNotify";
 const String logOutApi = "nam/Auth/LogOut";
 const String forgetPassApi = "nam/Auth/ForgetPass";
+const String reportUserApi = "nam/Auth/Report";
+const String banUserApi = "nam/Auth/ChatBan";
+const String deleteUserApi = "nam/Auth/Delete";
 
 //Teams
 const String teamsApi = "nam/Teams/Filter";
@@ -28,6 +31,7 @@ const String acceptJoinApi = "nam/Teams/acJoin/";
 const String rejectJoinApi = "nam/Teams/sgJoin/";
 const String throwUserApi = "nam/Teams/throwUser/";
 const String editTeamApi = "nam/Teams/Update";
+const String swapCapitanApi = "nam/Teams/SwapCapitan";
 
 //Games
 const String gameCreateApi = "nam/Games/create";
@@ -43,6 +47,8 @@ const String rejectGameApi = "nam/Games/Reject";
 const String resultGameApi = "nam/Games/Result";
 const String verifyGameApi = "nam/Games/Verify";
 const String seeMoreApi = "nam/Games/SeeMore";
+const String getVsGames = "nam/Games/Vs";
+const String getGameDetails = "nam/Games/Detail";
 
 
 //Division
@@ -50,6 +56,7 @@ const String allDivisionApi = "nam/Divisions/all";
 
 //Blogs
 const String getBlogsApi = "nam/Blogs/GetAll";
+const String getBlogIdApi = "nam/Blogs/GetById";
 
 //HomePage
 const String getTopUsersApi = "nam/Anonymous/TopUsers";

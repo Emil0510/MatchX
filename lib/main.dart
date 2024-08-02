@@ -2,6 +2,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/pages/html/html_page.dart';
 import 'package:flutter_app/pages/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_app/utils/NavigatorObserver.dart';
@@ -13,7 +14,6 @@ import 'dart:io' show Platform;
 import 'Constants.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
 
@@ -36,7 +36,6 @@ void main() async {
   );
 
   await AwesomeNotifications().initialize(
-
     Platform.isAndroid ? 'resource://drawable/ic_notification' : null,
     [
       NotificationChannel(
@@ -50,7 +49,7 @@ void main() async {
     ],
   );
 
-   await SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
 
@@ -92,8 +91,12 @@ class MyApp extends StatelessWidget {
       ),
       themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
-      navigatorObservers: [MyNavigatorObserver()],
-      home: const Scaffold(body: SplashScreen()),
+      navigatorObservers: [
+        MyNavigatorObserver(),
+      ],
+      home: const Scaffold(
+        body: SplashScreen(),
+      ),
     );
   }
 }

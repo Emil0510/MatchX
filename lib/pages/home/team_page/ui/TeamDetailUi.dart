@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Utils.dart';
 import 'package:flutter_app/network/model/Team.dart';
+import 'package:flutter_app/pages/home/matches_page/finished_games_page/cubit/finished_game_cubit.dart';
 import 'package:flutter_app/pages/home/team_page/team_detail_cubit/edit_team_logics.dart';
 import 'package:flutter_app/pages/home/team_page/team_detail_cubit/team_detail_cubit.dart';
 import 'package:flutter_app/pages/home/team_page/ui/ShowAllPage.dart';
+import 'package:flutter_app/pages/home/team_page/ui/TeamVsPage.dart';
 import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -69,8 +71,8 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                         highlightColor: Colors.grey.shade100,
                         enabled: true,
                         child: Container(
-                          width: width*4/5,
-                          height: width*4/5,
+                          width: width * 4 / 5,
+                          height: width * 4 / 5,
                           color: Colors.black54,
                         ),
                       ),
@@ -94,9 +96,9 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
-                          child: TeamMembersContainer(memberCount: team.members!.length),
+                          child: TeamMembersContainer(
+                              memberCount: team.members!.length),
                         ),
-
                         Container(
                           width: width / 3,
                           decoration: BoxDecoration(
@@ -131,7 +133,8 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                               //left
                               AlertDialog alert = AlertDialog(
                                 title: const Text("Ayrılma"),
-                                content: const Text("Komandadan ayrılmağa əminsiz?"),
+                                content:
+                                    const Text("Komandadan ayrılmağa əminsiz?"),
                                 actions: [
                                   TextButton(
                                       onPressed: () {
@@ -144,7 +147,9 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                                   TextButton(
                                     onPressed: () async {
                                       Navigator.pop(context);
-                                      context.read<TeamDetailCubit>().leftTeam();
+                                      context
+                                          .read<TeamDetailCubit>()
+                                          .leftTeam();
                                     },
                                     child: const Text(
                                       "Bəli",
@@ -259,7 +264,8 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                             onPressed: () {
                               AlertDialog alert = AlertDialog(
                                 title: const Text("Komanda silmə"),
-                                content: const Text("Komandanızı silməyə əminsiz?"),
+                                content:
+                                    const Text("Komandanızı silməyə əminsiz?"),
                                 actions: [
                                   TextButton(
                                       onPressed: () {
@@ -272,7 +278,9 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                                   TextButton(
                                     onPressed: () async {
                                       Navigator.pop(context);
-                                      context.read<TeamDetailCubit>().deleteTeam();
+                                      context
+                                          .read<TeamDetailCubit>()
+                                          .deleteTeam();
                                     },
                                     child: const Text(
                                       "Bəli",
@@ -295,7 +303,8 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                             textColor: Colors.white,
                           ),
                         )
-                      : const SizedBox()
+                      : const SizedBox(),
+                  const SizedBox(height: 64,)
                 ],
               ),
               (checkExistingTeam() &&
@@ -318,12 +327,39 @@ class _TeamDetailUIState extends State<TeamDetailUI> {
                               ),
                             ),
                           );
-
                           if (data != null) {
                             context.read<TeamDetailCubit>().refresh(false);
                           }
                         },
                         child: const Icon(Icons.edit),
+                      ),
+                    )
+                  : const SizedBox(),
+              checkExistingTeam() && getMyTeamId() != team.id
+                  ? Positioned(
+                      top: 10,
+                      right: 10,
+                      child: GestureDetector(
+                        onTap: () async {
+                          //To edit page
+                          var data = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                create: (BuildContext context) =>
+                                    FinishedGamesCubit(),
+                                child: TeamVsPage(
+                                  teamId: team.id ?? "",
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        child: Image.asset(
+                          "assets/vs.png",
+                          width: 32,
+                          height: 32,
+                        ),
                       ),
                     )
                   : const SizedBox()

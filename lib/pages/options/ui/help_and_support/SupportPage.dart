@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Utils.dart';
-import 'package:flutter_tawk/flutter_tawk.dart';
+import 'package:flutter_tawkto/flutter_tawk.dart';
 
 import '../../../../Constants.dart';
 

@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/network/network.dart';
 import 'package:flutter_app/pages/home/team_page/team_detail_cubit/team_detail_states.dart';
+import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -183,6 +185,35 @@ class TeamDetailCubit extends Cubit<TeamDetailCubitStates> {
           isSuccessful: false,
           message: "Xəta baş verdi",
           isThrow: true));
+    }
+  }
+
+  void makeCapitan(String username, Function(bool, String) callback)async{
+    var dio = locator.get<Dio>();
+    var sharedPreferences = locator.get<SharedPreferences>();
+    var token = sharedPreferences.getString(tokenKey);
+
+    try{
+      var response = await dio.post(baseUrl + swapCapitanApi, options: Options(
+        headers: {
+          "Authorization" : "Bearer $token"
+        }
+      ),
+      queryParameters: {
+        "user" : username
+      });
+
+      if(response.statusCode == 200){
+        callback.call(true, response.data['message']);
+      }else{
+        emit(TeamDetailPageState(
+            team: team, isSuccessful: false, message: "", isThrow: false));
+        callback.call(false, response.data['message']);
+      }
+    }on DioException catch(e){
+      emit(TeamDetailPageState(
+          team: team, isSuccessful: false, message: "", isThrow: false));
+      callback.call(false, e.response?.data['message']);
     }
   }
 

@@ -1,11 +1,19 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/Constants.dart';
+import 'package:flutter_app/Utils.dart';
 import 'package:flutter_app/pages/chat/cubit/chat_cubit.dart';
+import 'package:flutter_app/pages/chat/ui/ban_bottom_sheet.dart';
+import 'package:flutter_app/pages/chat/ui/report_bottom_sheet.dart';
+import 'package:flutter_app/pages/chat/widgets/chat_tooltip_button.dart';
 import 'package:flutter_app/pages/chat/widgets/chat_top_widget.dart';
 import 'package:flutter_app/pages/user/user_cubit/user_logics.dart';
+import 'package:flutter_app/widgets/buttons_widgets.dart';
 import 'package:flutter_app/widgets/container.dart';
+import 'package:flutter_app/widgets/input_text_widgets.dart';
 import 'package:flutter_app/widgets/loading_widget.dart';
+import 'package:flutter_app/widgets/snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:super_tooltip/super_tooltip.dart';
@@ -31,7 +39,6 @@ class _ChatPageState extends State<ChatPage> {
   int hoursDuration = 0;
   int minutesDuration = 0;
   bool isLoading = true;
-
   bool messageLocked = false;
 
   String string = "Banın açılma müddəti: ";
@@ -47,7 +54,6 @@ class _ChatPageState extends State<ChatPage> {
     username = sharedPreferences.getString("username") ?? "";
     textEditingController = TextEditingController();
     scrollController = ScrollController();
-
     controllers = [];
 
     timer = Timer(const Duration(seconds: 1), () {});
@@ -118,6 +124,30 @@ class _ChatPageState extends State<ChatPage> {
       return false;
     }
     return true;
+  }
+
+  void onBanClicked(BuildContext context, String username) {
+    var cubit = context.read<ChatPageCubit>();
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return BlocProvider.value(
+            value: cubit, child: BanBottomSheet(username: username,));
+      },
+    );
+  }
+
+  void onReportClicked(BuildContext context, String username) {
+    var cubit = context.read<ChatPageCubit>();
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return BlocProvider.value(
+            value: cubit, child: ReportBottomSheet(username: username,));
+      },
+    );
   }
 
   @override
@@ -223,130 +253,186 @@ class _ChatPageState extends State<ChatPage> {
                                                         children: [
                                                           Text(messages[index]
                                                               .username),
-                                                          ElevatedButton(
-                                                            onPressed: () {
-                                                              _willPopCallback(
-                                                                  controllers[
-                                                                      index]);
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                  builder: (context) =>
-                                                                      UserLogics(
-                                                                          username:
-                                                                              messages[index].username),
-                                                                ),
-                                                              );
-                                                            },
-                                                            style:
-                                                                ElevatedButton
-                                                                    .styleFrom(
-                                                              backgroundColor:
-                                                                  const Color(
-                                                                      0xB8B98638),
-                                                            ),
-                                                            child: const Text(
-                                                              "Profile",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black),
-                                                            ),
-                                                          ),
                                                           messages[index]
-                                                                      .myTeamId ==
-                                                                  null
+                                                                      .username ==
+                                                                  getMyUsername()
                                                               ? const SizedBox()
-                                                              : ElevatedButton(
+                                                              : ChatTooltipButton(
                                                                   onPressed:
                                                                       () {
-                                                                    if (messages[index]
-                                                                            .myTeamId !=
-                                                                        null) {
-                                                                      _willPopCallback(
-                                                                          controllers[
-                                                                              index]);
-                                                                      Navigator
-                                                                          .push(
-                                                                        context,
-                                                                        MaterialPageRoute(
-                                                                          builder: (context) =>
-                                                                              BlocProvider(
-                                                                            create: (context) => TeamDetailCubit()
-                                                                              ..startTeamDetail(messages[index].myTeamId ?? ""),
-                                                                            child:
-                                                                                const TeamDetailPage(teamName: "Komanda"),
-                                                                          ),
-                                                                        ),
-                                                                      );
-                                                                    } else {
-                                                                      //Invite to Team
-                                                                      // showToastMessage(
-                                                                      //     context,
-                                                                      //     "Invite Team");
-                                                                    }
+                                                                    _willPopCallback(
+                                                                        controllers[
+                                                                            index]);
+                                                                    Navigator
+                                                                        .push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                UserLogics(username: messages[index].username),
+                                                                      ),
+                                                                    );
                                                                   },
-                                                                  style: ElevatedButton
-                                                                      .styleFrom(
-                                                                    backgroundColor:
-                                                                        const Color(
-                                                                            0xB8B98638),
-                                                                  ),
-                                                                  child: messages[index]
-                                                                              .myTeamId !=
-                                                                          null
-                                                                      ? const Text(
-                                                                          "Team",
-                                                                          style:
-                                                                              TextStyle(color: Colors.black),
-                                                                        )
-                                                                      : const SizedBox(),
-                                                                )
+                                                                  text:
+                                                                      "Profile",
+                                                                ),
+                                                          messages[index]
+                                                                      .username ==
+                                                                  getMyUsername()
+                                                              ? const SizedBox()
+                                                              : messages[index]
+                                                                          .myTeamId ==
+                                                                      null
+                                                                  ? const SizedBox()
+                                                                  : ChatTooltipButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        if (messages[index].myTeamId !=
+                                                                            null) {
+                                                                          _willPopCallback(
+                                                                              controllers[index]);
+                                                                          Navigator
+                                                                              .push(
+                                                                            context,
+                                                                            MaterialPageRoute(
+                                                                              builder: (context) => BlocProvider(
+                                                                                create: (context) => TeamDetailCubit()..startTeamDetail(messages[index].myTeamId ?? ""),
+                                                                                child: const TeamDetailPage(teamName: "Komanda"),
+                                                                              ),
+                                                                            ),
+                                                                          );
+                                                                        } else {
+                                                                          //Invite to Team
+                                                                          // showToastMessage(
+                                                                          //     context,
+                                                                          //     "Invite Team");
+                                                                        }
+                                                                      },
+                                                                      text:
+                                                                          "Komanda",
+                                                                    ),
+                                                          ChatTooltipButton(
+                                                              onPressed: () {
+                                                                _willPopCallback(
+                                                                    controllers[
+                                                                        index]);
+                                                                Clipboard.setData(
+                                                                    ClipboardData(
+                                                                        text: messages[index]
+                                                                            .message));
+                                                                showCustomSnackbar(
+                                                                    context,
+                                                                    "Mesaj kopyalandı");
+                                                              },
+                                                              text:
+                                                                  "Mesajı kopyala"),
+                                                          messages[index]
+                                                                      .username ==
+                                                                  getMyUsername()
+                                                              ? const SizedBox()
+                                                              : ChatTooltipButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    _willPopCallback(
+                                                                        controllers[
+                                                                            index]);
+                                                                    onReportClicked(
+                                                                        context, messages[index].username);
+                                                                  },
+                                                                  text:
+                                                                      "Şikayət et"),
+                                                          messages[index]
+                                                                      .username ==
+                                                                  getMyUsername()
+                                                              ? const SizedBox()
+                                                              : ChatTooltipButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    _willPopCallback(
+                                                                        controllers[
+                                                                            index]);
+                                                                    onBanClicked(
+                                                                        context, messages[index].username);
+                                                                  },
+                                                                  text:
+                                                                      "Banla"),
                                                         ],
                                                       ),
                                                     ),
-                                                    popupDirection:
-                                                        TooltipDirection.right,
+                                                    popupDirection: messages[
+                                                                    index]
+                                                                .username ==
+                                                            getMyUsername()
+                                                        ? TooltipDirection.left
+                                                        : TooltipDirection
+                                                            .right,
                                                     child: GestureDetector(
-                                                      onTap: () {
+                                                      onLongPress: () {
                                                         if (messages[index]
                                                                 .username !=
-                                                            username) {
+                                                            getMyUsername()) {
                                                           controllers[index]
                                                               .showTooltip();
                                                         }
                                                       },
-                                                      child: Text(
-                                                        messages[index]
-                                                            .username,
-                                                        style: const TextStyle(
-                                                            color:
-                                                                Colors.white),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            messages[index]
+                                                                .username,
+                                                            style:
+                                                                const TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                          ),
+                                                          Container(
+                                                            constraints:
+                                                                BoxConstraints(
+                                                                    maxWidth:
+                                                                        width *
+                                                                            3 /
+                                                                            4),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          8),
+                                                              color: messages[index]
+                                                                          .username ==
+                                                                      username
+                                                                  ? const Color(
+                                                                      0xB8B98638)
+                                                                  : const Color(
+                                                                      0xFF282828),
+                                                            ),
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child:
+                                                                  IgnorePointer(
+                                                                child:
+                                                                    SelectableText(
+                                                                  messages[
+                                                                          index]
+                                                                      .message,
+                                                                  style: const TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ),
-                                            Container(
-                                              constraints: BoxConstraints(
-                                                  maxWidth: width * 3 / 4),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                color: messages[index]
-                                                            .username ==
-                                                        username
-                                                    ? const Color(0xB8B98638)
-                                                    : const Color(0xFF282828),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: SelectableText(
-                                                  messages[index].message,
-                                                  style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 16),
-                                                ),
-                                              ),
-                                            ),
                                           ],
                                         ),
                                       ),

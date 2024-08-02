@@ -91,7 +91,9 @@ class _FinishedGamesConfirmPageState extends State<FinishedGamesConfirmPage> {
           child: SingleChildScrollView(
             child: Container(
               width: double.maxFinite,
-              height: height,
+              constraints: BoxConstraints(
+                minHeight: height
+              ),
               color: Colors.black,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,

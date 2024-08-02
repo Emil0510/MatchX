@@ -30,48 +30,50 @@ class _NotificationPageState extends State<NotificationPage> {
         ),
       ),
       body: CustomContainer(
-          color: Colors.black,
+        color: Colors.black,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            context.read<NotificationCubit>().refreshNotifications();
+            await Future.delayed(const Duration(seconds: 1));
+          },
           child: BlocBuilder<NotificationCubit, NotificationStates>(
-            builder: (context, state) {
-              if (state is NotificationPageState) {
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    context.read<NotificationCubit>().refreshNotifications();
-                    await Future.delayed(const Duration(seconds: 1));
-                  },
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: ListView.builder(
-                      itemCount: state.notifications.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return NotificationItem(
-                          notification: state.notifications[index],
-                        );
-                      },
-                    ),
-                  ),
-                );
-              } else {
-                return const SizedBox();
-              }
-            },
-          )
-
-          // ElevatedButton(
-          //   onPressed: () {
-          //     AwesomeNotifications().createNotification(
-          //         content: NotificationContent(
-          //           id: 10,
-          //           channelKey: 'basic_channel',
-          //           actionType: ActionType.Default,
-          //           title: 'Hello World!',
-          //           body: 'This is my first notification!',
-          //         )
-          //     );
-          //   }, child: Text("Click"),
-          // ),
+              builder: (context, state) {
+                if (state is NotificationPageState) {
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: state.notifications.length,
+                          itemBuilder: (context, index) {
+                            return NotificationItem(
+                              notification: state.notifications[index],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
+            ),
           ),
+        ),
     );
   }
 }
+
+// ElevatedButton(
+//   onPressed: () {
+//     AwesomeNotifications().createNotification(
+//         content: NotificationContent(
+//           id: 10,
+//           channelKey: 'basic_channel',
+//           actionType: ActionType.Default,
+//           title: 'Hello World!',
+//           body: 'This is my first notification!',
+//         )
+//     );
+//   }, child: Text("Click"),
+// ),

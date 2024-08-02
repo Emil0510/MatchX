@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Constants.dart';
 import 'package:flutter_app/Utils.dart';
@@ -31,7 +32,7 @@ class ChatPageCubit extends Cubit<ChatPageStates> {
       (List<Message> list, bool test, bool test1) {};
   late BuildContext context;
   bool isLoading = true;
-  final List<Message> messages = [
+  List<Message> messages = [
     Message(
         message: "message",
         username: "MatchX",
@@ -95,6 +96,7 @@ class ChatPageCubit extends Cubit<ChatPageStates> {
   }
 
   void _receiveOldMessages(dynamic data) {
+    active = data[0]['online'];
     List<Message> oldMessages = (data[0]?['unReadMessages'] as List)
         .map((e) => Message.fromJson(e, false))
         .toList();
@@ -102,7 +104,7 @@ class ChatPageCubit extends Cubit<ChatPageStates> {
     if (messages.length == 1) {
       messages.addAll(oldMessages);
       isLoading = false;
-      messages[messages.length - 1].activeCount = data[0]['online'];
+      messages[messages.length - 1].activeCount = active;
       callback(messages.reversed.toList(), false, isLoading);
       emit(ChatPageMessagesState(messages, isNotificationVisible, 0));
     }
@@ -116,15 +118,14 @@ class ChatPageCubit extends Cubit<ChatPageStates> {
     if (message.tagUserName != "" && message.tagUserName == getMyUsername()) {
       AwesomeNotifications().createNotification(
         content: NotificationContent(
-            id: 10,
-            channelKey: 'basic_channel',
-            actionType: ActionType.Default,
-            title: '${message.username} sizi tağ etdi!',
-            body: message.message,
-            icon : Platform.isAndroid ? 'resource://drawable/ic_notification' : null,
-
+          id: 10,
+          channelKey: 'basic_channel',
+          actionType: ActionType.Default,
+          title: '${message.username} sizi tağ etdi!',
+          body: message.message,
+          icon:
+              Platform.isAndroid ? 'resource://drawable/ic_notification' : null,
         ),
-
       );
     }
 
@@ -167,6 +168,59 @@ class ChatPageCubit extends Cubit<ChatPageStates> {
   void sendMessage(String message) {
     isNotificationVisible = false;
     hubConnection.invoke('SendMessage', args: [message]);
+  }
+
+  void reportUser(String username, String reason, Function(bool) callback) async{
+    var dio = locator.get<Dio>();
+    var sharedPreferences = locator.get<SharedPreferences>();
+    var token = sharedPreferences.getString(tokenKey);
+    try {
+      var response = await dio.post(baseUrl + reportUserApi,
+          options: Options(
+            headers: {"Authorization": "Bearer $token"},
+          ),
+          queryParameters: {"username": username, "reason": reason});
+
+      if(response.statusCode == 200){
+        showCustomSnackbar(context, response.data['message']);
+        callback(true);
+      }else{
+        showCustomSnackbar(context, response.data['message']);
+        callback(false);
+      }
+    } on DioException catch (e) {
+      callback(false);
+      showCustomSnackbar(context, e.response?.data['message']);
+    }
+  }
+
+  void banUser(String username, String reason, Function(bool, String) callback)async{
+    var dio = locator.get<Dio>();
+    var sharedPreferences = locator.get<SharedPreferences>();
+    var token = sharedPreferences.getString(tokenKey);
+    try {
+      var response = await dio.post(baseUrl + banUserApi,
+          options: Options(
+            headers: {"Authorization": "Bearer $token"},
+          ),
+          queryParameters: {"username": username, "reason": reason});
+
+      if(response.statusCode == 200){
+        callback(true,  response.data['message']);
+        filterBanMessage(username);
+      }else{
+        callback(false,  response.data['message']);
+      }
+    } on DioException catch (e) {
+      callback(false, e.response?.data['message']);
+    }
+  }
+
+  void filterBanMessage(String username){
+    var list = messages;
+    messages = list.where((element) => element.username!=username).toList();
+    messages[messages.length - 1].activeCount = active;
+    callback(messages.reversed.toList(), false, isLoading);
   }
 
   void checkCoursing() {
